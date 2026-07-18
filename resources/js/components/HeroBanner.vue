@@ -17,7 +17,6 @@ const props = defineProps<{
 }>();
 
 const backgroundImage = computed(() => {
-    // Check if there is an image URL in section items
     if (props.section?.items && props.section.items.length > 0) {
         const itemWithImage = props.section.items.find(item => item.value);
 
@@ -26,44 +25,48 @@ return itemWithImage.value;
 }
     }
 
-    // High-quality default for about page banner
     return '/images/about-hero.jpg';
 });
 </script>
 
 <template>
-    <div v-if="section" class="relative bg-neutral py-20 md:py-28 text-neutral-content overflow-hidden min-h-[40vh] flex items-center">
-        <!-- Background Image with Overlay -->
+    <div v-if="section" class="relative h-[65vh] md:h-[70vh] flex items-center overflow-hidden" style="background-color: #0B2540;">
+        <!-- Background Image -->
         <div class="absolute inset-0 z-0">
-            <img 
-                :src="backgroundImage" 
+            <img
+                :src="backgroundImage"
                 alt="Banner Background"
-                class="w-full h-full object-cover opacity-25"
+                class="w-full h-full object-cover"
+                style="opacity: 0.18;"
                 loading="eager"
             />
-            <!-- Duotone overlay/gradients -->
-            <div class="absolute inset-0 bg-neutral/80 mix-blend-multiply"></div>
-            <div class="absolute inset-0 bg-gradient-to-b from-neutral/45 via-transparent to-neutral/90"></div>
-            
-            <!-- Route-line divider at bottom of hero -->
-            <div class="absolute bottom-0 left-0 w-full h-[1px] bg-neutral-content/10"></div>
+            <!-- Navy gradient overlays -->
+            <div class="absolute inset-0" style="background: linear-gradient(to bottom, rgba(11,37,64,0.10) 0%, rgba(11,37,64,0.25) 50%, rgba(11,37,64,0.40) 100%);"></div>
+            <!-- Bottom divider line -->
+            <div class="absolute bottom-0 left-0 w-full h-[1px]" style="background-color: rgba(232,119,12,0.30);"></div>
         </div>
 
-        <div class="relative z-10 max-w-4xl mx-auto px-6 text-center space-y-4">
-            <!-- Eyebrow (mono label) -->
-            <span class="inline-block font-mono text-xs md:text-sm tracking-widest text-amber uppercase">
-                {{ section.subheading || 'MB · 01 — FOUNDATION' }}
+        <!-- Content -->
+        <div class="relative z-10 w-full max-w-4xl mx-auto px-6 text-center space-y-5">
+            <!-- Eyebrow -->
+            <span class="inline-block font-mono text-xs md:text-sm tracking-widest uppercase" style="color: #E8770C;">
+                {{ section.subheading || 'MB · FOUNDATION' }}
             </span>
-            
-            <!-- Headline (Archivo) -->
-            <h1 class="text-3xl md:text-5xl lg:text-6xl font-bold font-display tracking-tight leading-none text-neutral-content max-w-3xl mx-auto">
+
+            <!-- Headline -->
+            <h1 class="text-3xl md:text-5xl lg:text-6xl font-bold font-display tracking-tight leading-none text-white max-w-3xl mx-auto">
                 {{ section.heading }}
             </h1>
-            
-            <!-- Subtext (Plex Sans) -->
-            <p v-if="section.body" class="text-neutral-content/80 font-body text-base md:text-lg max-w-xl mx-auto leading-relaxed">
+
+            <!-- Subtext -->
+            <p v-if="section.body" class="font-body text-base md:text-lg max-w-xl mx-auto leading-relaxed" style="color: rgba(255,255,255,0.70);">
                 {{ section.body }}
             </p>
+
+            <!-- Orange underline accent -->
+            <div class="flex justify-center pt-2">
+                <div class="h-1 w-16 rounded-full" style="background-color: #E8770C;"></div>
+            </div>
         </div>
     </div>
 </template>

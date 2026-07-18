@@ -19,9 +19,15 @@ class CmsService
         
         $page->setRelation('sections', $page->sections()
             ->where('is_active', true)
-            ->with(['items' => function ($query) {
-                $query->where('is_active', true)->orderBy('order');
-            }])
+            ->with([
+                'items' => function ($query) {
+                    $query->where('is_active', true)->orderBy('order');
+                },
+                'items.imageMedia',
+                'portraitMedia',
+                'signatureMedia',
+                'ctaBackgroundMedia'
+            ])
             ->orderBy('order')
             ->get()
         );

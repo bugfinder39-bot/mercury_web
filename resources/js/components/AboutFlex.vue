@@ -20,16 +20,14 @@ const props = defineProps<{
 }>();
 
 const aboutImage = computed(() => {
-    // If the admin uploaded/configured a specific image in a section item, use it.
     if (props.section?.items && props.section.items.length > 0) {
-        const itemWithImage = props.section.items.find(item => item.value);
+        const itemWithImage = props.section.items.find(item => item.value || item.image_media?.file_path);
 
         if (itemWithImage) {
-return itemWithImage.value;
-}
+            return itemWithImage.image_media?.file_path || itemWithImage.value;
+        }
     }
 
-    // High-quality default
     return '/images/about-home.jpg';
 });
 </script>
@@ -40,25 +38,29 @@ return itemWithImage.value;
             <!-- Text Content -->
             <div class="space-y-6">
                 <!-- Eyebrow -->
-                <span class="inline-block font-mono text-xs md:text-sm tracking-widest text-base-content/70 uppercase">
-                    {{ section.subheading || 'MB · 02 — ABOUT US' }}
+                <span class="eyebrow-orange">
+                    {{ section.subheading || 'MB · ABOUT US' }}
                 </span>
-                
+
                 <!-- Heading -->
-                <h2 class="text-3xl md:text-4xl font-bold font-display text-base-content leading-tight">
+                <h2 class="text-3xl md:text-4xl font-bold font-display leading-tight" style="color: #0B2540;">
                     {{ section.heading }}
                 </h2>
-                
+
+                <!-- Divider accent -->
+                <div class="h-1 w-12 rounded-full" style="background-color: #E8770C;"></div>
+
                 <!-- Body Copy -->
-                <p class="text-base-content/80 font-body text-base md:text-lg leading-relaxed whitespace-pre-line">
+                <p class="font-body text-base md:text-lg leading-relaxed whitespace-pre-line" style="color: #475569;">
                     {{ section.body }}
                 </p>
 
-                <!-- Optional CTA -->
+                <!-- CTA -->
                 <div class="pt-2">
-                    <Link 
+                    <Link
                         href="/about"
-                        class="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-amber hover:text-amber-dark font-medium group transition-colors"
+                        class="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider font-semibold group transition-colors"
+                        style="color: #E8770C;"
                     >
                         <span>Learn More About Us</span>
                         <ArrowRight class="size-4 transition-transform duration-150 group-hover:translate-x-1" />
@@ -66,18 +68,19 @@ return itemWithImage.value;
                 </div>
             </div>
 
-            <!-- Image side with neutral overlay option -->
-            <div class="relative rounded-lg overflow-hidden border border-base-300 aspect-[4/3] lg:aspect-square group/img">
-                <!-- Image -->
-                <img 
-                    :src="aboutImage" 
+            <!-- Image Side -->
+            <div
+                class="relative rounded-xl overflow-hidden aspect-[4/3] lg:aspect-square group/img"
+                style="box-shadow: var(--shadow-lg); border: 1px solid rgba(11,37,64,0.10);"
+            >
+                <img
+                    :src="aboutImage"
                     :alt="section.heading || 'About Mercury'"
                     class="w-full h-full object-cover transition-transform duration-500 group-hover/img:scale-105"
                     loading="lazy"
                 />
-                <!-- Subtle brand neutral overlay (10% opacity) -->
-                <div class="absolute inset-0 bg-neutral/10 mix-blend-multiply pointer-events-none"></div>
-                <div class="absolute inset-0 bg-gradient-to-t from-neutral/20 via-transparent to-transparent pointer-events-none"></div>
+                <!-- Orange bottom accent overlay -->
+                <div class="absolute bottom-0 left-0 w-full h-1" style="background-color: #E8770C;"></div>
             </div>
         </div>
     </div>

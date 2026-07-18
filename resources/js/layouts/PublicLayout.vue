@@ -4,7 +4,7 @@ import Navbar from '@/components/Navbar.vue';
 </script>
 
 <template>
-    <div class="min-h-screen flex flex-col bg-white font-sans antialiased selection:bg-amber selection:text-white">
+    <div class="min-h-screen flex flex-col font-sans antialiased" style="background-color: #F8FAFC;">
         <!-- Navigation Header -->
         <Navbar />
 

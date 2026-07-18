@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
+import { ArrowRight } from '@lucide/vue';
 import * as Icons from '@lucide/vue';
 
 defineProps<{
@@ -29,48 +30,51 @@ return Icons.Ship;
 </script>
 
 <template>
-    <div 
+    <div
         v-if="service"
-        class="border border-base-300 p-8 rounded-lg bg-base-100 flex flex-col justify-between h-full transition-colors duration-200 hover:border-neutral"
+        class="card-premium shadow-card-hover flex flex-col justify-between h-full p-7"
+        style="transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.2s ease;"
     >
-        <div class="space-y-6">
-            <!-- Icon -->
-            <div class="inline-flex p-3 rounded-lg bg-base-200 text-base-content">
-                <component 
-                    :is="getIconComponent(service.icon)" 
-                    class="size-6 stroke-[1.5]" 
+        <div class="space-y-5">
+            <!-- Orange Icon Wrapper -->
+            <div class="icon-orange-wrap">
+                <component
+                    :is="getIconComponent(service.icon)"
+                    class="size-5 stroke-[1.5]"
                 />
             </div>
-            
+
             <!-- Content -->
             <div class="space-y-3">
-                <h3 class="text-xl md:text-2xl font-bold font-display text-base-content">
+                <h3 class="text-xl md:text-2xl font-bold font-display" style="color: #0B2540;">
                     {{ service.name }}
                 </h3>
-                <p class="text-base-content/70 font-body text-sm md:text-base leading-relaxed line-clamp-3">
+                <p class="font-body text-sm md:text-base leading-relaxed line-clamp-3" style="color: #475569;">
                     {{ service.short_description }}
                 </p>
             </div>
         </div>
 
         <!-- Learn More Link -->
-        <div class="pt-6">
-            <button 
+        <div class="pt-6 mt-auto">
+            <button
                 v-if="customClick"
                 @click="$emit('click')"
                 type="button"
-                class="inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-wider text-amber hover:text-amber-dark font-medium group transition-colors focus:outline-none"
+                class="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider font-semibold group transition-colors"
+                style="color: #E8770C;"
             >
                 <span>Learn More</span>
-                <span class="transition-transform duration-150 group-hover:translate-x-1">→</span>
+                <ArrowRight class="size-4 transition-transform duration-150 group-hover:translate-x-1" />
             </button>
-            <Link 
+            <Link
                 v-else
-                href="/services" 
-                class="inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-wider text-amber hover:text-amber-dark font-medium group transition-colors"
+                href="/services"
+                class="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider font-semibold group transition-colors"
+                style="color: #E8770C;"
             >
                 <span>Learn More</span>
-                <span class="transition-transform duration-150 group-hover:translate-x-1">→</span>
+                <ArrowRight class="size-4 transition-transform duration-150 group-hover:translate-x-1" />
             </Link>
         </div>
     </div>

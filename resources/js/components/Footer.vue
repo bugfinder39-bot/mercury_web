@@ -10,46 +10,59 @@ const currentYear = computed(() => new Date().getFullYear());
 </script>
 
 <template>
-    <footer class="bg-neutral text-neutral-content border-t border-neutral-content/10 font-body relative overflow-hidden">
-        <!-- Subtly styled background route decoration -->
-        <div class="absolute inset-0 opacity-[0.02] pointer-events-none">
-            <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-                <line x1="0" y1="50%" x2="100%" y2="50%" stroke="currentColor" stroke-width="2" stroke-dasharray="12,12" />
+    <footer
+        class="font-body relative overflow-hidden"
+        style="background-color: #0B2540; color: rgba(255,255,255,0.85); box-shadow: 0 -2px 20px rgba(11,37,64,0.25);"
+    >
+        <!-- Subtle geometric background decoration -->
+        <div class="absolute inset-0 pointer-events-none opacity-[0.03]">
+            <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+                <line x1="0" y1="50%" x2="100%" y2="50%" stroke="white" stroke-width="1" stroke-dasharray="8,8" />
+                <line x1="50%" y1="0" x2="50%" y2="100%" stroke="white" stroke-width="1" stroke-dasharray="8,8" />
             </svg>
         </div>
 
         <div class="max-w-7xl mx-auto px-6 pt-16 pb-8 relative z-10">
-            <!-- 4-Column Layout Grid -->
+            <!-- 4-Column Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 pb-12">
+
                 <!-- Column 1: Company Info -->
-                <div class="space-y-4">
-                    <span class="font-mono text-xs uppercase tracking-widest text-amber">MB · GLOBAL / OFFICE INFO</span>
-                    <h3 class="text-neutral-content font-bold font-display text-xl tracking-wide">
-                        {{ settings.company_name || 'Mercury Bangladesh' }}
-                    </h3>
-                    <p class="text-sm text-neutral-content/70 leading-relaxed max-w-xs">
+                <div class="space-y-5">
+                    <div>
+                        <span class="font-mono text-xs uppercase tracking-widest" style="color: #E8770C;">Mercury Bangladesh</span>
+                        <h3 class="text-white font-bold font-display text-2xl uppercase tracking-wider mt-2">
+                            {{ settings.company_name || 'Mercury Bangladesh' }}
+                        </h3>
+                    </div>
+                    <p class="text-sm leading-relaxed max-w-xs" style="color: rgba(255,255,255,0.60);">
                         {{ settings.company_tagline || 'Your better choice for any shipping need.' }}
                     </p>
                     <!-- Social Links -->
-                    <div class="flex items-center gap-4 pt-2">
-                        <a 
-                            v-if="settings.social_linkedin" 
-                            :href="settings.social_linkedin" 
-                            target="_blank" 
-                            rel="noopener noreferrer" 
-                            class="p-2 bg-neutral-content/5 hover:bg-amber hover:text-white rounded-md text-neutral-content transition-colors duration-150 ease-in-out"
+                    <div class="flex items-center gap-3 pt-1">
+                        <a
+                            v-if="settings.social_linkedin"
+                            :href="settings.social_linkedin"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="p-2.5 rounded-lg transition-all duration-200"
+                            style="background-color: rgba(255,255,255,0.08); color: rgba(255,255,255,0.70);"
+                            onmouseover="this.style.backgroundColor='#E8770C'; this.style.color='#fff';"
+                            onmouseout="this.style.backgroundColor='rgba(255,255,255,0.08)'; this.style.color='rgba(255,255,255,0.70)';"
                             aria-label="LinkedIn"
                         >
                             <svg class="size-4 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
                             </svg>
                         </a>
-                        <a 
-                            v-if="settings.social_facebook" 
-                            :href="settings.social_facebook" 
-                            target="_blank" 
-                            rel="noopener noreferrer" 
-                            class="p-2 bg-neutral-content/5 hover:bg-amber hover:text-white rounded-md text-neutral-content transition-colors duration-150 ease-in-out"
+                        <a
+                            v-if="settings.social_facebook"
+                            :href="settings.social_facebook"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="p-2.5 rounded-lg transition-all duration-200"
+                            style="background-color: rgba(255,255,255,0.08); color: rgba(255,255,255,0.70);"
+                            onmouseover="this.style.backgroundColor='#E8770C'; this.style.color='#fff';"
+                            onmouseout="this.style.backgroundColor='rgba(255,255,255,0.08)'; this.style.color='rgba(255,255,255,0.70)';"
                             aria-label="Facebook"
                         >
                             <svg class="size-4 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -61,57 +74,63 @@ const currentYear = computed(() => new Date().getFullYear());
 
                 <!-- Column 2: Quick Links -->
                 <div>
-                    <h4 class="text-neutral-content font-semibold font-display text-sm uppercase tracking-wider mb-5">Quick Links</h4>
+                    <h4 class="text-white font-semibold font-display text-sm uppercase tracking-wider mb-6">Quick Links</h4>
                     <ul class="space-y-3 text-sm">
-                        <li>
-                            <Link href="/" class="hover:text-amber hover:underline transition-colors duration-150 ease-in-out">Home</Link>
-                        </li>
-                        <li>
-                            <Link href="/about" class="hover:text-amber hover:underline transition-colors duration-150 ease-in-out">About Us</Link>
-                        </li>
-                        <li>
-                            <Link href="/services" class="hover:text-amber hover:underline transition-colors duration-150 ease-in-out">Services</Link>
-                        </li>
-                        <li>
-                            <Link href="/contact" class="hover:text-amber hover:underline transition-colors duration-150 ease-in-out">Contact</Link>
+                        <li v-for="(link, label) in { 'Home': '/', 'About Us': '/about', 'Services': '/services', 'Contact': '/contact' }" :key="label">
+                            <Link
+                                :href="link"
+                                class="transition-colors duration-150 flex items-center gap-2 group"
+                                style="color: rgba(255,255,255,0.65);"
+                                onmouseover="this.style.color='#E8770C';"
+                                onmouseout="this.style.color='rgba(255,255,255,0.65)';"
+                            >
+                                <span class="w-1 h-1 rounded-full transition-colors duration-150" style="background-color: #E8770C; opacity: 0.5;"></span>
+                                {{ label }}
+                            </Link>
                         </li>
                     </ul>
                 </div>
 
-                <!-- Column 3: Logistics Services -->
+                <!-- Column 3: Our Services -->
                 <div>
-                    <h4 class="text-neutral-content font-semibold font-display text-sm uppercase tracking-wider mb-5">Our Services</h4>
+                    <h4 class="text-white font-semibold font-display text-sm uppercase tracking-wider mb-6">Our Services</h4>
                     <ul class="space-y-3 text-sm">
-                        <li>
-                            <Link href="/services" class="hover:text-amber hover:underline transition-colors duration-150 ease-in-out">Sea Freight</Link>
-                        </li>
-                        <li>
-                            <Link href="/services" class="hover:text-amber hover:underline transition-colors duration-150 ease-in-out">Air Freight</Link>
-                        </li>
-                        <li>
-                            <Link href="/services" class="hover:text-amber hover:underline transition-colors duration-150 ease-in-out">Land / Inland Transport</Link>
-                        </li>
-                        <li>
-                            <Link href="/services" class="hover:text-amber hover:underline transition-colors duration-150 ease-in-out">Warehousing & Distribution</Link>
+                        <li v-for="service in ['Sea Freight', 'Air Freight', 'Land / Inland Transport', 'Warehousing & Distribution']" :key="service">
+                            <Link
+                                href="/services"
+                                class="transition-colors duration-150 flex items-center gap-2"
+                                style="color: rgba(255,255,255,0.65);"
+                                onmouseover="this.style.color='#E8770C';"
+                                onmouseout="this.style.color='rgba(255,255,255,0.65)';"
+                            >
+                                <span class="w-1 h-1 rounded-full" style="background-color: #E8770C; opacity: 0.5;"></span>
+                                {{ service }}
+                            </Link>
                         </li>
                     </ul>
                 </div>
 
                 <!-- Column 4: Contact Information -->
-                <div class="space-y-4">
-                    <h4 class="text-neutral-content font-semibold font-display text-sm uppercase tracking-wider mb-5">Head Office</h4>
-                    <ul class="space-y-3.5 text-sm text-neutral-content/70">
+                <div class="space-y-5">
+                    <h4 class="text-white font-semibold font-display text-sm uppercase tracking-wider mb-6">Head Office</h4>
+                    <ul class="space-y-4 text-sm">
                         <li class="flex items-start gap-3">
-                            <MapPin class="size-5 text-amber shrink-0 mt-0.5" />
-                            <span class="leading-relaxed">{{ settings.contact_address || 'Dhaka, Bangladesh' }}</span>
+                            <MapPin class="size-5 shrink-0 mt-0.5" style="color: #E8770C;" />
+                            <span class="leading-relaxed" style="color: rgba(255,255,255,0.65);">{{ settings.contact_address || 'Dhaka, Bangladesh' }}</span>
                         </li>
                         <li class="flex items-center gap-3">
-                            <Phone class="size-4 text-amber shrink-0" />
-                            <span>{{ settings.contact_phone || '+880 2 9876543' }}</span>
+                            <Phone class="size-4 shrink-0" style="color: #E8770C;" />
+                            <span style="color: rgba(255,255,255,0.65);">{{ settings.contact_phone || '+880 2 9876543' }}</span>
                         </li>
                         <li class="flex items-center gap-3">
-                            <Mail class="size-4 text-amber shrink-0" />
-                            <a :href="`mailto:${settings.contact_email || 'ops@mercury-bd.com'}`" class="hover:text-amber transition-colors duration-150 ease-in-out">
+                            <Mail class="size-4 shrink-0" style="color: #E8770C;" />
+                            <a
+                                :href="`mailto:${settings.contact_email || 'ops@mercury-bd.com'}`"
+                                class="transition-colors duration-150"
+                                style="color: rgba(255,255,255,0.65);"
+                                onmouseover="this.style.color='#E8770C';"
+                                onmouseout="this.style.color='rgba(255,255,255,0.65)';"
+                            >
                                 {{ settings.contact_email || 'ops@mercury-bd.com' }}
                             </a>
                         </li>
@@ -119,12 +138,14 @@ const currentYear = computed(() => new Date().getFullYear());
                 </div>
             </div>
 
-            <!-- Bottom bar -->
-            <div class="pt-8 border-t border-neutral-content/10 flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-mono uppercase text-neutral-content/50">
+            <!-- Bottom Bar -->
+            <div
+                class="pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-mono uppercase"
+                style="border-top: 1px solid rgba(255,255,255,0.10); color: rgba(255,255,255,0.45);"
+            >
                 <span>© {{ currentYear }} {{ settings.company_name || 'Mercury Bangladesh (Pvt.) Ltd.' }} All rights reserved.</span>
-                <span class="tracking-widest text-[10px] text-neutral-content/75">PRECISE · CALM · DEPENDABLE</span>
+                <span class="tracking-widest text-[10px]" style="color: #E8770C; opacity: 0.75;">PRECISE · CALM · DEPENDABLE</span>
             </div>
         </div>
     </footer>
 </template>
-

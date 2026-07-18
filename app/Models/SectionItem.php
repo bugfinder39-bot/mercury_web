@@ -20,6 +20,11 @@ class SectionItem extends Model
         'link',
         'order',
         'is_active',
+        // Image Gallery fields
+        'image_media_id',
+        'alt_text',
+        'title',
+        'description',
     ];
 
     protected $casts = [
@@ -30,5 +35,10 @@ class SectionItem extends Model
     public function section(): BelongsTo
     {
         return $this->belongsTo(Section::class);
+    }
+
+    public function imageMedia(): BelongsTo
+    {
+        return $this->belongsTo(Media::class, 'image_media_id');
     }
 }

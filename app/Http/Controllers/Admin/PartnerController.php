@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\File;
 
 class PartnerController extends Controller
 {
@@ -36,11 +37,23 @@ class PartnerController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'logo' => 'nullable|string|max:255',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
             'link' => 'nullable|url|max:255',
             'order' => 'required|integer',
             'is_active' => 'required|boolean',
         ]);
+
+        if ($request->hasFile('logo')) {
+            $file = $request->file('logo');
+            $fileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            if (!file_exists(public_path('images/partners'))) {
+                mkdir(public_path('images/partners'), 0755, true);
+            }
+            $file->move(public_path('images/partners'), $fileName);
+            $validated['logo'] = '/images/partners/' . $fileName;
+        } else {
+            $validated['logo'] = null;
+        }
 
         Partner::create($validated);
 
@@ -64,11 +77,33 @@ class PartnerController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'logo' => 'nullable|string|max:255',
+            'logo' => 'nullable',
             'link' => 'nullable|url|max:255',
             'order' => 'required|integer',
             'is_active' => 'required|boolean',
         ]);
+
+        if ($request->hasFile('logo')) {
+            $request->validate([
+                'logo' => 'image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+            ]);
+
+            // Delete old logo if it exists
+            if ($partner->logo && file_exists(public_path($partner->logo))) {
+                @unlink(public_path($partner->logo));
+            }
+
+            $file = $request->file('logo');
+            $fileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            if (!file_exists(public_path('images/partners'))) {
+                mkdir(public_path('images/partners'), 0755, true);
+            }
+            $file->move(public_path('images/partners'), $fileName);
+            $validated['logo'] = '/images/partners/' . $fileName;
+        } else {
+            // Keep existing logo
+            $validated['logo'] = $partner->logo;
+        }
 
         $partner->update($validated);
 
@@ -80,8 +115,13 @@ class PartnerController extends Controller
      */
     public function destroy(Partner $partner): RedirectResponse
     {
+        if ($partner->logo && file_exists(public_path($partner->logo))) {
+            @unlink(public_path($partner->logo));
+        }
+
         $partner->delete();
 
         return redirect()->route('admin.partners.index')->with('success', 'Partner deleted successfully.');
     }
 }
+

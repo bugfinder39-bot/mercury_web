@@ -19,6 +19,22 @@ class Section extends Model
         'body',
         'order',
         'is_active',
+        // CEO Message fields
+        'ceo_rich_text',
+        'ceo_name',
+        'ceo_designation',
+        'signature_media_id',
+        'portrait_media_id',
+        'ceo_cta_button_text',
+        'ceo_cta_button_url',
+        // CTA Banner fields
+        'cta_banner_heading',
+        'cta_banner_subheading',
+        'cta_background_media_id',
+        'cta_primary_btn_text',
+        'cta_primary_btn_url',
+        'cta_secondary_btn_text',
+        'cta_secondary_btn_url',
     ];
 
     protected $casts = [
@@ -34,5 +50,20 @@ class Section extends Model
     public function items(): HasMany
     {
         return $this->hasMany(SectionItem::class)->orderBy('order');
+    }
+
+    public function portraitMedia(): BelongsTo
+    {
+        return $this->belongsTo(Media::class, 'portrait_media_id');
+    }
+
+    public function signatureMedia(): BelongsTo
+    {
+        return $this->belongsTo(Media::class, 'signature_media_id');
+    }
+
+    public function ctaBackgroundMedia(): BelongsTo
+    {
+        return $this->belongsTo(Media::class, 'cta_background_media_id');
     }
 }

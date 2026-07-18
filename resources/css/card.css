@@ -1,0 +1,13 @@
+/* Card component base styles */
+.card {
+  background-color: #fff; /* white */
+  border: 1px solid #e5e7eb; /* light gray border */
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+}

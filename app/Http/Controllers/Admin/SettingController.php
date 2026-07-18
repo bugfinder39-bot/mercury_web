@@ -37,10 +37,46 @@ class SettingController extends Controller
     {
         $validated = $request->validate([
             'settings' => 'required|array',
-            'settings.*' => 'nullable|string',
+            'settings.company_name' => 'nullable|string|max:255',
+            'settings.company_tagline' => 'nullable|string|max:255',
+            'settings.company_logo' => 'nullable|string|max:255',
+            'settings.company_favicon' => 'nullable|string|max:255',
+            'settings.contact_email' => 'nullable|email|max:255',
+            'settings.contact_phone' => 'nullable|string|max:255',
+            'settings.contact_address' => 'nullable|string',
+            'settings.office_hours' => 'nullable|string|max:255',
+            'settings.social_linkedin' => 'nullable|url|max:255',
+            'settings.social_facebook' => 'nullable|url|max:255',
+            'settings.google_maps_embed' => 'nullable|string',
+            'settings.default_seo_title' => 'nullable|string|max:255',
+            'settings.default_seo_description' => 'nullable|string',
+            'company_logo_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+            'company_favicon_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp,ico|max:1024',
         ]);
 
-        $this->cmsService->updateSettings($validated['settings']);
+        $settingsData = $validated['settings'];
+
+        if ($request->hasFile('company_logo_file')) {
+            $file = $request->file('company_logo_file');
+            $fileName = 'logo_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            if (!file_exists(public_path('images'))) {
+                mkdir(public_path('images'), 0755, true);
+            }
+            $file->move(public_path('images'), $fileName);
+            $settingsData['company_logo'] = '/images/' . $fileName;
+        }
+
+        if ($request->hasFile('company_favicon_file')) {
+            $file = $request->file('company_favicon_file');
+            $fileName = 'favicon_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            if (!file_exists(public_path('images'))) {
+                mkdir(public_path('images'), 0755, true);
+            }
+            $file->move(public_path('images'), $fileName);
+            $settingsData['company_favicon'] = '/images/' . $fileName;
+        }
+
+        $this->cmsService->updateSettings($settingsData);
 
         return back()->with('success', 'Global configurations saved.');
     }

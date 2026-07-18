@@ -9,6 +9,17 @@ import StatsCounter from '@/components/StatsCounter.vue';
 import TileGrid from '@/components/TileGrid.vue';
 import WhyChooseUs from '@/components/WhyChooseUs.vue';
 import PublicLayout from '@/layouts/PublicLayout.vue';
+import CEOMessageSection from '@/components/CEOMessageSection.vue';
+import ImageGallerySection from '@/components/ImageGallerySection.vue';
+
+// New premium sections
+import ImageTextShowcase from '@/components/ImageTextShowcase.vue';
+import WhyBusinessesTrust from '@/components/WhyBusinessesTrust.vue';
+import CompanyHighlights from '@/components/CompanyHighlights.vue';
+import WorkingProcess from '@/components/WorkingProcess.vue';
+import TestimonialsSection from '@/components/TestimonialsSection.vue';
+import LogisticsImageBanner from '@/components/LogisticsImageBanner.vue';
+import FullWidthCTABanner from '@/components/FullWidthCTABanner.vue';
 
 defineProps<{
     page: {
@@ -27,6 +38,22 @@ defineProps<{
         order: number;
         is_active: boolean;
         items?: any[];
+        // CEO message fields
+        ceo_rich_text?: string;
+        ceo_name?: string;
+        ceo_designation?: string;
+        portrait_media_id?: any;
+        signature_media_id?: any;
+        ceo_cta_button_text?: string;
+        ceo_cta_button_url?: string;
+        // CTA fields
+        cta_banner_heading?: string;
+        cta_banner_subheading?: string;
+        cta_background_media_id?: any;
+        cta_primary_btn_text?: string;
+        cta_primary_btn_url?: string;
+        cta_secondary_btn_text?: string;
+        cta_secondary_btn_url?: string;
     }>;
     services: Array<any>;
     partners: Array<any>;
@@ -35,60 +62,148 @@ defineProps<{
 defineOptions({
     layout: PublicLayout,
 });
+
+// Map backend DB fields of Section to keys expected by CEOMessageSection.vue component
+const mapCeoSection = (section: any) => {
+    return {
+        ...section,
+        imageUrl: section.portrait_media?.file_path || section.portrait_media_id || 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&auto=format&fit=crop&q=80',
+        eyebrow: section.subheading || 'CEO MESSAGE',
+        heading: section.heading || 'Message from CEO',
+        messageHtml: section.ceo_rich_text || section.body || '',
+        name: section.ceo_name || 'Mahbubur Rahman',
+        position: section.ceo_designation || 'Managing Director & CEO',
+        signatureUrl: section.signature_media?.file_path || section.signature_media_id || '',
+        ctaText: section.ceo_cta_button_text,
+        ctaLink: section.ceo_cta_button_url
+    };
+};
+
+// Map backend DB fields of Section to props expected by FullWidthCTABanner.vue component
+const mapCtaBannerSection = (section: any) => {
+    return {
+        bgImage: section.cta_background_media?.file_path || section.cta_background_media_id || 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=1600&auto=format&fit=crop&q=80',
+        headline: section.cta_banner_heading || section.heading || 'Ready to Secure Your Supply Chain?',
+        description: section.cta_banner_subheading || section.body || '',
+        primaryBtn: section.cta_primary_btn_text ? {
+            text: section.cta_primary_btn_text,
+            href: section.cta_primary_btn_url || '#'
+        } : null,
+        secondaryBtn: section.cta_secondary_btn_text ? {
+            text: section.cta_secondary_btn_text,
+            href: section.cta_secondary_btn_url || '#'
+        } : null
+    };
+};
 </script>
 
 <template>
     <Head>
         <title>{{ page?.meta_title || 'Home - Mercury Bangladesh' }}</title>
-        <meta name="description" :content="page?.meta_description || 'Mercury Bangladesh corporate home page'" />
+        <meta
+            name="description"
+            :content="page?.meta_description || 'Mercury Bangladesh corporate home page'"
+        />
     </Head>
-    
-    <div class="space-y-16 md:space-y-24 pb-24">
-        <!-- Loop and dynamically render each section in the order returned by the CMS -->
+
+    <div class="space-y-0 pb-0">
         <template v-for="section in sections" :key="section.id">
-            
-            <HeroCarousel 
-                v-if="section.type === 'hero_carousel'" 
-                :section="section" 
+
+            <HeroCarousel
+                v-if="section.type === 'hero_carousel'"
+                :section="section"
             />
 
-            <AboutFlex 
-                v-else-if="section.type === 'about_us'" 
-                :section="section" 
+            <AboutFlex
+                v-else-if="section.type === 'about_us'"
+                :section="section"
             />
 
-            <TileGrid 
-                v-else-if="section.type === 'vision_mission'" 
-                :section="section" 
+            <TileGrid
+                v-else-if="section.type === 'vision_mission'"
+                :section="section"
             />
 
-            <WhyChooseUs 
-                v-else-if="section.type === 'why_choose_us'" 
-                :section="section" 
+            <WhyChooseUs
+                v-else-if="section.type === 'why_choose_us'"
+                :section="section"
             />
 
-            <!-- Stats counter (Numbers block) -->
-            <StatsCounter 
-                v-else-if="section.type === 'stats'" 
-                :section="section" 
+            <FeaturedServices
+                v-else-if="section.type === 'featured_services'"
+                :services="services"
+                :section="section"
             />
 
-            <!-- Get in Touch / map block -->
-            <MapEmbed 
-                v-else-if="section.type === 'get_in_touch'" 
-                :section="section" 
+            <StatsCounter
+                v-else-if="section.type === 'stats'"
+                :section="section"
+            />
+
+            <CEOMessageSection
+                v-else-if="section.type === 'ceo_message'"
+                :section="mapCeoSection(section)"
+            />
+
+            <WhyBusinessesTrust
+                v-else-if="section.type === 'businesses_trust'"
+                :section="section"
+            />
+
+            <ImageTextShowcase
+                v-else-if="section.type === 'image_text_showcase'"
+                :section="section"
+            />
+
+            <ImageGallerySection
+                v-else-if="section.type === 'image_gallery'"
+                :section="section"
+                :images="section.items ?? []"
+            />
+
+            <ImageTextShowcase
+                v-else-if="section.type === 'operational_excellence'"
+                :section="section"
+                :isAltBackground="true"
+            />
+
+            <CompanyHighlights
+                v-else-if="section.type === 'company_highlights'"
+                :section="section"
+            />
+
+            <WorkingProcess
+                v-else-if="section.type === 'working_process'"
+                :section="section"
+            />
+
+            <PartnerLogos
+                v-else-if="section.type === 'partners'"
+                :partners="partners"
+                :section="section"
+            />
+
+            <TestimonialsSection
+                v-else-if="section.type === 'testimonials'"
+                :section="section"
+            />
+
+            <MapEmbed
+                v-else-if="section.type === 'get_in_touch'"
+                :section="section"
+            />
+
+            <FullWidthCTABanner
+                v-else-if="section.type === 'cta_banner'"
+                v-bind="mapCtaBannerSection(section)"
+            />
+
+            <LogisticsImageBanner
+                v-else-if="section.type === 'logistics_image_banner'"
+                :section="section"
             />
 
         </template>
-
-        <!-- Our Featured Services (Render teaser cards between Why Choose Us and Stats if sections didn't contain it) -->
-        <FeaturedServices 
-            :services="services" 
-        />
-
-        <!-- Partners logo slider / grid -->
-        <PartnerLogos 
-            :partners="partners" 
-        />
     </div>
 </template>
+

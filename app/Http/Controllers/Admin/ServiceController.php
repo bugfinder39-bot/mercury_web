@@ -35,16 +35,19 @@ class ServiceController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        $request->merge([
+            'slug' => Str::slug($request->input('name')),
+        ]);
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'slug' => 'required|string|unique:services,slug',
             'icon' => 'nullable|string|max:255',
             'short_description' => 'nullable|string',
             'long_description' => 'nullable|string',
             'order' => 'required|integer',
             'is_active' => 'required|boolean',
         ]);
-
-        $validated['slug'] = Str::slug($request->input('name'));
 
         Service::create($validated);
 
@@ -66,16 +69,19 @@ class ServiceController extends Controller
      */
     public function update(Request $request, Service $service): RedirectResponse
     {
+        $request->merge([
+            'slug' => Str::slug($request->input('name')),
+        ]);
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'slug' => 'required|string|unique:services,slug,' . $service->id,
             'icon' => 'nullable|string|max:255',
             'short_description' => 'nullable|string',
             'long_description' => 'nullable|string',
             'order' => 'required|integer',
             'is_active' => 'required|boolean',
         ]);
-
-        $validated['slug'] = Str::slug($request->input('name'));
 
         $service->update($validated);
 
