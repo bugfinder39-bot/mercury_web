@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { Head, usePage } from '@inertiajs/vue3';
-import { MapPin, Phone, Mail, Clock } from '@lucide/vue';
+import { Head } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import ContactForm from '@/components/ContactForm.vue';
 import HeroBanner from '@/components/HeroBanner.vue';
@@ -30,15 +29,12 @@ defineOptions({
     layout: PublicLayout,
 });
 
-const pageData = usePage();
-const settings = computed(() => (pageData.props.settings as Record<string, any>) || {});
-
-const introSection = computed(() => {
-    return props.sections.find(s => s.type === 'intro');
-});
-
 const heroSection = computed(() => {
     return props.sections.find(s => s.type === 'hero_banner');
+});
+
+const officesSection = computed(() => {
+    return props.sections.find(s => s.type === 'office_locations');
 });
 </script>
 
@@ -55,99 +51,132 @@ const heroSection = computed(() => {
             :section="heroSection"
         />
 
-        <!-- Main Body Grid -->
-        <div class="max-w-7xl mx-auto px-6 py-16 md:py-24 grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-
-            <!-- Left Side: Contact Form -->
-            <div class="lg:col-span-7">
-                <ContactForm />
+        <!-- Office Locations Section -->
+        <div v-if="officesSection && officesSection.is_active" class="max-w-7xl mx-auto px-6 py-12 md:py-16">
+            <div class="text-center max-w-3xl mx-auto mb-12 md:mb-16">
+                <span v-if="officesSection.subheading" class="text-xs font-mono uppercase tracking-wider block mb-2" style="color: #E8770C;">
+                    {{ officesSection.subheading }}
+                </span>
+                <h2 class="text-3xl md:text-4xl font-bold font-display tracking-tight mb-4" style="color: #0B2540;">
+                    {{ officesSection.heading || 'Our Office Locations' }}
+                </h2>
+                <p v-if="officesSection.body" class="text-slate-600 font-body text-base">
+                    {{ officesSection.body }}
+                </p>
             </div>
 
-            <!-- Right Side: Contact Info & Map -->
-            <div class="lg:col-span-5 space-y-6">
-                <!-- Info Card -->
-                <div v-if="introSection || settings" class="card-premium p-7 md:p-9 space-y-6">
-                    <div v-if="introSection" class="space-y-4">
-                        <span class="eyebrow-orange">
-                            {{ introSection.subheading || 'MB · LOCATIONS' }}
-                        </span>
-                        <h2 class="text-2xl md:text-3xl font-bold font-display leading-tight" style="color: #0B2540;">
-                            {{ introSection.heading }}
-                        </h2>
-                        <div class="h-1 w-12 rounded-full" style="background-color: #E8770C;"></div>
-                        <p class="font-body text-sm md:text-base leading-relaxed" style="color: #475569;">
-                            {{ introSection.body }}
+            <!-- Offices Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+                <div 
+                    v-for="office in officesSection.items" 
+                    :key="office.id"
+                    class="bg-white rounded-2xl shadow-sm border border-slate-100 p-8 hover:shadow-md transition-all duration-300 transform hover:-translate-y-1 flex flex-col justify-between"
+                >
+                    <div>
+                        <!-- Optional Office Image -->
+                        <div v-if="office.image_media?.file_path || office.value" class="w-full h-48 rounded-xl overflow-hidden mb-6 bg-slate-100">
+                            <img 
+                                :src="office.image_media?.file_path || office.value" 
+                                :alt="office.title" 
+                                class="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                            />
+                        </div>
+
+                        <!-- Office Header / Badge -->
+                        <div class="flex items-center justify-between mb-4">
+                            <span v-if="office.subtitle" class="px-3 py-1 rounded-full text-xs font-mono font-semibold" style="background-color: rgba(232, 119, 12, 0.1); color: #E8770C;">
+                                {{ office.subtitle }}
+                            </span>
+                            <span v-if="office.emergency_contact" class="text-xs text-slate-500 font-body flex items-center gap-1">
+                                <span class="size-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                Emergency: {{ office.emergency_contact }}
+                            </span>
+                        </div>
+
+                        <h3 class="text-2xl font-bold font-display mb-3" style="color: #0B2540;">
+                            {{ office.title }}
+                        </h3>
+                        <p v-if="office.description" class="text-slate-600 font-body text-sm mb-6">
+                            {{ office.description }}
                         </p>
-                    </div>
 
-                    <!-- Details list -->
-                    <div class="space-y-5 pt-4" style="border-top: 1px solid rgba(11,37,64,0.08);">
-                        <!-- Address -->
-                        <div v-if="settings.contact_address" class="flex gap-4 items-start">
-                            <div class="icon-orange-wrap flex-shrink-0">
-                                <MapPin class="size-4 stroke-[1.5]" />
+                        <!-- Office Details -->
+                        <div class="space-y-4 mb-8">
+                            <div v-if="office.address" class="flex items-start gap-3">
+                                <span class="text-[#E8770C] mt-1">
+                                    <svg class="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                </span>
+                                <div>
+                                    <h4 class="text-xs font-mono uppercase tracking-wider text-slate-400 mb-0.5">Address</h4>
+                                    <p class="text-sm font-body text-slate-700">{{ office.address }}</p>
+                                </div>
                             </div>
-                            <div class="space-y-0.5">
-                                <h4 class="font-mono text-[10px] uppercase tracking-wider font-semibold" style="color: #64748B;">Head Office Address</h4>
-                                <p class="font-body text-sm leading-relaxed" style="color: #1E293B;">{{ settings.contact_address }}</p>
-                            </div>
-                        </div>
 
-                        <!-- Phone -->
-                        <div v-if="settings.contact_phone" class="flex gap-4 items-start">
-                            <div class="icon-orange-wrap flex-shrink-0">
-                                <Phone class="size-4 stroke-[1.5]" />
+                            <div v-if="office.phone" class="flex items-start gap-3">
+                                <span class="text-[#E8770C] mt-1">
+                                    <svg class="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                                </span>
+                                <div>
+                                    <h4 class="text-xs font-mono uppercase tracking-wider text-slate-400 mb-0.5">Phone</h4>
+                                    <p class="text-sm font-body text-slate-700">{{ office.phone }}</p>
+                                </div>
                             </div>
-                            <div class="space-y-0.5">
-                                <h4 class="font-mono text-[10px] uppercase tracking-wider font-semibold" style="color: #64748B;">Phone Support</h4>
-                                <p class="font-body text-sm" style="color: #1E293B;">{{ settings.contact_phone }}</p>
-                            </div>
-                        </div>
 
-                        <!-- Email -->
-                        <div v-if="settings.contact_email" class="flex gap-4 items-start">
-                            <div class="icon-orange-wrap flex-shrink-0">
-                                <Mail class="size-4 stroke-[1.5]" />
+                            <div v-if="office.email" class="flex items-start gap-3">
+                                <span class="text-[#E8770C] mt-1">
+                                    <svg class="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                </span>
+                                <div>
+                                    <h4 class="text-xs font-mono uppercase tracking-wider text-slate-400 mb-0.5">Email</h4>
+                                    <a :href="`mailto:${office.email}`" class="text-sm font-body text-[#123A5E] hover:text-[#E8770C] transition-colors">{{ office.email }}</a>
+                                </div>
                             </div>
-                            <div class="space-y-0.5">
-                                <h4 class="font-mono text-[10px] uppercase tracking-wider font-semibold" style="color: #64748B;">Email Operations</h4>
-                                <p class="font-body text-sm" style="color: #1E293B;">
-                                    <a :href="`mailto:${settings.contact_email}`" class="transition-colors"
-                                        style="color: #1E293B;"
-                                        onmouseover="this.style.color='#E8770C';"
-                                        onmouseout="this.style.color='#1E293B';"
-                                    >{{ settings.contact_email }}</a>
-                                </p>
-                            </div>
-                        </div>
 
-                        <!-- Office Hours -->
-                        <div v-if="settings.office_hours" class="flex gap-4 items-start">
-                            <div class="icon-orange-wrap flex-shrink-0">
-                                <Clock class="size-4 stroke-[1.5]" />
-                            </div>
-                            <div class="space-y-0.5">
-                                <h4 class="font-mono text-[10px] uppercase tracking-wider font-semibold" style="color: #64748B;">Office Hours</h4>
-                                <p class="font-body text-sm" style="color: #1E293B;">{{ settings.office_hours }}</p>
+                            <div v-if="office.office_hours" class="flex items-start gap-3">
+                                <span class="text-[#E8770C] mt-1">
+                                    <svg class="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                </span>
+                                <div>
+                                    <h4 class="text-xs font-mono uppercase tracking-wider text-slate-400 mb-0.5">Business Hours</h4>
+                                    <p class="text-sm font-body text-slate-700">{{ office.office_hours }}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Google Map Embed -->
-                <div class="rounded-xl overflow-hidden h-[280px] lg:h-[320px] relative" style="border: 1px solid rgba(11,37,64,0.10); box-shadow: var(--shadow-card);">
-                    <iframe
-                        v-if="settings.google_maps_embed"
-                        :src="settings.google_maps_embed"
-                        class="absolute inset-0 w-full h-full border-0 grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition-all duration-300"
-                        allowfullscreen="false"
-                        loading="lazy"
-                        referrerpolicy="no-referrer-when-downgrade"
-                    ></iframe>
-                    <div v-else class="absolute inset-0 flex items-center justify-center font-body text-sm" style="background-color: #EEF2F7; color: #64748B;">
-                        No map coordinates configured.
+                    <!-- Google Map Embed / Link -->
+                    <div v-if="office.map_url" class="w-full mt-auto pt-6 border-t border-slate-100">
+                        <div class="w-full h-64 rounded-xl overflow-hidden border border-slate-200 shadow-inner bg-slate-50 mb-4">
+                            <iframe 
+                                :src="office.map_url" 
+                                class="w-full h-full border-0" 
+                                allowfullscreen="false" 
+                                loading="lazy"
+                            ></iframe>
+                        </div>
+                        <a 
+                            v-if="office.latitude && office.longitude"
+                            :href="`https://www.google.com/maps/search/?api=1&query=${office.latitude},${office.longitude}`"
+                            target="_blank"
+                            class="inline-flex items-center justify-center w-full px-4 py-2.5 rounded-lg border border-slate-200 text-sm font-semibold transition-all duration-200 hover:bg-slate-50 hover:scale-[1.02]"
+                            style="color: #0B2540;"
+                        >
+                            <span>Open in Google Maps</span>
+                            <svg class="size-4 ml-1.5 text-[#E8770C]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                        </a>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Main Body: Centered Contact Form -->
+        <div class="max-w-7xl mx-auto px-6 py-12 md:py-16 flex flex-col items-center">
+            <div class="text-center max-w-3xl mx-auto mb-10">
+                <span class="text-xs font-mono uppercase tracking-wider block mb-2" style="color: #E8770C;">Message Desk</span>
+                <h2 class="text-3xl font-bold font-display tracking-tight" style="color: #0B2540;">Send Us a Message</h2>
+            </div>
+            <div class="w-full max-w-[850px]">
+                <ContactForm />
             </div>
         </div>
     </div>

@@ -3,8 +3,8 @@
     <div class="card-premium p-8 md:p-12 flex flex-col md:flex-row items-center gap-10">
       <!-- Image -->
       <div class="flex-shrink-0 w-full md:w-1/3">
-        <div class="rounded-xl overflow-hidden" style="box-shadow: var(--shadow-md); border: 1px solid rgba(11,37,64,0.10);">
-          <img :src="section.imageUrl" alt="CEO" class="w-full h-auto object-cover" />
+        <div class="rounded-xl overflow-hidden group/img" style="box-shadow: var(--shadow-md); border: 1px solid rgba(11,37,64,0.10);">
+          <img :src="section.imageUrl" alt="CEO" class="w-full h-auto object-cover transition-transform duration-700 group-hover/img:scale-105" />
         </div>
       </div>
       <!-- Content -->

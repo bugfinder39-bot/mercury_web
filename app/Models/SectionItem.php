@@ -23,8 +23,15 @@ class SectionItem extends Model
         // Image Gallery fields
         'image_media_id',
         'alt_text',
-        'title',
-        'description',
+        // Office location fields
+        'address',
+        'map_url',
+        'phone',
+        'email',
+        'office_hours',
+        'emergency_contact',
+        'latitude',
+        'longitude',
     ];
 
     protected $casts = [

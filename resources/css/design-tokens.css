@@ -1,32 +1,39 @@
 /* Design Tokens for brand colors, spacing, shadows, etc. */
 :root {
-  /* Brand Colors */
+  /* Brand Colors - strictly following color anime.md */
   --color-primary-navy: #0B2540;
   --color-secondary-navy: #123A5E;
-  --color-surface-navy: #162A3A;
   --color-primary-orange: #E8770C;
   --color-orange-hover: #CC6608;
   --color-background: #F8FAFC;
-  --color-section-bg: #EEF2F7;
+  --color-section-bg: #F8FAFC; /* Light Gray Background */
+  --color-white: #FFFFFF;
 
   /* Text Colors */
-  --color-text-primary: #1E293B;
-  --color-text-secondary: #475569;
+  --color-text-primary: #0B2540;
+  --color-text-secondary: #123A5E;
   --color-text-muted: #64748B;
 
-  /* Shadows — professional low-opacity */
-  --shadow-sm: 0 1px 3px rgba(11, 37, 64, 0.08), 0 1px 2px rgba(11, 37, 64, 0.04);
-  --shadow-md: 0 4px 12px rgba(11, 37, 64, 0.10), 0 2px 4px rgba(11, 37, 64, 0.06);
-  --shadow-lg: 0 10px 24px rgba(11, 37, 64, 0.12), 0 4px 8px rgba(11, 37, 64, 0.08);
-  --shadow-card: 0 1px 4px rgba(11, 37, 64, 0.08), 0 0 0 1px rgba(11, 37, 64, 0.04);
-  --shadow-card-hover: 0 6px 20px rgba(11, 37, 64, 0.12), 0 2px 6px rgba(11, 37, 64, 0.08);
-  --shadow-navbar: 0 2px 12px rgba(11, 37, 64, 0.18);
+  /* Shadows — professional low-opacity, enhanced depth */
+  --shadow-sm: 0 2px 4px rgba(11, 37, 64, 0.04);
+  --shadow-md: 0 4px 16px rgba(11, 37, 64, 0.08), 0 2px 6px rgba(11, 37, 64, 0.04);
+  --shadow-lg: 0 16px 36px rgba(11, 37, 64, 0.12), 0 4px 12px rgba(11, 37, 64, 0.06);
+  --shadow-card: 0 4px 20px rgba(11, 37, 64, 0.05), 0 0 0 1px rgba(11, 37, 64, 0.03);
+  --shadow-card-hover: 0 20px 40px rgba(11, 37, 64, 0.12), 0 0 0 1px rgba(232, 119, 12, 0.2);
+  --shadow-navbar: 0 4px 20px rgba(11, 37, 64, 0.08);
+  --shadow-btn-glow: 0 0 15px rgba(232, 119, 12, 0.4);
+
+  /* Glassmorphism token values */
+  --glass-bg: rgba(255, 255, 255, 0.75);
+  --glass-border: 1px solid rgba(255, 255, 255, 0.3);
+  --glass-blur: blur(12px);
 
   /* Border radius */
   --radius-sm: 0.375rem;
   --radius-md: 0.5rem;
-  --radius-lg: 0.625rem;
-  --radius-xl: 0.875rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-full: 9999px;
 
   /* Spacing */
   --spacing-xs: 0.25rem;
@@ -35,4 +42,6 @@
   --spacing-lg: 1.5rem;
   --spacing-xl: 2rem;
   --spacing-2xl: 3rem;
+  --spacing-3xl: 4.5rem;
 }
+

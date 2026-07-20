@@ -202,6 +202,14 @@ class PageController extends Controller
             'order' => 'required|integer',
             'is_active' => 'required|boolean',
             'image_media_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+            'address' => 'nullable|string',
+            'map_url' => 'nullable|string',
+            'phone' => 'nullable|string|max:255',
+            'email' => 'nullable|string|max:255',
+            'office_hours' => 'nullable|string|max:255',
+            'emergency_contact' => 'nullable|string|max:255',
+            'latitude' => 'nullable|string|max:255',
+            'longitude' => 'nullable|string|max:255',
         ]);
 
         if ($request->hasFile('image_media_file')) {
@@ -243,6 +251,14 @@ class PageController extends Controller
             'is_active' => 'required|boolean',
             'image_media_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
             'delete_image_media' => 'nullable|boolean',
+            'address' => 'nullable|string',
+            'map_url' => 'nullable|string',
+            'phone' => 'nullable|string|max:255',
+            'email' => 'nullable|string|max:255',
+            'office_hours' => 'nullable|string|max:255',
+            'emergency_contact' => 'nullable|string|max:255',
+            'latitude' => 'nullable|string|max:255',
+            'longitude' => 'nullable|string|max:255',
         ]);
 
         if ($request->hasFile('image_media_file')) {

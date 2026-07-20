@@ -14,7 +14,8 @@ import {
     ChevronDown,
     LogOut,
     CheckCircle,
-    AlertTriangle
+    AlertTriangle,
+    Palette
 } from '@lucide/vue';
 import { ref, computed, watch } from 'vue';
 
@@ -31,6 +32,7 @@ const navigationItems = [
     { name: 'Services CRUD', href: '/admin/services', icon: Folder },
     { name: 'Partners CRUD', href: '/admin/partners', icon: Layers },
     { name: 'Messages Inbox', href: '/admin/messages', icon: Mail },
+    { name: 'Layout Management', href: '/admin/layout', icon: Palette },
     { name: 'Global Settings', href: '/admin/settings', icon: Settings },
     { name: 'Manage Users', href: '/admin/users', icon: Users },
 ];

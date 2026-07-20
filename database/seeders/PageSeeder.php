@@ -694,13 +694,49 @@ class PageSeeder extends Seeder
             'order' => 1,
         ]);
 
-        Section::create([
+        $officesSec = Section::create([
             'page_id' => $contact->id,
-            'type' => 'intro',
-            'heading' => 'Dhaka Headquarters & Port Offices',
-            'subheading' => 'MB · 02 — LOCATIONS',
-            'body' => 'We manage offices adjacent to cargo terminals to ensure fast file processing and cargo release.',
+            'type' => 'office_locations',
+            'heading' => 'Our Office Locations',
+            'subheading' => 'ROUTE · CHANNELS',
+            'body' => 'We coordinate global shipping from key commercial centers in Bangladesh.',
             'order' => 2,
         ]);
+
+        SectionItem::create([
+            'section_id' => $officesSec->id,
+            'title' => 'Dhaka Headquarters',
+            'subtitle' => 'MB · 01',
+            'description' => 'Our main operations office coordinating global air and sea freight logistics.',
+            'address' => 'House 45, Road 11, Banani, Dhaka-1213, Bangladesh',
+            'phone' => '+880 2 9876543',
+            'email' => 'dhaka@mercurybd.com',
+            'office_hours' => 'Sat - Thu: 9:00 AM - 6:00 PM',
+            'emergency_contact' => '+880 1711 123456',
+            'map_url' => 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3651.1574693409153!2d90.4026857!3d23.7952445!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755c70c653ff56d%3A0x28976b9f71c4c1a2!2sBanani%20Graveyard!5e0!3m2!1sen!2sbd!4v1700000000000!5m2!1sen!2sbd',
+            'latitude' => '23.7952445',
+            'longitude' => '90.4026857',
+            'order' => 1,
+            'is_active' => true,
+        ]);
+
+        SectionItem::create([
+            'section_id' => $officesSec->id,
+            'title' => 'Chattogram Branch',
+            'subtitle' => 'MB · 02',
+            'description' => 'Dedicated sea freight port operations hub near the Chittagong Port Authority.',
+            'address' => 'Chamber House, 38 Agrabad C/A, Chattogram-4100, Bangladesh',
+            'phone' => '+880 31 765432',
+            'email' => 'ctg@mercurybd.com',
+            'office_hours' => 'Sat - Thu: 9:00 AM - 6:00 PM',
+            'emergency_contact' => '+880 1711 789012',
+            'map_url' => 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3690.165432!2d91.815432!3d22.325432!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30acd8a1b2c3d4e5%3A0x67890abcdef12345!2sAgrabad%20C%2FA%2C%20Chattogram!5e0!3m2!1sen!2sbd!4v1700000000001!5m2!1sen!2sbd',
+            'latitude' => '22.325432',
+            'longitude' => '91.815432',
+            'order' => 2,
+            'is_active' => true,
+        ]);
+
     }
 }
+

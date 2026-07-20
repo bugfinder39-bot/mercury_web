@@ -207,6 +207,14 @@ const itemForm = useForm({
     value: '',
     icon: '',
     link: '',
+    address: '',
+    map_url: '',
+    phone: '',
+    email: '',
+    office_hours: '',
+    emergency_contact: '',
+    latitude: '',
+    longitude: '',
     order: 0,
     is_active: true,
     image_media_file: null as File | null,
@@ -231,6 +239,14 @@ const openEditItem = (item: any) => {
     itemForm.value = item.value || '';
     itemForm.icon = item.icon || '';
     itemForm.link = item.link || '';
+    itemForm.address = item.address || '';
+    itemForm.map_url = item.map_url || '';
+    itemForm.phone = item.phone || '';
+    itemForm.email = item.email || '';
+    itemForm.office_hours = item.office_hours || '';
+    itemForm.emergency_contact = item.emergency_contact || '';
+    itemForm.latitude = item.latitude || '';
+    itemForm.longitude = item.longitude || '';
     itemForm.order = item.order;
     itemForm.is_active = item.is_active;
     itemForm.image_media_file = null;
@@ -691,7 +707,16 @@ const moveSectionDown = (section: any) => {
                                         </span>
                                     </div>
                                     <p class="text-xs text-muted font-body line-clamp-2 mb-3">{{ item.description || 'No Description' }}</p>
-                                    <div class="text-[11px] font-mono space-y-1 text-secondary-txt">
+                                    <div v-if="section.type === 'office_locations'" class="text-[11px] font-mono space-y-1 text-secondary-txt">
+                                        <div v-if="item.subtitle"><span class="text-muted">Badge:</span> {{ item.subtitle }}</div>
+                                        <div v-if="item.address"><span class="text-muted">Address:</span> {{ item.address }}</div>
+                                        <div v-if="item.phone"><span class="text-muted">Phone:</span> {{ item.phone }}</div>
+                                        <div v-if="item.email"><span class="text-muted">Email:</span> {{ item.email }}</div>
+                                        <div v-if="item.office_hours"><span class="text-muted">Hours:</span> {{ item.office_hours }}</div>
+                                        <div v-if="item.emergency_contact"><span class="text-muted">Emerg:</span> {{ item.emergency_contact }}</div>
+                                        <div><span class="text-muted">Order:</span> {{ item.order }}</div>
+                                    </div>
+                                    <div v-else class="text-[11px] font-mono space-y-1 text-secondary-txt">
                                         <div v-if="item.subtitle"><span class="text-muted">Sub:</span> {{ item.subtitle }}</div>
                                         <div v-if="item.value"><span class="text-muted">Val:</span> {{ item.value }}</div>
                                         <div v-if="item.icon"><span class="text-muted">Icon:</span> {{ item.icon }}</div>
@@ -741,66 +766,132 @@ const moveSectionDown = (section: any) => {
 
                 <form @submit.prevent="saveItem" class="space-y-4">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div class="sm:col-span-2">
-                            <label class="label-premium">
-                                {{ 
-                                    sectionType === 'image_gallery' ? 'Image Caption / Title' : 
-                                    sectionType === 'testimonials' ? 'Customer Name' : 
-                                    sectionType === 'company_highlights' ? 'Metric Name' : 
-                                    sectionType === 'working_process' ? 'Step Title' : 'Title' 
-                                }}
-                            </label>
-                            <input v-model="itemForm.title" type="text" class="input-premium" />
-                            <span v-if="itemForm.errors.title" class="text-xs text-red-500 mt-1 block">{{ itemForm.errors.title }}</span>
-                        </div>
-                        <div v-if="sectionType !== 'image_gallery' && sectionType !== 'working_process' && sectionType !== 'businesses_trust'">
-                            <label class="label-premium">
-                                {{ 
-                                    sectionType === 'testimonials' ? 'Company Name' : 'Subtitle' 
-                                }}
-                            </label>
-                            <input v-model="itemForm.subtitle" type="text" class="input-premium" />
-                            <span v-if="itemForm.errors.subtitle" class="text-xs text-red-500 mt-1 block">{{ itemForm.errors.subtitle }}</span>
-                        </div>
-                        <div v-if="sectionType !== 'businesses_trust'">
-                            <label class="label-premium">
-                                {{ 
-                                    sectionType === 'image_gallery' ? 'Image URL / Path' : 
-                                    sectionType === 'testimonials' ? 'Rating (1-5)' : 
-                                    sectionType === 'company_highlights' ? 'Metric Value' : 
-                                    sectionType === 'working_process' ? 'Step Number (optional)' : 'Value' 
-                                }}
-                            </label>
-                            <input v-model="itemForm.value" type="text" class="input-premium" :placeholder="sectionType === 'image_gallery' ? 'e.g. /images/gallery/pic.jpg' : 'e.g. 15, 99%'" />
-                            <span v-if="itemForm.errors.value" class="text-xs text-red-500 mt-1 block">{{ itemForm.errors.value }}</span>
-                        </div>
-                        <div class="sm:col-span-2">
-                            <label class="label-premium">
-                                {{ 
-                                    sectionType === 'testimonials' ? 'Testimonial Quote' : 'Description' 
-                                }}
-                            </label>
-                            <textarea v-model="itemForm.description" class="input-premium h-20"></textarea>
-                            <span v-if="itemForm.errors.description" class="text-xs text-red-500 mt-1 block">{{ itemForm.errors.description }}</span>
-                        </div>
-                        <div v-if="sectionType !== 'image_gallery'">
-                            <label class="label-premium">
-                                {{ 
-                                    sectionType === 'testimonials' ? 'Customer Photo URL' : 'Icon Name (Lucide)' 
-                                }}
-                            </label>
-                            <input v-model="itemForm.icon" type="text" class="input-premium" :placeholder="sectionType === 'testimonials' ? 'e.g. /images/avatar1.jpg' : 'Lucide icon name (e.g. Eye, Compass)'" />
-                            <span v-if="itemForm.errors.icon" class="text-xs text-red-500 mt-1 block">{{ itemForm.errors.icon }}</span>
-                        </div>
-                        <div v-if="sectionType === 'hero_carousel' || sectionType === 'about_us' || sectionType === 'testimonials' || sectionType === 'image_text_showcase' || sectionType === 'operational_excellence' || sectionType === 'logistics_image_banner'">
-                            <label class="label-premium">
-                                {{ 
-                                    sectionType === 'testimonials' ? 'Customer Designation' : 'Link URL' 
-                                }}
-                            </label>
-                            <input v-model="itemForm.link" type="text" class="input-premium" :placeholder="sectionType === 'testimonials' ? 'e.g. Logistics Director' : 'e.g. /services'" />
-                            <span v-if="itemForm.errors.link" class="text-xs text-red-500 mt-1 block">{{ itemForm.errors.link }}</span>
-                        </div>
+                        <!-- Custom fields for Office Locations -->
+                        <template v-if="sectionType === 'office_locations'">
+                            <div class="sm:col-span-2">
+                                <label class="label-premium">Office Name</label>
+                                <input v-model="itemForm.title" type="text" class="input-premium" placeholder="e.g. Dhaka Headquarters" />
+                                <span v-if="itemForm.errors.title" class="text-xs text-red-500 mt-1 block">{{ itemForm.errors.title }}</span>
+                            </div>
+                            <div>
+                                <label class="label-premium">Office Badge</label>
+                                <input v-model="itemForm.subtitle" type="text" class="input-premium" placeholder="e.g. MB · 01" />
+                                <span v-if="itemForm.errors.subtitle" class="text-xs text-red-500 mt-1 block">{{ itemForm.errors.subtitle }}</span>
+                            </div>
+                            <div>
+                                <label class="label-premium">Emergency Contact</label>
+                                <input v-model="itemForm.emergency_contact" type="text" class="input-premium" placeholder="e.g. +880 1711 123456" />
+                                <span v-if="itemForm.errors.emergency_contact" class="text-xs text-red-500 mt-1 block">{{ itemForm.errors.emergency_contact }}</span>
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label class="label-premium">Short Description</label>
+                                <textarea v-model="itemForm.description" class="input-premium h-16" placeholder="Brief description of the office..."></textarea>
+                                <span v-if="itemForm.errors.description" class="text-xs text-red-500 mt-1 block">{{ itemForm.errors.description }}</span>
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label class="label-premium">Full Address</label>
+                                <input v-model="itemForm.address" type="text" class="input-premium" placeholder="e.g. House 45, Road 11, Banani, Dhaka-1213" />
+                                <span v-if="itemForm.errors.address" class="text-xs text-red-500 mt-1 block">{{ itemForm.errors.address }}</span>
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label class="label-premium">Google Map Embed URL</label>
+                                <input v-model="itemForm.map_url" type="text" class="input-premium" placeholder="https://www.google.com/maps/embed?pb=..." />
+                                <span v-if="itemForm.errors.map_url" class="text-xs text-red-500 mt-1 block">{{ itemForm.errors.map_url }}</span>
+                            </div>
+                            <div>
+                                <label class="label-premium">Phone Number</label>
+                                <input v-model="itemForm.phone" type="text" class="input-premium" placeholder="e.g. +880 2 9876543" />
+                                <span v-if="itemForm.errors.phone" class="text-xs text-red-500 mt-1 block">{{ itemForm.errors.phone }}</span>
+                            </div>
+                            <div>
+                                <label class="label-premium">Email Address</label>
+                                <input v-model="itemForm.email" type="email" class="input-premium" placeholder="e.g. dhaka@mercurybd.com" />
+                                <span v-if="itemForm.errors.email" class="text-xs text-red-500 mt-1 block">{{ itemForm.errors.email }}</span>
+                            </div>
+                            <div>
+                                <label class="label-premium">Office Hours</label>
+                                <input v-model="itemForm.office_hours" type="text" class="input-premium" placeholder="e.g. Sat - Thu: 9:00 AM - 6:00 PM" />
+                                <span v-if="itemForm.errors.office_hours" class="text-xs text-red-500 mt-1 block">{{ itemForm.errors.office_hours }}</span>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="label-premium">Latitude</label>
+                                    <input v-model="itemForm.latitude" type="text" class="input-premium" placeholder="e.g. 23.7952" />
+                                    <span v-if="itemForm.errors.latitude" class="text-xs text-red-500 mt-1 block">{{ itemForm.errors.latitude }}</span>
+                                </div>
+                                <div>
+                                    <label class="label-premium">Longitude</label>
+                                    <input v-model="itemForm.longitude" type="text" class="input-premium" placeholder="e.g. 90.4026" />
+                                    <span v-if="itemForm.errors.longitude" class="text-xs text-red-500 mt-1 block">{{ itemForm.errors.longitude }}</span>
+                                </div>
+                            </div>
+                        </template>
+
+                        <!-- Standard Section Fields -->
+                        <template v-else>
+                            <div class="sm:col-span-2">
+                                <label class="label-premium">
+                                    {{ 
+                                        sectionType === 'image_gallery' ? 'Image Caption / Title' : 
+                                        sectionType === 'testimonials' ? 'Customer Name' : 
+                                        sectionType === 'company_highlights' ? 'Metric Name' : 
+                                        sectionType === 'working_process' ? 'Step Title' : 'Title' 
+                                    }}
+                                </label>
+                                <input v-model="itemForm.title" type="text" class="input-premium" />
+                                <span v-if="itemForm.errors.title" class="text-xs text-red-500 mt-1 block">{{ itemForm.errors.title }}</span>
+                            </div>
+                            <div v-if="sectionType !== 'image_gallery' && sectionType !== 'working_process' && sectionType !== 'businesses_trust'">
+                                <label class="label-premium">
+                                    {{ 
+                                        sectionType === 'testimonials' ? 'Company Name' : 'Subtitle' 
+                                    }}
+                                </label>
+                                <input v-model="itemForm.subtitle" type="text" class="input-premium" />
+                                <span v-if="itemForm.errors.subtitle" class="text-xs text-red-500 mt-1 block">{{ itemForm.errors.subtitle }}</span>
+                            </div>
+                            <div v-if="sectionType !== 'businesses_trust'">
+                                <label class="label-premium">
+                                    {{ 
+                                        sectionType === 'image_gallery' ? 'Image URL / Path' : 
+                                        sectionType === 'testimonials' ? 'Rating (1-5)' : 
+                                        sectionType === 'company_highlights' ? 'Metric Value' : 
+                                        sectionType === 'working_process' ? 'Step Number (optional)' : 'Value' 
+                                    }}
+                                </label>
+                                <input v-model="itemForm.value" type="text" class="input-premium" :placeholder="sectionType === 'image_gallery' ? 'e.g. /images/gallery/pic.jpg' : 'e.g. 15, 99%'" />
+                                <span v-if="itemForm.errors.value" class="text-xs text-red-500 mt-1 block">{{ itemForm.errors.value }}</span>
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label class="label-premium">
+                                    {{ 
+                                        sectionType === 'testimonials' ? 'Testimonial Quote' : 'Description' 
+                                    }}
+                                </label>
+                                <textarea v-model="itemForm.description" class="input-premium h-20"></textarea>
+                                <span v-if="itemForm.errors.description" class="text-xs text-red-500 mt-1 block">{{ itemForm.errors.description }}</span>
+                            </div>
+
+
+                            <div v-if="sectionType !== 'image_gallery'">
+                                <label class="label-premium">
+                                    {{ 
+                                        sectionType === 'testimonials' ? 'Customer Photo URL' : 'Icon Name (Lucide)' 
+                                    }}
+                                </label>
+                                <input v-model="itemForm.icon" type="text" class="input-premium" :placeholder="sectionType === 'testimonials' ? 'e.g. /images/avatar1.jpg' : 'Lucide icon name (e.g. Eye, Compass)'" />
+                                <span v-if="itemForm.errors.icon" class="text-xs text-red-500 mt-1 block">{{ itemForm.errors.icon }}</span>
+                            </div>
+                            <div v-if="sectionType === 'hero_carousel' || sectionType === 'about_us' || sectionType === 'testimonials' || sectionType === 'image_text_showcase' || sectionType === 'operational_excellence' || sectionType === 'logistics_image_banner'">
+                                <label class="label-premium">
+                                    {{ 
+                                        sectionType === 'testimonials' ? 'Customer Designation' : 'Link URL' 
+                                    }}
+                                </label>
+                                <input v-model="itemForm.link" type="text" class="input-premium" :placeholder="sectionType === 'testimonials' ? 'e.g. Logistics Director' : 'e.g. /services'" />
+                                <span v-if="itemForm.errors.link" class="text-xs text-red-500 mt-1 block">{{ itemForm.errors.link }}</span>
+                            </div>
+                        </template>
                         <!-- File upload for item image (e.g. Gallery, Testimonials photo, Showcase image, etc.) -->
                         <div class="sm:col-span-2 border-t border-base-100 pt-3 mt-1">
                             <label class="label-premium">Upload Item Image (Overrides URL/Path if uploaded)</label>
