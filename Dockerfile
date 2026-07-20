@@ -2,16 +2,12 @@
 FROM node:20-alpine AS node-builder
 WORKDIR /app
 
-# Copy dependency files
+# Copy dependency files and install cleanly
 COPY package*.json ./
-
-# Changed from 'npm ci' to 'npm install' to avoid build failures if package-lock.json is missing
 RUN npm install
 
-# Copy source code and build Vite/Mix assets
+# Copy source code and build assets
 COPY . .
-
-# Set Node environment to production and compile frontend assets
 ENV NODE_ENV=production
 RUN npm run build
 
@@ -47,14 +43,18 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www/html
 
+# Leverage layer caching for Composer dependencies
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist
+
 # Copy application files
 COPY . .
 
 # Copy built frontend assets from node-builder stage
 COPY --from=node-builder /app/public/build ./public/build
 
-# Install PHP production dependencies
-RUN composer install --no-dev --optimize-autoloader --no-interaction
+# Finish Composer optimizations
+RUN composer dump-autoload --optimize --no-dev
 
 # Set proper ownership and permissions for Laravel directories
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
