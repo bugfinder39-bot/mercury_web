@@ -1,8 +1,14 @@
 # --- Frontend Build Stage ---
 FROM node:20-alpine AS node-builder
 WORKDIR /app
+
+# Copy dependency files
 COPY package*.json ./
-RUN npm ci
+
+# Changed from 'npm ci' to 'npm install' to avoid build failures if package-lock.json is missing
+RUN npm install
+
+# Copy source code and build Vite/Mix assets
 COPY . .
 RUN npm run build
 
@@ -38,7 +44,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy application files (leveraging .dockerignore)
+# Copy application files
 COPY . .
 
 # Copy built frontend assets from node-builder stage
@@ -55,7 +61,7 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-# Expose port (Render overrides this with $PORT dynamically)
+# Expose port (Render overrides this dynamically using $PORT)
 EXPOSE 80
 
 ENTRYPOINT ["docker-entrypoint.sh"]
