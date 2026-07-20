@@ -10,6 +10,9 @@ RUN npm install
 
 # Copy source code and build Vite/Mix assets
 COPY . .
+
+# Set Node environment to production and compile frontend assets
+ENV NODE_ENV=production
 RUN npm run build
 
 # --- Production Stage ---

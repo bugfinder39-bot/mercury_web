@@ -3,11 +3,10 @@
 node_modules
 vendor
 .env
-.env.backup
-.env.production
-composer.lock
-package-lock.json
+.env.*
 npm-debug.log
+
+# Storage & Cache
 storage/*.key
 storage/framework/cache/data/*
 storage/framework/sessions/*
@@ -15,13 +14,9 @@ storage/framework/testing/*
 storage/framework/views/*
 storage/logs/*
 bootstrap/cache/*
-public/build
-public/hot
-public/storage
-docker-compose.yml
-Dockerfile
-.dockerignore
+
+# IDEs & System
 .idea
 .vscode
+.DS_Store
 .phpunit.cache
-tests
