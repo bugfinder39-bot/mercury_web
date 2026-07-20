@@ -6,33 +6,35 @@ import laravel from 'laravel-vite-plugin';
 import { bunny } from 'laravel-vite-plugin/fonts';
 import { defineConfig } from 'vite';
 
-// Check if we are running inside Docker or Production build
-const isDocker = process.env.NODE_ENV === 'production' || process.env.DOCKER_BUILD === 'true';
+export default defineConfig(({ command }) => {
+    // Wayfinder requires PHP to generate routes, so we only run it during 'serve' (local dev)
+    const isDev = command === 'serve';
 
-export default defineConfig({
-    plugins: [
-        laravel({
-            input: ['resources/css/app.css', 'resources/js/app.ts'],
-            refresh: true,
-            fonts: [
-                bunny('Instrument Sans', {
-                    weights: [400, 500, 600],
-                }),
-            ],
-        }),
-        inertia(),
-        tailwindcss(),
-        vue({
-            template: {
-                transformAssetUrls: {
-                    base: null,
-                    includeAbsolute: false,
+    return {
+        plugins: [
+            laravel({
+                input: ['resources/css/app.css', 'resources/js/app.ts'],
+                refresh: true,
+                fonts: [
+                    bunny('Instrument Sans', {
+                        weights: [400, 500, 600],
+                    }),
+                ],
+            }),
+            inertia(),
+            tailwindcss(),
+            vue({
+                template: {
+                    transformAssetUrls: {
+                        base: null,
+                        includeAbsolute: false,
+                    },
                 },
-            },
-        }),
-        // Only run Wayfinder during local development when PHP/Laravel is accessible
-        !isDocker && wayfinder({
-            formVariants: true,
-        }),
-    ].filter(Boolean), // Filter out 'false' when Wayfinder is disabled
+            }),
+            // Enable Wayfinder ONLY during local development (`npm run dev`)
+            isDev && wayfinder({
+                formVariants: true,
+            }),
+        ].filter(Boolean),
+    };
 });
