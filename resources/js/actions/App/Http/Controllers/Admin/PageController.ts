@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Admin\PageController::index
  * @see app/Http/Controllers/Admin/PageController.php:26
@@ -42,6 +42,41 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     method: 'head',
 })
 
+    /**
+* @see \App\Http\Controllers\Admin\PageController::index
+ * @see app/Http/Controllers/Admin/PageController.php:26
+ * @route '/admin/pages'
+ */
+    const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: index.url(options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\Admin\PageController::index
+ * @see app/Http/Controllers/Admin/PageController.php:26
+ * @route '/admin/pages'
+ */
+        indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: index.url(options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\Admin\PageController::index
+ * @see app/Http/Controllers/Admin/PageController.php:26
+ * @route '/admin/pages'
+ */
+        indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: index.url({
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    index.form = indexForm
 /**
 * @see \App\Http\Controllers\Admin\PageController::edit
  * @see app/Http/Controllers/Admin/PageController.php:36
@@ -109,6 +144,41 @@ edit.head = (args: { page: number | { id: number } } | [page: number | { id: num
     method: 'head',
 })
 
+    /**
+* @see \App\Http\Controllers\Admin\PageController::edit
+ * @see app/Http/Controllers/Admin/PageController.php:36
+ * @route '/admin/pages/{page}/edit'
+ */
+    const editForm = (args: { page: number | { id: number } } | [page: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: edit.url(args, options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\Admin\PageController::edit
+ * @see app/Http/Controllers/Admin/PageController.php:36
+ * @route '/admin/pages/{page}/edit'
+ */
+        editForm.get = (args: { page: number | { id: number } } | [page: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: edit.url(args, options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\Admin\PageController::edit
+ * @see app/Http/Controllers/Admin/PageController.php:36
+ * @route '/admin/pages/{page}/edit'
+ */
+        editForm.head = (args: { page: number | { id: number } } | [page: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: edit.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    edit.form = editForm
 /**
 * @see \App\Http\Controllers\Admin\PageController::update
  * @see app/Http/Controllers/Admin/PageController.php:60
@@ -167,6 +237,37 @@ update.put = (args: { page: number | { id: number } } | [page: number | { id: nu
     method: 'put',
 })
 
+    /**
+* @see \App\Http\Controllers\Admin\PageController::update
+ * @see app/Http/Controllers/Admin/PageController.php:60
+ * @route '/admin/pages/{page}'
+ */
+    const updateForm = (args: { page: number | { id: number } } | [page: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: update.url(args, {
+                    [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                        _method: 'PUT',
+                        ...(options?.query ?? options?.mergeQuery ?? {}),
+                    }
+                }),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Admin\PageController::update
+ * @see app/Http/Controllers/Admin/PageController.php:60
+ * @route '/admin/pages/{page}'
+ */
+        updateForm.put = (args: { page: number | { id: number } } | [page: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: update.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'PUT',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+    
+    update.form = updateForm
 /**
 * @see \App\Http\Controllers\Admin\PageController::updateSection
  * @see app/Http/Controllers/Admin/PageController.php:77
@@ -225,9 +326,40 @@ updateSection.put = (args: { section: number | { id: number } } | [section: numb
     method: 'put',
 })
 
+    /**
+* @see \App\Http\Controllers\Admin\PageController::updateSection
+ * @see app/Http/Controllers/Admin/PageController.php:77
+ * @route '/admin/sections/{section}'
+ */
+    const updateSectionForm = (args: { section: number | { id: number } } | [section: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: updateSection.url(args, {
+                    [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                        _method: 'PUT',
+                        ...(options?.query ?? options?.mergeQuery ?? {}),
+                    }
+                }),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Admin\PageController::updateSection
+ * @see app/Http/Controllers/Admin/PageController.php:77
+ * @route '/admin/sections/{section}'
+ */
+        updateSectionForm.put = (args: { section: number | { id: number } } | [section: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: updateSection.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'PUT',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+    
+    updateSection.form = updateSectionForm
 /**
 * @see \App\Http\Controllers\Admin\PageController::storeSectionItem
- * @see app/Http/Controllers/Admin/PageController.php:193
+ * @see app/Http/Controllers/Admin/PageController.php:194
  * @route '/admin/sections/{section}/items'
  */
 export const storeSectionItem = (args: { section: number | { id: number } } | [section: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -242,7 +374,7 @@ storeSectionItem.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\PageController::storeSectionItem
- * @see app/Http/Controllers/Admin/PageController.php:193
+ * @see app/Http/Controllers/Admin/PageController.php:194
  * @route '/admin/sections/{section}/items'
  */
 storeSectionItem.url = (args: { section: number | { id: number } } | [section: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -275,7 +407,7 @@ storeSectionItem.url = (args: { section: number | { id: number } } | [section: n
 
 /**
 * @see \App\Http\Controllers\Admin\PageController::storeSectionItem
- * @see app/Http/Controllers/Admin/PageController.php:193
+ * @see app/Http/Controllers/Admin/PageController.php:194
  * @route '/admin/sections/{section}/items'
  */
 storeSectionItem.post = (args: { section: number | { id: number } } | [section: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -283,9 +415,30 @@ storeSectionItem.post = (args: { section: number | { id: number } } | [section: 
     method: 'post',
 })
 
+    /**
+* @see \App\Http\Controllers\Admin\PageController::storeSectionItem
+ * @see app/Http/Controllers/Admin/PageController.php:194
+ * @route '/admin/sections/{section}/items'
+ */
+    const storeSectionItemForm = (args: { section: number | { id: number } } | [section: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: storeSectionItem.url(args, options),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Admin\PageController::storeSectionItem
+ * @see app/Http/Controllers/Admin/PageController.php:194
+ * @route '/admin/sections/{section}/items'
+ */
+        storeSectionItemForm.post = (args: { section: number | { id: number } } | [section: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: storeSectionItem.url(args, options),
+            method: 'post',
+        })
+    
+    storeSectionItem.form = storeSectionItemForm
 /**
 * @see \App\Http\Controllers\Admin\PageController::updateSectionItem
- * @see app/Http/Controllers/Admin/PageController.php:241
+ * @see app/Http/Controllers/Admin/PageController.php:255
  * @route '/admin/section-items/{item}'
  */
 export const updateSectionItem = (args: { item: number | { id: number } } | [item: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -300,7 +453,7 @@ updateSectionItem.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\PageController::updateSectionItem
- * @see app/Http/Controllers/Admin/PageController.php:241
+ * @see app/Http/Controllers/Admin/PageController.php:255
  * @route '/admin/section-items/{item}'
  */
 updateSectionItem.url = (args: { item: number | { id: number } } | [item: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -333,7 +486,7 @@ updateSectionItem.url = (args: { item: number | { id: number } } | [item: number
 
 /**
 * @see \App\Http\Controllers\Admin\PageController::updateSectionItem
- * @see app/Http/Controllers/Admin/PageController.php:241
+ * @see app/Http/Controllers/Admin/PageController.php:255
  * @route '/admin/section-items/{item}'
  */
 updateSectionItem.put = (args: { item: number | { id: number } } | [item: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -341,9 +494,40 @@ updateSectionItem.put = (args: { item: number | { id: number } } | [item: number
     method: 'put',
 })
 
+    /**
+* @see \App\Http\Controllers\Admin\PageController::updateSectionItem
+ * @see app/Http/Controllers/Admin/PageController.php:255
+ * @route '/admin/section-items/{item}'
+ */
+    const updateSectionItemForm = (args: { item: number | { id: number } } | [item: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: updateSectionItem.url(args, {
+                    [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                        _method: 'PUT',
+                        ...(options?.query ?? options?.mergeQuery ?? {}),
+                    }
+                }),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Admin\PageController::updateSectionItem
+ * @see app/Http/Controllers/Admin/PageController.php:255
+ * @route '/admin/section-items/{item}'
+ */
+        updateSectionItemForm.put = (args: { item: number | { id: number } } | [item: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: updateSectionItem.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'PUT',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+    
+    updateSectionItem.form = updateSectionItemForm
 /**
 * @see \App\Http\Controllers\Admin\PageController::destroySectionItem
- * @see app/Http/Controllers/Admin/PageController.php:298
+ * @see app/Http/Controllers/Admin/PageController.php:329
  * @route '/admin/section-items/{item}'
  */
 export const destroySectionItem = (args: { item: number | { id: number } } | [item: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -358,7 +542,7 @@ destroySectionItem.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\PageController::destroySectionItem
- * @see app/Http/Controllers/Admin/PageController.php:298
+ * @see app/Http/Controllers/Admin/PageController.php:329
  * @route '/admin/section-items/{item}'
  */
 destroySectionItem.url = (args: { item: number | { id: number } } | [item: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -391,13 +575,45 @@ destroySectionItem.url = (args: { item: number | { id: number } } | [item: numbe
 
 /**
 * @see \App\Http\Controllers\Admin\PageController::destroySectionItem
- * @see app/Http/Controllers/Admin/PageController.php:298
+ * @see app/Http/Controllers/Admin/PageController.php:329
  * @route '/admin/section-items/{item}'
  */
 destroySectionItem.delete = (args: { item: number | { id: number } } | [item: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroySectionItem.url(args, options),
     method: 'delete',
 })
+
+    /**
+* @see \App\Http\Controllers\Admin\PageController::destroySectionItem
+ * @see app/Http/Controllers/Admin/PageController.php:329
+ * @route '/admin/section-items/{item}'
+ */
+    const destroySectionItemForm = (args: { item: number | { id: number } } | [item: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: destroySectionItem.url(args, {
+                    [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                        _method: 'DELETE',
+                        ...(options?.query ?? options?.mergeQuery ?? {}),
+                    }
+                }),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Admin\PageController::destroySectionItem
+ * @see app/Http/Controllers/Admin/PageController.php:329
+ * @route '/admin/section-items/{item}'
+ */
+        destroySectionItemForm.delete = (args: { item: number | { id: number } } | [item: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: destroySectionItem.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'DELETE',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+    
+    destroySectionItem.form = destroySectionItemForm
 const PageController = { index, edit, update, updateSection, storeSectionItem, updateSectionItem, destroySectionItem }
 
 export default PageController

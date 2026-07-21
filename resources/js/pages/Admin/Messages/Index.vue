@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import { Head, router } from '@inertiajs/vue3';
-import AdminLayout from '@/layouts/AdminLayout.vue';
-import { ref, computed } from 'vue';
 import { 
     Search, 
     Trash2, 
@@ -16,6 +14,8 @@ import {
     Inbox,
     ExternalLink
 } from '@lucide/vue';
+import { ref, computed } from 'vue';
+import AdminLayout from '@/layouts/AdminLayout.vue';
 
 interface Message {
     id: number;
@@ -45,12 +45,21 @@ const selectedMessage = ref<Message | null>(null);
 const filteredMessages = computed(() => {
     return props.messages.filter(msg => {
         // Status filter check
-        if (statusFilter.value === 'unread' && msg.is_read) return false;
-        if (statusFilter.value === 'read' && !msg.is_read) return false;
+        if (statusFilter.value === 'unread' && msg.is_read) {
+return false;
+}
+
+        if (statusFilter.value === 'read' && !msg.is_read) {
+return false;
+}
 
         // Search text check
-        if (!searchQuery.value) return true;
+        if (!searchQuery.value) {
+return true;
+}
+
         const query = searchQuery.value.toLowerCase();
+
         return (
             msg.name.toLowerCase().includes(query) ||
             msg.email.toLowerCase().includes(query) ||
@@ -89,6 +98,7 @@ const deleteMessage = (id: number) => {
 
 const viewMessage = (msg: Message) => {
     selectedMessage.value = msg;
+
     // Auto-mark as read if viewed and currently unread
     if (!msg.is_read) {
         toggleReadStatus(msg);

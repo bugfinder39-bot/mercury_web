@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Head, Link, useForm } from '@inertiajs/vue3';
-import AdminLayout from '@/layouts/AdminLayout.vue';
 import { ArrowLeft, Save } from '@lucide/vue';
+import AdminLayout from '@/layouts/AdminLayout.vue';
 
 const props = defineProps<{
     service: any;

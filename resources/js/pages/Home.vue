@@ -1,25 +1,25 @@
 <script setup lang="ts">
 import { Head } from '@inertiajs/vue3';
 import AboutFlex from '@/components/AboutFlex.vue';
+import CEOMessageSection from '@/components/CEOMessageSection.vue';
+import CompanyHighlights from '@/components/CompanyHighlights.vue';
 import FeaturedServices from '@/components/FeaturedServices.vue';
+import FullWidthCTABanner from '@/components/FullWidthCTABanner.vue';
 import HeroCarousel from '@/components/HeroCarousel.vue';
+import ImageGallerySection from '@/components/ImageGallerySection.vue';
+import ImageTextShowcase from '@/components/ImageTextShowcase.vue';
+import LogisticsImageBanner from '@/components/LogisticsImageBanner.vue';
 import MapEmbed from '@/components/MapEmbed.vue';
 import PartnerLogos from '@/components/PartnerLogos.vue';
 import StatsCounter from '@/components/StatsCounter.vue';
+import TestimonialsSection from '@/components/TestimonialsSection.vue';
 import TileGrid from '@/components/TileGrid.vue';
+import WhyBusinessesTrust from '@/components/WhyBusinessesTrust.vue';
 import WhyChooseUs from '@/components/WhyChooseUs.vue';
+import WorkingProcess from '@/components/WorkingProcess.vue';
 import PublicLayout from '@/layouts/PublicLayout.vue';
-import CEOMessageSection from '@/components/CEOMessageSection.vue';
-import ImageGallerySection from '@/components/ImageGallerySection.vue';
 
 // New premium sections
-import ImageTextShowcase from '@/components/ImageTextShowcase.vue';
-import WhyBusinessesTrust from '@/components/WhyBusinessesTrust.vue';
-import CompanyHighlights from '@/components/CompanyHighlights.vue';
-import WorkingProcess from '@/components/WorkingProcess.vue';
-import TestimonialsSection from '@/components/TestimonialsSection.vue';
-import LogisticsImageBanner from '@/components/LogisticsImageBanner.vue';
-import FullWidthCTABanner from '@/components/FullWidthCTABanner.vue';
 
 defineProps<{
     page: {
@@ -44,6 +44,7 @@ defineProps<{
         ceo_designation?: string;
         portrait_media_id?: any;
         signature_media_id?: any;
+        show_ceo_image?: any;
         ceo_cta_button_text?: string;
         ceo_cta_button_url?: string;
         // CTA fields
@@ -75,7 +76,8 @@ const mapCeoSection = (section: any) => {
         position: section.ceo_designation || 'Managing Director & CEO',
         signatureUrl: section.signature_media?.file_path || section.signature_media_id || '',
         ctaText: section.ceo_cta_button_text,
-        ctaLink: section.ceo_cta_button_url
+        ctaLink: section.ceo_cta_button_url,
+        show_ceo_image: section.show_ceo_image !== null && section.show_ceo_image !== undefined ? !!section.show_ceo_image : true
     };
 };
 
@@ -88,11 +90,11 @@ const mapCtaBannerSection = (section: any) => {
         primaryBtn: section.cta_primary_btn_text ? {
             text: section.cta_primary_btn_text,
             href: section.cta_primary_btn_url || '#'
-        } : null,
+        } : undefined,
         secondaryBtn: section.cta_secondary_btn_text ? {
             text: section.cta_secondary_btn_text,
             href: section.cta_secondary_btn_url || '#'
-        } : null
+        } : undefined
     };
 };
 </script>

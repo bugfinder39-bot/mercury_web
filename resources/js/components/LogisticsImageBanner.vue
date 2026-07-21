@@ -30,8 +30,12 @@ const backgroundImage = computed(() => {
             item => item.title?.toLowerCase() === 'background' || 
             (item.value && (item.value.includes('/images/') || item.value.match(/\.(jpeg|jpg|png|webp|gif)$/i)))
         );
-        if (bgItem) return bgItem.image_media?.file_path || bgItem.value;
+
+        if (bgItem) {
+return bgItem.image_media?.file_path || bgItem.value;
+}
     }
+
     return 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=1600&auto=format&fit=crop&q=80';
 });
 
@@ -43,10 +47,12 @@ const ctaBtn = computed(() => {
             url: props.section.cta_primary_btn_url || '#'
         };
     }
+
     if (props.section?.items) {
         const ctaItem = props.section.items.find(
             item => item.title?.toLowerCase() === 'cta' || item.link
         );
+
         if (ctaItem) {
             return {
                 text: ctaItem.description || ctaItem.title || 'Discover More',
@@ -54,6 +60,7 @@ const ctaBtn = computed(() => {
             };
         }
     }
+
     return {
         text: 'Contact Our Team',
         url: '/contact'

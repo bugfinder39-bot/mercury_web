@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition } from './../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../wayfinder'
 /**
 * @see \App\Http\Controllers\PublicController::submit
  * @see app/Http/Controllers/PublicController.php:87
@@ -32,6 +32,28 @@ submit.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: submit.url(options),
     method: 'post',
 })
+
+    /**
+* @see \App\Http\Controllers\PublicController::submit
+ * @see app/Http/Controllers/PublicController.php:87
+ * @route '/contact'
+ */
+    const submitForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: submit.url(options),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\PublicController::submit
+ * @see app/Http/Controllers/PublicController.php:87
+ * @route '/contact'
+ */
+        submitForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: submit.url(options),
+            method: 'post',
+        })
+    
+    submit.form = submitForm
 const contact = {
     submit: Object.assign(submit, submit),
 }

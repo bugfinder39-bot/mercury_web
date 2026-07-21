@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
-import AdminLayout from '@/layouts/AdminLayout.vue';
 import { BookOpen, Edit } from '@lucide/vue';
+import AdminLayout from '@/layouts/AdminLayout.vue';
 
 defineProps<{
     pages: any[];

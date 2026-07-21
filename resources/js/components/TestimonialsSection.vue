@@ -28,21 +28,31 @@ const testimonials = computed(() => {
 const currentIdx = ref(0);
 
 const next = () => {
-    if (testimonials.value.length === 0) return;
+    if (testimonials.value.length === 0) {
+return;
+}
+
     currentIdx.value = (currentIdx.value + 1) % testimonials.value.length;
 };
 
 const prev = () => {
-    if (testimonials.value.length === 0) return;
+    if (testimonials.value.length === 0) {
+return;
+}
+
     currentIdx.value = (currentIdx.value - 1 + testimonials.value.length) % testimonials.value.length;
 };
 </script>
 
 <template>
-    <div v-if="section && testimonials.length > 0" class="py-20 md:py-28" style="background-color: #F8FAFC; border-bottom: 1px solid rgba(11,37,64,0.05);">
-        <div class="max-w-7xl mx-auto px-6">
+    <div v-if="section && testimonials.length > 0" class="py-20 md:py-28 relative overflow-hidden bg-light-steel-blue-soft border-b border-light-steel-blue">
+        <!-- Floating gradient blobs -->
+        <div class="gradient-blob gradient-blob-navy w-[400px] h-[400px] -top-20 -left-20 opacity-[0.06]"></div>
+        <div class="gradient-blob gradient-blob-orange w-[300px] h-[300px] bottom-10 right-0 opacity-[0.05]"></div>
+
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
             <!-- Header -->
-            <div class="max-w-3xl mx-auto text-center space-y-4 mb-20">
+            <div class="max-w-3xl mx-auto text-center space-y-4 mb-20 reveal-fade-up">
                 <span class="eyebrow-orange">
                     {{ section.subheading || 'TESTIMONIALS' }}
                 </span>
@@ -56,9 +66,13 @@ const prev = () => {
             </div>
 
             <!-- Testimonial Slider/Card (Interactive) -->
-            <div class="max-w-4xl mx-auto relative px-4 md:px-12">
+            <div class="max-w-4xl mx-auto relative px-4 md:px-12 reveal-fade-up">
                 <!-- Outer Wrapper with subtle border & background -->
-                <div class="card-premium p-8 md:p-14 relative overflow-hidden bg-white shadow-xl min-h-[340px] flex flex-col justify-between rounded-2xl border border-slate-100/50">
+                <div class="card-premium p-8 md:p-14 relative overflow-hidden bg-white shadow-xl min-h-[340px] flex flex-col justify-between rounded-2xl border border-slate-100/50 hover:bg-gradient-to-br hover:from-white hover:to-[var(--color-light-steel-blue)]/10 transition-all duration-300">
+                    <!-- Top Accent line on hover -->
+                    <div class="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#E8770C] to-[#123A5E] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
+                    <!-- Accent corner -->
+                    <div class="absolute top-0 right-0 w-8 h-8 bg-gradient-to-bl from-[#E8770C] to-transparent opacity-10 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10"></div>
                     
                     <!-- Top Quote Icon Accent -->
                     <div class="absolute right-8 top-8 text-slate-100/60 pointer-events-none">

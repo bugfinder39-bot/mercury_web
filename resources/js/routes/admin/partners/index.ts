@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Admin\PartnerController::index
  * @see app/Http/Controllers/Admin/PartnerController.php:18
@@ -42,6 +42,41 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     method: 'head',
 })
 
+    /**
+* @see \App\Http\Controllers\Admin\PartnerController::index
+ * @see app/Http/Controllers/Admin/PartnerController.php:18
+ * @route '/admin/partners'
+ */
+    const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: index.url(options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\Admin\PartnerController::index
+ * @see app/Http/Controllers/Admin/PartnerController.php:18
+ * @route '/admin/partners'
+ */
+        indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: index.url(options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\Admin\PartnerController::index
+ * @see app/Http/Controllers/Admin/PartnerController.php:18
+ * @route '/admin/partners'
+ */
+        indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: index.url({
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    index.form = indexForm
 /**
 * @see \App\Http\Controllers\Admin\PartnerController::create
  * @see app/Http/Controllers/Admin/PartnerController.php:28
@@ -85,6 +120,41 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     method: 'head',
 })
 
+    /**
+* @see \App\Http\Controllers\Admin\PartnerController::create
+ * @see app/Http/Controllers/Admin/PartnerController.php:28
+ * @route '/admin/partners/create'
+ */
+    const createForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: create.url(options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\Admin\PartnerController::create
+ * @see app/Http/Controllers/Admin/PartnerController.php:28
+ * @route '/admin/partners/create'
+ */
+        createForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: create.url(options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\Admin\PartnerController::create
+ * @see app/Http/Controllers/Admin/PartnerController.php:28
+ * @route '/admin/partners/create'
+ */
+        createForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: create.url({
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    create.form = createForm
 /**
 * @see \App\Http\Controllers\Admin\PartnerController::store
  * @see app/Http/Controllers/Admin/PartnerController.php:36
@@ -119,6 +189,27 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     method: 'post',
 })
 
+    /**
+* @see \App\Http\Controllers\Admin\PartnerController::store
+ * @see app/Http/Controllers/Admin/PartnerController.php:36
+ * @route '/admin/partners'
+ */
+    const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: store.url(options),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Admin\PartnerController::store
+ * @see app/Http/Controllers/Admin/PartnerController.php:36
+ * @route '/admin/partners'
+ */
+        storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: store.url(options),
+            method: 'post',
+        })
+    
+    store.form = storeForm
 /**
 * @see \App\Http\Controllers\Admin\PartnerController::show
  * @see app/Http/Controllers/Admin/PartnerController.php:0
@@ -181,6 +272,41 @@ show.head = (args: { partner: string | number } | [partner: string | number ] | 
     method: 'head',
 })
 
+    /**
+* @see \App\Http\Controllers\Admin\PartnerController::show
+ * @see app/Http/Controllers/Admin/PartnerController.php:0
+ * @route '/admin/partners/{partner}'
+ */
+    const showForm = (args: { partner: string | number } | [partner: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: show.url(args, options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\Admin\PartnerController::show
+ * @see app/Http/Controllers/Admin/PartnerController.php:0
+ * @route '/admin/partners/{partner}'
+ */
+        showForm.get = (args: { partner: string | number } | [partner: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: show.url(args, options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\Admin\PartnerController::show
+ * @see app/Http/Controllers/Admin/PartnerController.php:0
+ * @route '/admin/partners/{partner}'
+ */
+        showForm.head = (args: { partner: string | number } | [partner: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: show.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    show.form = showForm
 /**
 * @see \App\Http\Controllers\Admin\PartnerController::edit
  * @see app/Http/Controllers/Admin/PartnerController.php:66
@@ -248,6 +374,41 @@ edit.head = (args: { partner: number | { id: number } } | [partner: number | { i
     method: 'head',
 })
 
+    /**
+* @see \App\Http\Controllers\Admin\PartnerController::edit
+ * @see app/Http/Controllers/Admin/PartnerController.php:66
+ * @route '/admin/partners/{partner}/edit'
+ */
+    const editForm = (args: { partner: number | { id: number } } | [partner: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: edit.url(args, options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\Admin\PartnerController::edit
+ * @see app/Http/Controllers/Admin/PartnerController.php:66
+ * @route '/admin/partners/{partner}/edit'
+ */
+        editForm.get = (args: { partner: number | { id: number } } | [partner: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: edit.url(args, options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\Admin\PartnerController::edit
+ * @see app/Http/Controllers/Admin/PartnerController.php:66
+ * @route '/admin/partners/{partner}/edit'
+ */
+        editForm.head = (args: { partner: number | { id: number } } | [partner: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: edit.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    edit.form = editForm
 /**
 * @see \App\Http\Controllers\Admin\PartnerController::update
  * @see app/Http/Controllers/Admin/PartnerController.php:76
@@ -315,6 +476,51 @@ update.patch = (args: { partner: number | { id: number } } | [partner: number | 
     method: 'patch',
 })
 
+    /**
+* @see \App\Http\Controllers\Admin\PartnerController::update
+ * @see app/Http/Controllers/Admin/PartnerController.php:76
+ * @route '/admin/partners/{partner}'
+ */
+    const updateForm = (args: { partner: number | { id: number } } | [partner: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: update.url(args, {
+                    [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                        _method: 'PUT',
+                        ...(options?.query ?? options?.mergeQuery ?? {}),
+                    }
+                }),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Admin\PartnerController::update
+ * @see app/Http/Controllers/Admin/PartnerController.php:76
+ * @route '/admin/partners/{partner}'
+ */
+        updateForm.put = (args: { partner: number | { id: number } } | [partner: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: update.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'PUT',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+            /**
+* @see \App\Http\Controllers\Admin\PartnerController::update
+ * @see app/Http/Controllers/Admin/PartnerController.php:76
+ * @route '/admin/partners/{partner}'
+ */
+        updateForm.patch = (args: { partner: number | { id: number } } | [partner: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: update.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'PATCH',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+    
+    update.form = updateForm
 /**
 * @see \App\Http\Controllers\Admin\PartnerController::destroy
  * @see app/Http/Controllers/Admin/PartnerController.php:116
@@ -372,6 +578,38 @@ destroy.delete = (args: { partner: number | { id: number } } | [partner: number 
     url: destroy.url(args, options),
     method: 'delete',
 })
+
+    /**
+* @see \App\Http\Controllers\Admin\PartnerController::destroy
+ * @see app/Http/Controllers/Admin/PartnerController.php:116
+ * @route '/admin/partners/{partner}'
+ */
+    const destroyForm = (args: { partner: number | { id: number } } | [partner: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: destroy.url(args, {
+                    [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                        _method: 'DELETE',
+                        ...(options?.query ?? options?.mergeQuery ?? {}),
+                    }
+                }),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Admin\PartnerController::destroy
+ * @see app/Http/Controllers/Admin/PartnerController.php:116
+ * @route '/admin/partners/{partner}'
+ */
+        destroyForm.delete = (args: { partner: number | { id: number } } | [partner: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: destroy.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'DELETE',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+    
+    destroy.form = destroyForm
 const partners = {
     index: Object.assign(index, index),
 create: Object.assign(create, create),

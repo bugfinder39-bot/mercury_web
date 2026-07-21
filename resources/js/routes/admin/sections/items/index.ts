@@ -1,7 +1,7 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Admin\PageController::store
- * @see app/Http/Controllers/Admin/PageController.php:193
+ * @see app/Http/Controllers/Admin/PageController.php:194
  * @route '/admin/sections/{section}/items'
  */
 export const store = (args: { section: number | { id: number } } | [section: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -16,7 +16,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\PageController::store
- * @see app/Http/Controllers/Admin/PageController.php:193
+ * @see app/Http/Controllers/Admin/PageController.php:194
  * @route '/admin/sections/{section}/items'
  */
 store.url = (args: { section: number | { id: number } } | [section: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -49,13 +49,35 @@ store.url = (args: { section: number | { id: number } } | [section: number | { i
 
 /**
 * @see \App\Http\Controllers\Admin\PageController::store
- * @see app/Http/Controllers/Admin/PageController.php:193
+ * @see app/Http/Controllers/Admin/PageController.php:194
  * @route '/admin/sections/{section}/items'
  */
 store.post = (args: { section: number | { id: number } } | [section: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(args, options),
     method: 'post',
 })
+
+    /**
+* @see \App\Http\Controllers\Admin\PageController::store
+ * @see app/Http/Controllers/Admin/PageController.php:194
+ * @route '/admin/sections/{section}/items'
+ */
+    const storeForm = (args: { section: number | { id: number } } | [section: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: store.url(args, options),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Admin\PageController::store
+ * @see app/Http/Controllers/Admin/PageController.php:194
+ * @route '/admin/sections/{section}/items'
+ */
+        storeForm.post = (args: { section: number | { id: number } } | [section: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: store.url(args, options),
+            method: 'post',
+        })
+    
+    store.form = storeForm
 const items = {
     store: Object.assign(store, store),
 }

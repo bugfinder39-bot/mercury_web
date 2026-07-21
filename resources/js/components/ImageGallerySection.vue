@@ -24,6 +24,7 @@ const props = defineProps<{
 // Harmonize list to ensure it supports both database items and raw array objects
 const galleryImages = computed(() => {
     const list = props.images || [];
+
     return list.map(img => ({
         src: img.image_media?.file_path || img.value || img.src || '',
         title: img.title || '',
@@ -47,12 +48,18 @@ const closeLightbox = () => {
 };
 
 const nextImage = () => {
-    if (galleryImages.value.length === 0) return;
+    if (galleryImages.value.length === 0) {
+return;
+}
+
     activeIndex.value = (activeIndex.value + 1) % galleryImages.value.length;
 };
 
 const prevImage = () => {
-    if (galleryImages.value.length === 0) return;
+    if (galleryImages.value.length === 0) {
+return;
+}
+
     activeIndex.value = (activeIndex.value - 1 + galleryImages.value.length) % galleryImages.value.length;
 };
 </script>

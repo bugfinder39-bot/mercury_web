@@ -737,6 +737,71 @@ class PageSeeder extends Seeder
             'is_active' => true,
         ]);
 
+        $teamSec = Section::create([
+            'page_id' => $contact->id,
+            'type' => 'office_team',
+            'heading' => 'Meet Our Office Team',
+            'subheading' => 'PEOPLE · EXPERTISE',
+            'body' => 'Get in touch directly with our key contact persons for immediate assistance.',
+            'order' => 3,
+            'is_active' => true,
+        ]);
+
+        SectionItem::create([
+            'section_id' => $teamSec->id,
+            'title' => 'Mahbubur Rahman',
+            'value' => 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&auto=format&fit=crop&q=80',
+            'description' => 'Over 20 years of experience in shipping, cargo logistics, and supply chain management.',
+            'designation' => 'Managing Director & CEO',
+            'department' => 'Executive',
+            'office_location' => 'Dhaka Headquarters',
+            'phone' => '+880 2 9876543',
+            'mobile' => '+880 1711 123456',
+            'whatsapp' => '+880 1711 123456',
+            'email' => 'm.rahman@mercurybd.com',
+            'extension' => '101',
+            'linkedin_url' => 'https://linkedin.com/in/mahbubur-rahman',
+            'facebook_url' => 'https://facebook.com/mahbubur-rahman',
+            'order' => 1,
+            'is_active' => true,
+        ]);
+
+        SectionItem::create([
+            'section_id' => $teamSec->id,
+            'title' => 'Kazi Masud',
+            'value' => 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&auto=format&fit=crop&q=80',
+            'description' => 'Coordinating sea freight operations, customs clearances, and port logistics in Chattogram.',
+            'designation' => 'Operations Manager',
+            'department' => 'Operations',
+            'office_location' => 'Chattogram Branch',
+            'phone' => '+880 31 765432',
+            'mobile' => '+880 1711 789012',
+            'whatsapp' => '+880 1711 789012',
+            'email' => 'k.masud@mercurybd.com',
+            'extension' => '201',
+            'linkedin_url' => 'https://linkedin.com/in/kazi-masud',
+            'order' => 2,
+            'is_active' => true,
+        ]);
+
+        SectionItem::create([
+            'section_id' => $teamSec->id,
+            'title' => 'Tasnim Alam',
+            'value' => 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&auto=format&fit=crop&q=80',
+            'description' => 'Managing corporate client accounts, freight bookings, pricing negotiations, and sales.',
+            'designation' => 'Sales Executive',
+            'department' => 'Commercial / Sales',
+            'office_location' => 'Dhaka Headquarters',
+            'phone' => '+880 2 9876543',
+            'mobile' => '+880 1711 555666',
+            'whatsapp' => '+880 1711 555666',
+            'email' => 't.alam@mercurybd.com',
+            'extension' => '105',
+            'linkedin_url' => 'https://linkedin.com/in/tasnim-alam',
+            'order' => 3,
+            'is_active' => true,
+        ]);
+
     }
 }
 

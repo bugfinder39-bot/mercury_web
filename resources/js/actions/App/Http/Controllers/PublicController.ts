@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition } from './../../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\PublicController::home
  * @see app/Http/Controllers/PublicController.php:23
@@ -42,6 +42,41 @@ home.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     method: 'head',
 })
 
+    /**
+* @see \App\Http\Controllers\PublicController::home
+ * @see app/Http/Controllers/PublicController.php:23
+ * @route '/'
+ */
+    const homeForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: home.url(options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\PublicController::home
+ * @see app/Http/Controllers/PublicController.php:23
+ * @route '/'
+ */
+        homeForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: home.url(options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\PublicController::home
+ * @see app/Http/Controllers/PublicController.php:23
+ * @route '/'
+ */
+        homeForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: home.url({
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    home.form = homeForm
 /**
 * @see \App\Http\Controllers\PublicController::about
  * @see app/Http/Controllers/PublicController.php:40
@@ -85,6 +120,41 @@ about.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     method: 'head',
 })
 
+    /**
+* @see \App\Http\Controllers\PublicController::about
+ * @see app/Http/Controllers/PublicController.php:40
+ * @route '/about'
+ */
+    const aboutForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: about.url(options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\PublicController::about
+ * @see app/Http/Controllers/PublicController.php:40
+ * @route '/about'
+ */
+        aboutForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: about.url(options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\PublicController::about
+ * @see app/Http/Controllers/PublicController.php:40
+ * @route '/about'
+ */
+        aboutForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: about.url({
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    about.form = aboutForm
 /**
 * @see \App\Http\Controllers\PublicController::services
  * @see app/Http/Controllers/PublicController.php:59
@@ -128,6 +198,41 @@ services.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     method: 'head',
 })
 
+    /**
+* @see \App\Http\Controllers\PublicController::services
+ * @see app/Http/Controllers/PublicController.php:59
+ * @route '/services'
+ */
+    const servicesForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: services.url(options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\PublicController::services
+ * @see app/Http/Controllers/PublicController.php:59
+ * @route '/services'
+ */
+        servicesForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: services.url(options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\PublicController::services
+ * @see app/Http/Controllers/PublicController.php:59
+ * @route '/services'
+ */
+        servicesForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: services.url({
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    services.form = servicesForm
 /**
 * @see \App\Http\Controllers\PublicController::contact
  * @see app/Http/Controllers/PublicController.php:74
@@ -171,6 +276,41 @@ contact.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     method: 'head',
 })
 
+    /**
+* @see \App\Http\Controllers\PublicController::contact
+ * @see app/Http/Controllers/PublicController.php:74
+ * @route '/contact'
+ */
+    const contactForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: contact.url(options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\PublicController::contact
+ * @see app/Http/Controllers/PublicController.php:74
+ * @route '/contact'
+ */
+        contactForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: contact.url(options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\PublicController::contact
+ * @see app/Http/Controllers/PublicController.php:74
+ * @route '/contact'
+ */
+        contactForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: contact.url({
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    contact.form = contactForm
 /**
 * @see \App\Http\Controllers\PublicController::submitContactForm
  * @see app/Http/Controllers/PublicController.php:87
@@ -204,6 +344,28 @@ submitContactForm.post = (options?: RouteQueryOptions): RouteDefinition<'post'> 
     url: submitContactForm.url(options),
     method: 'post',
 })
+
+    /**
+* @see \App\Http\Controllers\PublicController::submitContactForm
+ * @see app/Http/Controllers/PublicController.php:87
+ * @route '/contact'
+ */
+    const submitContactFormForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: submitContactForm.url(options),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\PublicController::submitContactForm
+ * @see app/Http/Controllers/PublicController.php:87
+ * @route '/contact'
+ */
+        submitContactFormForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: submitContactForm.url(options),
+            method: 'post',
+        })
+    
+    submitContactForm.form = submitContactFormForm
 const PublicController = { home, about, services, contact, submitContactForm }
 
 export default PublicController

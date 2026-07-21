@@ -1,13 +1,39 @@
-/* Card component base styles */
+/* ============================================================
+   MERCURY BANGLADESH — PREMIUM CARD SYSTEM
+   ============================================================ */
+
+/* Base Card */
 .card {
-  background-color: #fff; /* white */
-  border: 1px solid #e5e7eb; /* light gray border */
-  border-radius: var(--radius-md);
-  padding: var(--spacing-md);
-  box-shadow: var(--shadow-sm);
-  transition: box-shadow 0.2s ease;
+    background-color: #fff;
+    border: 1px solid rgba(11, 37, 64, 0.07);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-card);
+    transition: all var(--duration-normal) var(--ease-premium);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Card glass highlight shimmer */
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.5) 0%,
+        transparent 100%
+    );
+    pointer-events: none;
+    opacity: 0.4;
+    border-radius: inherit;
 }
 
 .card:hover {
-  box-shadow: var(--shadow-md);
+    box-shadow: var(--shadow-card-hover);
+    transform: translateY(-4px);
+    border-color: rgba(232, 119, 12, 0.18);
 }

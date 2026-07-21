@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
-import AdminLayout from '@/layouts/AdminLayout.vue';
 import { ArrowLeft, Save, Image as ImageIcon } from '@lucide/vue';
+import { ref } from 'vue';
+import AdminLayout from '@/layouts/AdminLayout.vue';
 
 defineOptions({
     layout: AdminLayout,
@@ -21,6 +21,7 @@ const previewUrl = ref<string | null>(null);
 const handleLogoChange = (e: Event) => {
     const target = e.target as HTMLInputElement;
     const file = target.files?.[0];
+
     if (file) {
         form.logo = file;
         previewUrl.value = URL.createObjectURL(file);

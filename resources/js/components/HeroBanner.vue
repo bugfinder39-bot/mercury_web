@@ -19,10 +19,12 @@ const props = defineProps<{
 const backgroundImage = computed(() => {
     if (props.section?.items && props.section.items.length > 0) {
         const itemWithImage = props.section.items.find(item => item.value);
+
         if (itemWithImage) {
             return itemWithImage.value;
         }
     }
+
     return '/images/about-hero.jpg';
 });
 </script>

@@ -32,6 +32,15 @@ class SectionItem extends Model
         'emergency_contact',
         'latitude',
         'longitude',
+        // Team member fields
+        'designation',
+        'department',
+        'office_location',
+        'mobile',
+        'whatsapp',
+        'extension',
+        'linkedin_url',
+        'facebook_url',
     ];
 
     protected $casts = [

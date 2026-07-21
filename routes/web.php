@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\PartnerController;
 use App\Http\Controllers\Admin\MessageController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\LayoutController;
 use Illuminate\Support\Facades\Route;
 
 // Public Pages
@@ -47,6 +48,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Global settings configuration
     Route::get('/admin/settings', [SettingController::class, 'edit'])->name('admin.settings.edit');
     Route::put('/admin/settings', [SettingController::class, 'update'])->name('admin.settings.update');
+
+    // Layout configuration
+    Route::get('/admin/layout', [LayoutController::class, 'edit'])->name('admin.layout.edit');
+    Route::post('/admin/layout', [LayoutController::class, 'update'])->name('admin.layout.update');
 
     // Admin Users CRUD
     Route::resource('/admin/users', UserController::class)->names('admin.users');

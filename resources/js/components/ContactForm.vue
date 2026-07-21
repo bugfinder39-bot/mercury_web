@@ -48,9 +48,14 @@ const submit = () => {
             </div>
         </div>
 
-        <form @submit.prevent="submit" class="card-premium p-7 md:p-9 space-y-6">
+        <form @submit.prevent="submit" class="card-premium hover-glow-card p-7 md:p-9 space-y-6 rounded-2xl bg-white hover:bg-gradient-to-br hover:from-white hover:to-[var(--color-light-steel-blue)]/10 transition-all duration-300 relative overflow-hidden">
+            <!-- Top Accent line on hover -->
+            <div class="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#E8770C] to-[#123A5E] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
+            <!-- Accent corner -->
+            <div class="absolute top-0 right-0 w-8 h-8 bg-gradient-to-bl from-[#E8770C] to-transparent opacity-10 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10"></div>
+
             <!-- Form Title -->
-            <div class="pb-5" style="border-bottom: 1px solid rgba(11,37,64,0.08);">
+            <div class="pb-5 relative z-10" style="border-bottom: 1px solid rgba(11,37,64,0.08);">
                 <h3 class="text-xl font-bold font-display" style="color: #0B2540;">Send a Message</h3>
                 <p class="font-body text-sm mt-1" style="color: #64748B;">Our coordinators will review your cargo requirements immediately.</p>
             </div>
@@ -132,10 +137,16 @@ const submit = () => {
                 <button
                     type="submit"
                     :disabled="form.processing"
-                    class="btn-primary w-full sm:w-auto"
+                    class="btn-primary group w-full sm:w-auto"
                     :style="form.processing ? 'opacity: 0.70; cursor: not-allowed;' : ''"
                 >
-                    {{ form.processing ? 'Sending...' : 'Send Message' }}
+                    <span v-if="form.processing">Sending...</span>
+                    <span v-else class="inline-flex items-center gap-2">
+                        <span>Send Message</span>
+                        <svg class="size-4 transition-transform duration-250 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                        </svg>
+                    </span>
                 </button>
             </div>
         </form>

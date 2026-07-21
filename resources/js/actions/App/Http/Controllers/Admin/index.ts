@@ -4,6 +4,7 @@ import ServiceController from './ServiceController'
 import PartnerController from './PartnerController'
 import MessageController from './MessageController'
 import SettingController from './SettingController'
+import LayoutController from './LayoutController'
 import UserController from './UserController'
 const Admin = {
     DashboardController: Object.assign(DashboardController, DashboardController),
@@ -12,6 +13,7 @@ ServiceController: Object.assign(ServiceController, ServiceController),
 PartnerController: Object.assign(PartnerController, PartnerController),
 MessageController: Object.assign(MessageController, MessageController),
 SettingController: Object.assign(SettingController, SettingController),
+LayoutController: Object.assign(LayoutController, LayoutController),
 UserController: Object.assign(UserController, UserController),
 }
 

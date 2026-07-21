@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { Head, useForm } from '@inertiajs/vue3';
+import { Save, Image as ImageIcon } from '@lucide/vue';
 import { ref } from 'vue';
 import AdminLayout from '@/layouts/AdminLayout.vue';
-import { Save, Image as ImageIcon } from '@lucide/vue';
 
 const props = defineProps<{
     settings: Record<string, string | null>;
@@ -41,6 +41,7 @@ const faviconPreview = ref<string | null>(props.settings.company_favicon || null
 const handleLogoChange = (e: Event) => {
     const target = e.target as HTMLInputElement;
     const file = target.files?.[0];
+
     if (file) {
         form.company_logo_file = file;
         logoPreview.value = URL.createObjectURL(file);
@@ -53,6 +54,7 @@ const handleLogoChange = (e: Event) => {
 const handleFaviconChange = (e: Event) => {
     const target = e.target as HTMLInputElement;
     const file = target.files?.[0];
+
     if (file) {
         form.company_favicon_file = file;
         faviconPreview.value = URL.createObjectURL(file);

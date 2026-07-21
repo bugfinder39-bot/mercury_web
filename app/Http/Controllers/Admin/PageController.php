@@ -88,6 +88,7 @@ class PageController extends Controller
             'ceo_designation' => 'nullable|string|max:255',
             'signature_media_id' => 'nullable|integer',
             'portrait_media_id' => 'nullable|integer',
+            'show_ceo_image' => 'nullable|boolean',
             'ceo_cta_button_text' => 'nullable|string|max:255',
             'ceo_cta_button_url' => 'nullable|string|max:255',
             // CTA banner fields
@@ -192,7 +193,7 @@ class PageController extends Controller
      */
     public function storeSectionItem(Request $request, Section $section): RedirectResponse
     {
-        $validated = $request->validate([
+        $rules = [
             'title' => 'nullable|string|max:255',
             'subtitle' => 'nullable|string|max:255',
             'description' => 'nullable|string',
@@ -201,7 +202,6 @@ class PageController extends Controller
             'link' => 'nullable|string|max:255',
             'order' => 'required|integer',
             'is_active' => 'required|boolean',
-            'image_media_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
             'address' => 'nullable|string',
             'map_url' => 'nullable|string',
             'phone' => 'nullable|string|max:255',
@@ -210,9 +210,23 @@ class PageController extends Controller
             'emergency_contact' => 'nullable|string|max:255',
             'latitude' => 'nullable|string|max:255',
             'longitude' => 'nullable|string|max:255',
-        ]);
+            'designation' => 'nullable|string|max:255',
+            'department' => 'nullable|string|max:255',
+            'office_location' => 'nullable|string|max:255',
+            'mobile' => 'nullable|string|max:255',
+            'whatsapp' => 'nullable|string|max:255',
+            'extension' => 'nullable|string|max:255',
+            'linkedin_url' => 'nullable|string|url|max:255',
+            'facebook_url' => 'nullable|string|url|max:255',
+        ];
 
-        if ($request->hasFile('image_media_file')) {
+        if ($section->type !== 'office_team') {
+            $rules['image_media_file'] = 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048';
+        }
+
+        $validated = $request->validate($rules);
+
+        if ($section->type !== 'office_team' && $request->hasFile('image_media_file')) {
             $file = $request->file('image_media_file');
             $size = $file->getSize();
             $mime = $file->getClientMimeType();
@@ -240,7 +254,7 @@ class PageController extends Controller
      */
     public function updateSectionItem(Request $request, SectionItem $item): RedirectResponse
     {
-        $validated = $request->validate([
+        $rules = [
             'title' => 'nullable|string|max:255',
             'subtitle' => 'nullable|string|max:255',
             'description' => 'nullable|string',
@@ -249,8 +263,6 @@ class PageController extends Controller
             'link' => 'nullable|string|max:255',
             'order' => 'required|integer',
             'is_active' => 'required|boolean',
-            'image_media_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
-            'delete_image_media' => 'nullable|boolean',
             'address' => 'nullable|string',
             'map_url' => 'nullable|string',
             'phone' => 'nullable|string|max:255',
@@ -259,32 +271,51 @@ class PageController extends Controller
             'emergency_contact' => 'nullable|string|max:255',
             'latitude' => 'nullable|string|max:255',
             'longitude' => 'nullable|string|max:255',
-        ]);
+            'designation' => 'nullable|string|max:255',
+            'department' => 'nullable|string|max:255',
+            'office_location' => 'nullable|string|max:255',
+            'mobile' => 'nullable|string|max:255',
+            'whatsapp' => 'nullable|string|max:255',
+            'extension' => 'nullable|string|max:255',
+            'linkedin_url' => 'nullable|string|url|max:255',
+            'facebook_url' => 'nullable|string|url|max:255',
+        ];
 
-        if ($request->hasFile('image_media_file')) {
-            if ($item->image_media_id) {
-                $this->deleteMediaById($item->image_media_id);
+        $isOfficeTeam = $item->section && $item->section->type === 'office_team';
+
+        if (!$isOfficeTeam) {
+            $rules['image_media_file'] = 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048';
+            $rules['delete_image_media'] = 'nullable|boolean';
+        }
+
+        $validated = $request->validate($rules);
+
+        if (!$isOfficeTeam) {
+            if ($request->hasFile('image_media_file')) {
+                if ($item->image_media_id) {
+                    $this->deleteMediaById($item->image_media_id);
+                }
+                $file = $request->file('image_media_file');
+                $size = $file->getSize();
+                $mime = $file->getClientMimeType();
+                $fileName = 'item_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                if (!file_exists(public_path('uploads/media'))) {
+                    mkdir(public_path('uploads/media'), 0755, true);
+                }
+                $file->move(public_path('uploads/media'), $fileName);
+                $media = \App\Models\Media::create([
+                    'file_path' => '/uploads/media/' . $fileName,
+                    'filename' => $fileName,
+                    'mime_type' => $mime,
+                    'size' => $size,
+                ]);
+                $validated['image_media_id'] = $media->id;
+            } elseif ($request->input('delete_image_media')) {
+                if ($item->image_media_id) {
+                    $this->deleteMediaById($item->image_media_id);
+                }
+                $validated['image_media_id'] = null;
             }
-            $file = $request->file('image_media_file');
-            $size = $file->getSize();
-            $mime = $file->getClientMimeType();
-            $fileName = 'item_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-            if (!file_exists(public_path('uploads/media'))) {
-                mkdir(public_path('uploads/media'), 0755, true);
-            }
-            $file->move(public_path('uploads/media'), $fileName);
-            $media = \App\Models\Media::create([
-                'file_path' => '/uploads/media/' . $fileName,
-                'filename' => $fileName,
-                'mime_type' => $mime,
-                'size' => $size,
-            ]);
-            $validated['image_media_id'] = $media->id;
-        } elseif ($request->input('delete_image_media')) {
-            if ($item->image_media_id) {
-                $this->deleteMediaById($item->image_media_id);
-            }
-            $validated['image_media_id'] = null;
         }
 
         $this->cmsService->updateSectionItem($item, $validated);

@@ -25,6 +25,7 @@ class Section extends Model
         'ceo_designation',
         'signature_media_id',
         'portrait_media_id',
+        'show_ceo_image',
         'ceo_cta_button_text',
         'ceo_cta_button_url',
         // CTA Banner fields
@@ -40,6 +41,7 @@ class Section extends Model
     protected $casts = [
         'is_active' => 'boolean',
         'order' => 'integer',
+        'show_ceo_image' => 'boolean',
     ];
 
     public function page(): BelongsTo

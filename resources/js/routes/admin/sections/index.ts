@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../wayfinder'
 import items from './items'
 /**
 * @see \App\Http\Controllers\Admin\PageController::update
@@ -57,6 +57,38 @@ update.put = (args: { section: number | { id: number } } | [section: number | { 
     url: update.url(args, options),
     method: 'put',
 })
+
+    /**
+* @see \App\Http\Controllers\Admin\PageController::update
+ * @see app/Http/Controllers/Admin/PageController.php:77
+ * @route '/admin/sections/{section}'
+ */
+    const updateForm = (args: { section: number | { id: number } } | [section: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: update.url(args, {
+                    [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                        _method: 'PUT',
+                        ...(options?.query ?? options?.mergeQuery ?? {}),
+                    }
+                }),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Admin\PageController::update
+ * @see app/Http/Controllers/Admin/PageController.php:77
+ * @route '/admin/sections/{section}'
+ */
+        updateForm.put = (args: { section: number | { id: number } } | [section: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: update.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'PUT',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+    
+    update.form = updateForm
 const sections = {
     update: Object.assign(update, update),
 items: Object.assign(items, items),

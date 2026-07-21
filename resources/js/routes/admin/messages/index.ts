@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Admin\MessageController::index
  * @see app/Http/Controllers/Admin/MessageController.php:17
@@ -42,6 +42,41 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     method: 'head',
 })
 
+    /**
+* @see \App\Http\Controllers\Admin\MessageController::index
+ * @see app/Http/Controllers/Admin/MessageController.php:17
+ * @route '/admin/messages'
+ */
+    const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: index.url(options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\Admin\MessageController::index
+ * @see app/Http/Controllers/Admin/MessageController.php:17
+ * @route '/admin/messages'
+ */
+        indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: index.url(options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\Admin\MessageController::index
+ * @see app/Http/Controllers/Admin/MessageController.php:17
+ * @route '/admin/messages'
+ */
+        indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: index.url({
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    index.form = indexForm
 /**
 * @see \App\Http\Controllers\Admin\MessageController::toggleRead
  * @see app/Http/Controllers/Admin/MessageController.php:27
@@ -100,6 +135,37 @@ toggleRead.patch = (args: { message: number | { id: number } } | [message: numbe
     method: 'patch',
 })
 
+    /**
+* @see \App\Http\Controllers\Admin\MessageController::toggleRead
+ * @see app/Http/Controllers/Admin/MessageController.php:27
+ * @route '/admin/messages/{message}/toggle-read'
+ */
+    const toggleReadForm = (args: { message: number | { id: number } } | [message: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: toggleRead.url(args, {
+                    [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                        _method: 'PATCH',
+                        ...(options?.query ?? options?.mergeQuery ?? {}),
+                    }
+                }),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Admin\MessageController::toggleRead
+ * @see app/Http/Controllers/Admin/MessageController.php:27
+ * @route '/admin/messages/{message}/toggle-read'
+ */
+        toggleReadForm.patch = (args: { message: number | { id: number } } | [message: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: toggleRead.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'PATCH',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+    
+    toggleRead.form = toggleReadForm
 /**
 * @see \App\Http\Controllers\Admin\MessageController::destroy
  * @see app/Http/Controllers/Admin/MessageController.php:39
@@ -157,6 +223,38 @@ destroy.delete = (args: { message: number | { id: number } } | [message: number 
     url: destroy.url(args, options),
     method: 'delete',
 })
+
+    /**
+* @see \App\Http\Controllers\Admin\MessageController::destroy
+ * @see app/Http/Controllers/Admin/MessageController.php:39
+ * @route '/admin/messages/{message}'
+ */
+    const destroyForm = (args: { message: number | { id: number } } | [message: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: destroy.url(args, {
+                    [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                        _method: 'DELETE',
+                        ...(options?.query ?? options?.mergeQuery ?? {}),
+                    }
+                }),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Admin\MessageController::destroy
+ * @see app/Http/Controllers/Admin/MessageController.php:39
+ * @route '/admin/messages/{message}'
+ */
+        destroyForm.delete = (args: { message: number | { id: number } } | [message: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: destroy.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'DELETE',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+    
+    destroy.form = destroyForm
 const messages = {
     index: Object.assign(index, index),
 toggleRead: Object.assign(toggleRead, toggleRead),

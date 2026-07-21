@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
 import { Head, Link, useForm, router } from '@inertiajs/vue3';
-import AdminLayout from '@/layouts/AdminLayout.vue';
-import { update as updatePage } from '@/routes/admin/pages';
-import { update as updateSectionRoute } from '@/routes/admin/sections';
-import { store as storeSectionItemRoute } from '@/routes/admin/sections/items';
-import { update as updateSectionItemRoute, destroy as destroySectionItemRoute } from '@/routes/admin/section-items';
 import {
     Save, ArrowLeft, Layers, Settings, Eye, EyeOff,
-    Plus, Trash2, Edit, ChevronDown, ChevronUp, Image
+    Plus, Trash2, Edit, ChevronDown, ChevronUp
 } from '@lucide/vue';
+import { ref, computed, watch } from 'vue';
+import AdminLayout from '@/layouts/AdminLayout.vue';
+import { update as updatePage } from '@/routes/admin/pages';
+import { update as updateSectionItemRoute, destroy as destroySectionItemRoute } from '@/routes/admin/section-items';
+import { update as updateSectionRoute } from '@/routes/admin/sections';
+import { store as storeSectionItemRoute } from '@/routes/admin/sections/items';
 
 const props = defineProps<{
     page: any;
@@ -30,9 +30,11 @@ const currentSection = computed(() => {
     if (addingItemToSectionId.value) {
         return props.sections.find(sec => sec.id === addingItemToSectionId.value);
     }
+
     if (editingItem.value) {
         return props.sections.find(sec => sec.id === editingItem.value.section_id);
     }
+
     return null;
 });
 
@@ -85,6 +87,7 @@ watch(() => props.sections, (newSections) => {
             ceo_designation: sec.ceo_designation || '',
             signature_media_id: sec.signature_media_id || '',
             portrait_media_id: sec.portrait_media_id || '',
+            show_ceo_image: sec.show_ceo_image !== null && sec.show_ceo_image !== undefined ? !!sec.show_ceo_image : true,
             ceo_cta_button_text: sec.ceo_cta_button_text || '',
             ceo_cta_button_url: sec.ceo_cta_button_url || '',
             // CTA fields
@@ -111,9 +114,11 @@ watch(() => props.sections, (newSections) => {
         if (!existingForm.portrait_media_file) {
             sectionPreviews.value[sec.id].portrait = sec.portrait_media?.file_path || '';
         }
+
         if (!existingForm.signature_media_file) {
             sectionPreviews.value[sec.id].signature = sec.signature_media?.file_path || '';
         }
+
         if (!existingForm.cta_background_media_file) {
             sectionPreviews.value[sec.id].ctaBg = sec.cta_background_media?.file_path || '';
         }
@@ -127,6 +132,7 @@ watch(() => props.sections, (newSections) => {
 const handleSectionFileChange = (e: Event, sectionId: number, field: string) => {
     const target = e.target as HTMLInputElement;
     const file = target.files?.[0];
+
     if (file) {
         sectionForms.value[sectionId][field] = file;
         
@@ -166,6 +172,7 @@ const submitSection = (section: any) => {
     
     Object.keys(rawData).forEach(key => {
         const val = rawData[key];
+
         if (val !== null && val !== undefined) {
             if (typeof val === 'boolean') {
                 formData.append(key, val ? '1' : '0');
@@ -257,6 +264,7 @@ const openEditItem = (item: any) => {
 const handleItemFileChange = (e: Event) => {
     const target = e.target as HTMLInputElement;
     const file = target.files?.[0];
+
     if (file) {
         itemForm.image_media_file = file;
         itemPreviewUrl.value = URL.createObjectURL(file);
@@ -313,6 +321,7 @@ const toggleSectionActive = (section: any) => {
     formData.append('_method', 'PUT');
     Object.keys(rawData).forEach(key => {
         const val = rawData[key];
+
         if (val !== null && val !== undefined) {
             if (typeof val === 'boolean') {
                 formData.append(key, val ? '1' : '0');
@@ -331,13 +340,16 @@ const draggedSection = ref<any>(null);
 
 const onDragStart = (e: DragEvent, section: any) => {
     draggedSection.value = section;
+
     if (e.dataTransfer) {
         e.dataTransfer.effectAllowed = 'move';
     }
 };
 
 const onDrop = (e: DragEvent, targetSection: any) => {
-    if (!draggedSection.value || draggedSection.value.id === targetSection.id) return;
+    if (!draggedSection.value || draggedSection.value.id === targetSection.id) {
+return;
+}
     
     // Swap their order in our forms state
     const tempOrder = sectionForms.value[draggedSection.value.id].order;
@@ -353,6 +365,7 @@ const onDrop = (e: DragEvent, targetSection: any) => {
 
 const moveSectionUp = (section: any) => {
     const idx = props.sections.findIndex(s => s.id === section.id);
+
     if (idx > 0) {
         const otherSection = props.sections[idx - 1];
         
@@ -367,6 +380,7 @@ const moveSectionUp = (section: any) => {
 
 const moveSectionDown = (section: any) => {
     const idx = props.sections.findIndex(s => s.id === section.id);
+
     if (idx < props.sections.length - 1) {
         const otherSection = props.sections[idx + 1];
         
@@ -573,6 +587,14 @@ const moveSectionDown = (section: any) => {
                                 <label class="label-premium">CEO CTA Button URL</label>
                                 <input v-model="sectionForms[section.id].ceo_cta_button_url" type="text" class="input-premium" />
                                 <span v-if="sectionErrors[section.id]?.ceo_cta_button_url" class="text-xs text-red-500 mt-1 block">{{ sectionErrors[section.id].ceo_cta_button_url }}</span>
+                            </div>
+                            <div>
+                                <label class="label-premium">Show CEO Image</label>
+                                <select v-model="sectionForms[section.id].show_ceo_image" class="input-premium">
+                                    <option :value="true">Show Image (Mode 1)</option>
+                                    <option :value="false">Hide Image (Mode 2 - Full Width)</option>
+                                </select>
+                                <span v-if="sectionErrors[section.id]?.show_ceo_image" class="text-xs text-red-500 mt-1 block">{{ sectionErrors[section.id].show_ceo_image }}</span>
                             </div>
                             
                             <!-- Portrait Upload -->

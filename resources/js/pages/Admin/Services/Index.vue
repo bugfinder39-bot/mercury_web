@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Head, Link, router } from '@inertiajs/vue3';
-import AdminLayout from '@/layouts/AdminLayout.vue';
 import { Edit, Trash2, Plus, Folder } from '@lucide/vue';
+import AdminLayout from '@/layouts/AdminLayout.vue';
 
 defineProps<{
     services: any[];

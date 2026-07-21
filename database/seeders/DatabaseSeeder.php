@@ -17,14 +17,14 @@ class DatabaseSeeder extends Seeder
         User::create([
             'name' => 'Super Admin',
             'email' => 'admin@mercury.com',
-            'password' => Hash::make('password'),
+            'password' => 'password',
             'role' => 'super_admin',
         ]);
 
         User::create([
             'name' => 'Content Editor',
             'email' => 'editor@mercury.com',
-            'password' => Hash::make('password'),
+            'password' => 'password',
             'role' => 'content_editor',
         ]);
 

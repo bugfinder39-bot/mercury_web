@@ -23,16 +23,20 @@ const props = defineProps<{
 
 // Determine layout position: default left, but if subheading or body has '[right]' or a specific item exists, use right.
 const imagePosition = computed(() => {
-    if (!props.section) return 'left';
+    if (!props.section) {
+return 'left';
+}
     
     // Check if there is an item with title 'Position'
     const positionItem = props.section.items?.find(item => item.title?.toLowerCase() === 'position');
+
     if (positionItem) {
         return positionItem.value?.toLowerCase() === 'right' ? 'right' : 'left';
     }
     
     // Fallback check in subheading/body
     const textToSearch = `${props.section.subheading} ${props.section.body}`.toLowerCase();
+
     if (textToSearch.includes('[right]') || textToSearch.includes('position:right')) {
         return 'right';
     }
@@ -49,14 +53,21 @@ const showcaseImage = computed(() => {
             item.image_media ||
             (item.value && (item.value.includes('/images/') || item.value.match(/\.(jpeg|jpg|png|webp|gif)$/i)))
         );
-        if (imageItem) return imageItem.image_media?.file_path || imageItem.value;
+
+        if (imageItem) {
+return imageItem.image_media?.file_path || imageItem.value;
+}
     }
+
     return '/images/about-home.jpg';
 });
 
 // Extract bullet points (items that are not the image and not position configuration)
 const bulletPoints = computed(() => {
-    if (!props.section?.items) return [];
+    if (!props.section?.items) {
+return [];
+}
+
     return props.section.items.filter(
         item => item.title?.toLowerCase() !== 'image' && 
         item.title?.toLowerCase() !== 'position' &&
@@ -68,6 +79,7 @@ const bulletPoints = computed(() => {
 const ctaInfo = computed(() => {
     if (props.section?.items) {
         const ctaItem = props.section.items.find(item => item.title?.toLowerCase() === 'cta' || item.link);
+
         if (ctaItem) {
             return {
                 text: ctaItem.description || ctaItem.title || 'Get Started',
@@ -75,12 +87,16 @@ const ctaInfo = computed(() => {
             };
         }
     }
+
     return null;
 });
 
 // Format body text by stripping formatting helpers
 const cleanBody = computed(() => {
-    if (!props.section?.body) return '';
+    if (!props.section?.body) {
+return '';
+}
+
     return props.section.body.replace(/\[right\]/gi, '').replace(/position:right/gi, '').trim();
 });
 </script>

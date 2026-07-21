@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Admin\PageController::index
  * @see app/Http/Controllers/Admin/PageController.php:26
@@ -42,6 +42,41 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     method: 'head',
 })
 
+    /**
+* @see \App\Http\Controllers\Admin\PageController::index
+ * @see app/Http/Controllers/Admin/PageController.php:26
+ * @route '/admin/pages'
+ */
+    const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: index.url(options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\Admin\PageController::index
+ * @see app/Http/Controllers/Admin/PageController.php:26
+ * @route '/admin/pages'
+ */
+        indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: index.url(options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\Admin\PageController::index
+ * @see app/Http/Controllers/Admin/PageController.php:26
+ * @route '/admin/pages'
+ */
+        indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: index.url({
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    index.form = indexForm
 /**
 * @see \App\Http\Controllers\Admin\PageController::edit
  * @see app/Http/Controllers/Admin/PageController.php:36
@@ -109,6 +144,41 @@ edit.head = (args: { page: number | { id: number } } | [page: number | { id: num
     method: 'head',
 })
 
+    /**
+* @see \App\Http\Controllers\Admin\PageController::edit
+ * @see app/Http/Controllers/Admin/PageController.php:36
+ * @route '/admin/pages/{page}/edit'
+ */
+    const editForm = (args: { page: number | { id: number } } | [page: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: edit.url(args, options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\Admin\PageController::edit
+ * @see app/Http/Controllers/Admin/PageController.php:36
+ * @route '/admin/pages/{page}/edit'
+ */
+        editForm.get = (args: { page: number | { id: number } } | [page: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: edit.url(args, options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\Admin\PageController::edit
+ * @see app/Http/Controllers/Admin/PageController.php:36
+ * @route '/admin/pages/{page}/edit'
+ */
+        editForm.head = (args: { page: number | { id: number } } | [page: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: edit.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    edit.form = editForm
 /**
 * @see \App\Http\Controllers\Admin\PageController::update
  * @see app/Http/Controllers/Admin/PageController.php:60
@@ -166,6 +236,38 @@ update.put = (args: { page: number | { id: number } } | [page: number | { id: nu
     url: update.url(args, options),
     method: 'put',
 })
+
+    /**
+* @see \App\Http\Controllers\Admin\PageController::update
+ * @see app/Http/Controllers/Admin/PageController.php:60
+ * @route '/admin/pages/{page}'
+ */
+    const updateForm = (args: { page: number | { id: number } } | [page: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: update.url(args, {
+                    [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                        _method: 'PUT',
+                        ...(options?.query ?? options?.mergeQuery ?? {}),
+                    }
+                }),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Admin\PageController::update
+ * @see app/Http/Controllers/Admin/PageController.php:60
+ * @route '/admin/pages/{page}'
+ */
+        updateForm.put = (args: { page: number | { id: number } } | [page: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: update.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'PUT',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+    
+    update.form = updateForm
 const pages = {
     index: Object.assign(index, index),
 edit: Object.assign(edit, edit),

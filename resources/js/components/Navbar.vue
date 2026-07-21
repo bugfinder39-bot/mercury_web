@@ -1,11 +1,40 @@
 <script setup lang="ts">
 import { usePage, Link } from '@inertiajs/vue3';
-import { Menu, X, ArrowRight } from '@lucide/vue';
+import { Menu, X, ArrowRight, User, LayoutDashboard } from '@lucide/vue';
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 
 const page = usePage();
 const currentUrl = computed(() => page.url);
 const settings = computed(() => (page.props.settings as Record<string, any>) || {});
+const user = computed(() => (page.props as any).auth?.user);
+
+const showLoginButton = computed(() => {
+    const navLogin = settings.value.navbar_login_button;
+    const showLogin = settings.value.show_login_button;
+
+    if (navLogin !== undefined && navLogin !== null) {
+        return String(navLogin) !== 'false';
+    }
+    if (showLogin !== undefined && showLogin !== null) {
+        return String(showLogin) !== 'false';
+    }
+    return true;
+});
+
+const loginButtonData = computed(() => {
+    if (user.value) {
+        return {
+            text: 'Dashboard',
+            href: '/admin/dashboard',
+            icon: LayoutDashboard,
+        };
+    }
+    return {
+        text: 'Login',
+        href: '/login',
+        icon: User,
+    };
+});
 
 const mobileMenuOpen = ref(false);
 const isScrolled = ref(false);
@@ -25,10 +54,15 @@ onUnmounted(() => {
 const parsedNavbarLinks = computed(() => {
     try {
         const val = settings.value.navbar_links;
-        if (!val) return [];
+
+        if (!val) {
+return [];
+}
+
         const links = typeof val === 'string' ? JSON.parse(val) : val;
+
         return Array.isArray(links) ? links : [];
-    } catch (e) {
+    } catch {
         return [];
     }
 });
@@ -37,18 +71,28 @@ const isActive = (href: string) => {
     if (href === '/') {
         return currentUrl.value === '/';
     }
+
     return currentUrl.value.startsWith(href);
 };
 
 // Colors/Styles Helpers
 const hexToRgb = (hex: string) => {
-    if (!hex || typeof hex !== 'string') return '255, 255, 255';
+    if (!hex || typeof hex !== 'string') {
+return '255, 255, 255';
+}
+
     let cleanHex = hex.replace('#', '');
+
     if (cleanHex.length === 3) {
         cleanHex = cleanHex.split('').map(char => char + char).join('');
     }
+
     const num = parseInt(cleanHex, 16);
-    if (isNaN(num)) return '255, 255, 255';
+
+    if (isNaN(num)) {
+return '255, 255, 255';
+}
+
     return `${(num >> 16) & 255}, ${(num >> 8) & 255}, ${num & 255}`;
 };
 
@@ -143,7 +187,7 @@ const headerStyle = computed(() => {
                         <Link
                             :href="link.href"
                             :target="link.target_blank ? '_blank' : undefined"
-                            class="relative py-2 text-sm tracking-wide transition-colors duration-200 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:rounded-full after:transition-all after:duration-300"
+                            class="relative py-2 text-sm tracking-wide transition-colors duration-250 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:rounded-full after:transition-all after:duration-300 after:bg-[var(--navbar-active-color,#E8770C)]"
                             :style="{
                                 color: isActive(link.href) 
                                     ? headerStyle['--navbar-active-color'] 
@@ -154,8 +198,8 @@ const headerStyle = computed(() => {
                                     ? 'font-semibold after:w-full'
                                     : 'after:w-0 hover:after:w-full',
                             ]"
-                            @mouseover="e => { if(!isActive(link.href)) (e.target as any).style.color = headerStyle['--navbar-hover-color']; }"
-                            @mouseleave="e => { if(!isActive(link.href)) (e.target as any).style.color = isScrolled ? headerStyle['--navbar-text-color'] : (settings.navbar_style === 'solid' ? headerStyle['--navbar-text-color'] : 'rgba(255,255,255,0.90)'); }"
+                            @mouseover="(e: any) => { if(!isActive(link.href)) (e.target as any).style.color = headerStyle['--navbar-hover-color']; }"
+                            @mouseleave="(e: any) => { if(!isActive(link.href)) (e.target as any).style.color = isScrolled ? headerStyle['--navbar-text-color'] : (settings.navbar_style === 'solid' ? headerStyle['--navbar-text-color'] : 'rgba(255,255,255,0.90)'); }"
                         >
                             {{ link.name }}
                         </Link>
@@ -163,21 +207,63 @@ const headerStyle = computed(() => {
                 </ul>
             </nav>
 
-            <!-- Desktop CTA Button -->
-            <div class="hidden lg:block" v-if="settings.navbar_cta_active === 'true'">
+            <!-- Desktop Right CTA & Login Buttons -->
+            <div class="hidden lg:flex items-center gap-3">
+                <!-- Login / Dashboard Button -->
                 <Link
-                    :href="settings.navbar_cta_url || '/contact'"
-                    class="px-5 py-2.5 rounded-lg text-sm font-semibold transition-all duration-300 shadow-sm inline-flex items-center"
-                    :style="{ 
-                        backgroundColor: headerStyle['--navbar-cta-bg'], 
-                        color: headerStyle['--navbar-cta-text-color'],
-                        'box-shadow': !isScrolled ? '0 4px 14px rgba(232, 119, 12, 0.4)' : 'none'
+                    v-if="showLoginButton"
+                    :href="loginButtonData.href"
+                    class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-full border transition-all duration-300 group shadow-sm"
+                    :style="{
+                        backgroundColor: isScrolled
+                            ? 'rgba(232, 119, 12, 0.08)'
+                            : (settings.navbar_style === 'solid' ? 'rgba(232, 119, 12, 0.08)' : 'rgba(255, 255, 255, 0.15)'),
+                        borderColor: isScrolled
+                            ? 'rgba(232, 119, 12, 0.3)'
+                            : (settings.navbar_style === 'solid' ? 'rgba(232, 119, 12, 0.3)' : 'rgba(255, 255, 255, 0.3)'),
+                        color: isScrolled
+                            ? headerStyle['--navbar-text-color']
+                            : (settings.navbar_style === 'solid' ? headerStyle['--navbar-text-color'] : '#FFFFFF'),
+                        backdropFilter: settings.navbar_style === 'glassmorphism' ? 'blur(8px)' : 'none',
                     }"
-                    @mouseover="e => { (e.target as any).style.backgroundColor = headerStyle['--navbar-cta-hover-bg']; (e.target as any).style.color = headerStyle['--navbar-cta-hover-text-color']; }"
-                    @mouseleave="e => { (e.target as any).style.backgroundColor = headerStyle['--navbar-cta-bg']; (e.target as any).style.color = headerStyle['--navbar-cta-text-color']; }"
+                    @mouseover="(e: any) => {
+                        (e.currentTarget as any).style.transform = 'translateY(-2px)';
+                        (e.currentTarget as any).style.borderColor = '#E8770C';
+                        (e.currentTarget as any).style.boxShadow = '0 4px 14px rgba(232, 119, 12, 0.25)';
+                        (e.currentTarget as any).style.color = '#E8770C';
+                    }"
+                    @mouseleave="(e: any) => {
+                        (e.currentTarget as any).style.transform = 'translateY(0)';
+                        (e.currentTarget as any).style.borderColor = isScrolled
+                            ? 'rgba(232, 119, 12, 0.3)'
+                            : (settings.navbar_style === 'solid' ? 'rgba(232, 119, 12, 0.3)' : 'rgba(255, 255, 255, 0.3)');
+                        (e.currentTarget as any).style.boxShadow = 'none';
+                        (e.currentTarget as any).style.color = isScrolled
+                            ? headerStyle['--navbar-text-color']
+                            : (settings.navbar_style === 'solid' ? headerStyle['--navbar-text-color'] : '#FFFFFF');
+                    }"
                 >
-                    {{ settings.navbar_cta_text || 'Get a Quote' }}
+                    <component :is="loginButtonData.icon" class="size-4 text-[#E8770C] transition-transform duration-250 group-hover:scale-110" />
+                    <span>{{ loginButtonData.text }}</span>
                 </Link>
+
+                <!-- Desktop CTA Button -->
+                <div v-if="settings.navbar_cta_active === 'true'">
+                    <Link
+                        :href="settings.navbar_cta_url || '/contact'"
+                        class="btn-primary group text-sm px-5 py-2.5"
+                        :style="{ 
+                            background: `linear-gradient(135deg, ${headerStyle['--navbar-cta-bg']} 0%, ${headerStyle['--navbar-cta-hover-bg']} 100%)`, 
+                            color: headerStyle['--navbar-cta-text-color'],
+                            'box-shadow': !isScrolled ? `0 4px 20px rgba(232, 119, 12, 0.4)` : 'none'
+                        }"
+                        @mouseover="(e: any) => { (e.currentTarget as any).style.transform = 'translateY(-2px) scale(1.02)'; }"
+                        @mouseleave="(e: any) => { (e.currentTarget as any).style.transform = 'translateY(0) scale(1)'; }"
+                    >
+                        <span>{{ settings.navbar_cta_text || 'Get a Quote' }}</span>
+                        <ArrowRight class="size-4 ml-1.5 transition-transform duration-250 group-hover:translate-x-1" />
+                    </Link>
+                </div>
             </div>
 
             <!-- Mobile Menu Toggle Button -->
@@ -238,16 +324,29 @@ const headerStyle = computed(() => {
                     </ul>
                 </nav>
 
-                <!-- Mobile CTA Button -->
-                <div class="pt-6" style="border-top: 1px solid rgba(255,255,255,0.10);" v-if="settings.navbar_cta_active === 'true'">
-                    <Link
-                        :href="settings.navbar_cta_url || '/contact'"
-                        @click="mobileMenuOpen = false"
-                        class="w-full justify-center px-5 py-3 rounded-lg text-sm font-semibold transition-all duration-300 shadow-sm inline-flex items-center justify-center"
-                        :style="{ backgroundColor: headerStyle['--navbar-cta-bg'], color: headerStyle['--navbar-cta-text-color'] }"
-                    >
-                        {{ settings.navbar_cta_text || 'Get a Quote' }}
-                    </Link>
+                <!-- Mobile CTA & Login Section -->
+                <div class="pt-6 space-y-3" style="border-top: 1px solid rgba(255,255,255,0.10);">
+                    <div v-if="showLoginButton">
+                        <Link
+                            :href="loginButtonData.href"
+                            @click="mobileMenuOpen = false"
+                            class="w-full px-5 py-3 rounded-lg text-sm font-semibold transition-all duration-300 shadow-sm inline-flex items-center justify-center gap-2 border border-[#E8770C]/30 text-white bg-[#E8770C]/10 hover:bg-[#E8770C]/20 hover:border-[#E8770C]"
+                        >
+                            <component :is="loginButtonData.icon" class="size-4 text-[#E8770C]" />
+                            <span>{{ loginButtonData.text }}</span>
+                        </Link>
+                    </div>
+
+                    <div v-if="settings.navbar_cta_active === 'true'">
+                        <Link
+                            :href="settings.navbar_cta_url || '/contact'"
+                            @click="mobileMenuOpen = false"
+                            class="w-full justify-center px-5 py-3 rounded-lg text-sm font-semibold transition-all duration-300 shadow-sm inline-flex items-center justify-center"
+                            :style="{ backgroundColor: headerStyle['--navbar-cta-bg'], color: headerStyle['--navbar-cta-text-color'] }"
+                        >
+                            {{ settings.navbar_cta_text || 'Get a Quote' }}
+                        </Link>
+                    </div>
                 </div>
             </div>
         </div>
