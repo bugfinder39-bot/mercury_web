@@ -182,17 +182,23 @@ defineOptions({
                     </div>
                 </div>
             </div>
+            <!-- Contact Form Section -->
+            <div v-else-if="section.type === 'contact_form'" class="max-w-7xl mx-auto px-6 py-12 md:py-16 flex flex-col items-center">
+                <div class="text-center max-w-3xl mx-auto mb-10">
+                    <span v-if="section.subheading" class="text-xs font-mono uppercase tracking-wider block mb-2" style="color: #E8770C;">
+                        {{ section.subheading }}
+                    </span>
+                    <h2 v-if="section.heading" class="text-3xl font-bold font-display tracking-tight" style="color: #0B2540;">
+                        {{ section.heading }}
+                    </h2>
+                    <p v-if="section.body" class="text-slate-600 font-body text-base mt-2">
+                        {{ section.body }}
+                    </p>
+                </div>
+                <div class="w-full max-w-[850px]">
+                    <ContactForm :section="section" />
+                </div>
+            </div>
         </template>
-
-        <!-- Main Body: Centered Contact Form -->
-        <div class="max-w-7xl mx-auto px-6 py-12 md:py-16 flex flex-col items-center">
-            <div class="text-center max-w-3xl mx-auto mb-10">
-                <span class="text-xs font-mono uppercase tracking-wider block mb-2" style="color: #E8770C;">Message Desk</span>
-                <h2 class="text-3xl font-bold font-display tracking-tight" style="color: #0B2540;">Send Us a Message</h2>
-            </div>
-            <div class="w-full max-w-[850px]">
-                <ContactForm />
-            </div>
-        </div>
     </div>
 </template>

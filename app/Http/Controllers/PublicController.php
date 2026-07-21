@@ -86,17 +86,90 @@ class PublicController extends Controller
      */
     public function submitContactForm(\Illuminate\Http\Request $request): \Illuminate\Http\RedirectResponse
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'phone' => 'nullable|string|max:50',
-            'subject' => 'nullable|string|max:255',
-            'message' => 'required|string',
-        ]);
+        $contactSection = \App\Models\Section::where('type', 'contact_form')
+            ->with(['items' => function ($query) {
+                $query->where('is_active', true)->orderBy('order');
+            }])
+            ->first();
 
-        \App\Models\ContactMessage::create($validated);
+        $rules = [];
+        $activeFields = $contactSection ? $contactSection->items : collect();
 
-        return back()->with('success', 'Thank you! Your message has been received.');
+        if ($activeFields->count() > 0) {
+            foreach ($activeFields as $field) {
+                $fieldName = $field->field_name ?: \Illuminate\Support\Str::slug($field->title, '_');
+                if (!$fieldName) {
+                    continue;
+                }
+
+                $fieldRules = [];
+                if ($field->is_required) {
+                    $fieldRules[] = 'required';
+                } else {
+                    $fieldRules[] = 'nullable';
+                }
+
+                if ($field->field_type === 'email') {
+                    $fieldRules[] = 'email';
+                } elseif ($field->field_type === 'number') {
+                    $fieldRules[] = 'numeric';
+                } elseif ($field->field_type === 'file') {
+                    $fieldRules[] = 'file|max:5120';
+                } else {
+                    $fieldRules[] = 'string';
+                }
+
+                $rules[$fieldName] = implode('|', $fieldRules);
+            }
+        } else {
+            $rules = [
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|max:255',
+                'phone' => 'nullable|string|max:50',
+                'subject' => 'nullable|string|max:255',
+                'message' => 'required|string',
+            ];
+        }
+
+        $validated = $request->validate($rules);
+
+        // Core fields mapping
+        $coreData = [
+            'name' => $validated['name'] ?? ($request->input('name') ?: 'N/A'),
+            'email' => $validated['email'] ?? ($request->input('email') ?: 'N/A'),
+            'phone' => $validated['phone'] ?? $request->input('phone'),
+            'subject' => $validated['subject'] ?? $request->input('subject'),
+            'message' => $validated['message'] ?? ($request->input('message') ?: 'N/A'),
+        ];
+
+        // Handle uploaded file if present in dynamic field
+        $extraData = [];
+        foreach ($request->all() as $key => $val) {
+            if (in_array($key, ['_token', 'name', 'email', 'phone', 'subject', 'message'])) {
+                continue;
+            }
+            if ($request->hasFile($key)) {
+                $file = $request->file($key);
+                $fileName = 'form_file_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                if (!file_exists(public_path('uploads/contact_files'))) {
+                    mkdir(public_path('uploads/contact_files'), 0755, true);
+                }
+                $file->move(public_path('uploads/contact_files'), $fileName);
+                $extraData[$key] = '/uploads/contact_files/' . $fileName;
+            } else {
+                $extraData[$key] = $val;
+            }
+        }
+
+        if (!empty($extraData)) {
+            $coreData['data'] = $extraData;
+        }
+
+        \App\Models\ContactMessage::create($coreData);
+
+        $successMsg = $contactSection->success_message ?? 'Thank you! Your message has been received.';
+
+        return back()->with('success', $successMsg);
     }
 }
 

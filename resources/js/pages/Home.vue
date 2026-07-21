@@ -116,6 +116,11 @@ const mapCtaBannerSection = (section: any) => {
                 :section="section"
             />
 
+            <HeroBanner
+                v-else-if="section.type === 'hero_banner'"
+                :section="section"
+            />
+
             <AboutFlex
                 v-else-if="section.type === 'about_us'"
                 :section="section"

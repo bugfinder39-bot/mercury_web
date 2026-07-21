@@ -4,7 +4,7 @@ import {
     Save, ArrowLeft, Layers, Settings, Eye, EyeOff,
     Plus, Trash2, Edit, ChevronDown, ChevronUp
 } from '@lucide/vue';
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, nextTick } from 'vue';
 import AdminLayout from '@/layouts/AdminLayout.vue';
 import { update as updatePage } from '@/routes/admin/pages';
 import { update as updateSectionItemRoute, destroy as destroySectionItemRoute } from '@/routes/admin/section-items';
@@ -64,7 +64,7 @@ const submitSeo = () => {
 
 // Section Forms Map & States
 const sectionForms = ref<Record<number, any>>({});
-const sectionPreviews = ref<Record<number, { portrait?: string, signature?: string, ctaBg?: string }>>({});
+const sectionPreviews = ref<Record<number, { hero?: string, portrait?: string, signature?: string, ctaBg?: string }>>({});
 const sectionErrors = ref<Record<number, any>>({});
 
 watch(() => props.sections, (newSections) => {
@@ -81,6 +81,8 @@ watch(() => props.sections, (newSections) => {
             body: sec.body || '',
             is_active: sec.is_active,
             order: sec.order,
+            // Hero fields
+            hero_media_id: sec.hero_media_id || '',
             // CEO fields
             ceo_rich_text: sec.ceo_rich_text || '',
             ceo_name: sec.ceo_name || '',
@@ -98,10 +100,21 @@ watch(() => props.sections, (newSections) => {
             cta_primary_btn_url: sec.cta_primary_btn_url || '',
             cta_secondary_btn_text: sec.cta_secondary_btn_text || '',
             cta_secondary_btn_url: sec.cta_secondary_btn_url || '',
+            // Contact form fields
+            form_card_title: sec.form_card_title || '',
+            form_description: sec.form_description || '',
+            button_text: sec.button_text || '',
+            button_icon: sec.button_icon || '',
+            success_message: sec.success_message || '',
+            error_message: sec.error_message || '',
+            required_field_text: sec.required_field_text || '',
+            placeholder_text: sec.placeholder_text || '',
             // File Uploads
+            hero_media_file: existingForm.hero_media_file || null,
             portrait_media_file: existingForm.portrait_media_file || null,
             signature_media_file: existingForm.signature_media_file || null,
             cta_background_media_file: existingForm.cta_background_media_file || null,
+            delete_hero_media: existingForm.delete_hero_media || false,
             delete_portrait_media: existingForm.delete_portrait_media || false,
             delete_signature_media: existingForm.delete_signature_media || false,
             delete_cta_background_media: existingForm.delete_cta_background_media || false,
@@ -111,15 +124,24 @@ watch(() => props.sections, (newSections) => {
             sectionPreviews.value[sec.id] = {};
         }
 
-        if (!existingForm.portrait_media_file) {
+        const isHeroPendingFile = !!sectionForms.value[sec.id]?.hero_media_file;
+        const isPortraitPendingFile = !!sectionForms.value[sec.id]?.portrait_media_file;
+        const isSignaturePendingFile = !!sectionForms.value[sec.id]?.signature_media_file;
+        const isCtaBgPendingFile = !!sectionForms.value[sec.id]?.cta_background_media_file;
+
+        if (!isHeroPendingFile && !sectionForms.value[sec.id]?.delete_hero_media) {
+            sectionPreviews.value[sec.id].hero = sec.hero_media?.file_path || '';
+        }
+
+        if (!isPortraitPendingFile && !sectionForms.value[sec.id]?.delete_portrait_media) {
             sectionPreviews.value[sec.id].portrait = sec.portrait_media?.file_path || '';
         }
 
-        if (!existingForm.signature_media_file) {
+        if (!isSignaturePendingFile && !sectionForms.value[sec.id]?.delete_signature_media) {
             sectionPreviews.value[sec.id].signature = sec.signature_media?.file_path || '';
         }
 
-        if (!existingForm.cta_background_media_file) {
+        if (!isCtaBgPendingFile && !sectionForms.value[sec.id]?.delete_cta_background_media) {
             sectionPreviews.value[sec.id].ctaBg = sec.cta_background_media?.file_path || '';
         }
 
@@ -136,7 +158,10 @@ const handleSectionFileChange = (e: Event, sectionId: number, field: string) => 
     if (file) {
         sectionForms.value[sectionId][field] = file;
         
-        if (field === 'portrait_media_file') {
+        if (field === 'hero_media_file') {
+            sectionPreviews.value[sectionId].hero = URL.createObjectURL(file);
+            sectionForms.value[sectionId].delete_hero_media = false;
+        } else if (field === 'portrait_media_file') {
             sectionPreviews.value[sectionId].portrait = URL.createObjectURL(file);
             sectionForms.value[sectionId].delete_portrait_media = false;
         } else if (field === 'signature_media_file') {
@@ -150,7 +175,11 @@ const handleSectionFileChange = (e: Event, sectionId: number, field: string) => 
 };
 
 const removeSectionImage = (sectionId: number, field: string) => {
-    if (field === 'portrait') {
+    if (field === 'hero') {
+        sectionForms.value[sectionId].hero_media_file = null;
+        sectionForms.value[sectionId].delete_hero_media = true;
+        sectionPreviews.value[sectionId].hero = '';
+    } else if (field === 'portrait') {
         sectionForms.value[sectionId].portrait_media_file = null;
         sectionForms.value[sectionId].delete_portrait_media = true;
         sectionPreviews.value[sectionId].portrait = '';
@@ -192,12 +221,29 @@ const submitSection = (section: any) => {
         onSuccess: () => {
             sectionErrors.value[section.id] = {};
             // Reset local file selection states
+            sectionForms.value[section.id].hero_media_file = null;
             sectionForms.value[section.id].portrait_media_file = null;
             sectionForms.value[section.id].signature_media_file = null;
             sectionForms.value[section.id].cta_background_media_file = null;
+            sectionForms.value[section.id].delete_hero_media = false;
             sectionForms.value[section.id].delete_portrait_media = false;
             sectionForms.value[section.id].delete_signature_media = false;
             sectionForms.value[section.id].delete_cta_background_media = false;
+
+            // Sync preview paths and media IDs from newly updated props after DOM tick
+            nextTick(() => {
+                const updatedSec = props.sections.find(s => s.id === section.id);
+                if (updatedSec) {
+                    sectionForms.value[section.id].hero_media_id = updatedSec.hero_media_id || '';
+                    sectionForms.value[section.id].portrait_media_id = updatedSec.portrait_media_id || '';
+                    sectionForms.value[section.id].signature_media_id = updatedSec.signature_media_id || '';
+                    sectionForms.value[section.id].cta_background_media_id = updatedSec.cta_background_media_id || '';
+                    sectionPreviews.value[section.id].hero = updatedSec.hero_media?.file_path || '';
+                    sectionPreviews.value[section.id].portrait = updatedSec.portrait_media?.file_path || '';
+                    sectionPreviews.value[section.id].signature = updatedSec.signature_media?.file_path || '';
+                    sectionPreviews.value[section.id].ctaBg = updatedSec.cta_background_media?.file_path || '';
+                }
+            });
         }
     });
 };
@@ -222,6 +268,17 @@ const itemForm = useForm({
     emergency_contact: '',
     latitude: '',
     longitude: '',
+    linkedin_url: '',
+    facebook_url: '',
+    // Form field attributes
+    field_name: '',
+    field_type: 'text',
+    placeholder: '',
+    is_required: false,
+    width: 'full',
+    help_text: '',
+    default_value: '',
+    options: '',
     order: 0,
     is_active: true,
     image_media_file: null as File | null,
@@ -232,6 +289,9 @@ const openAddItem = (sectionId: number) => {
     addingItemToSectionId.value = sectionId;
     editingItem.value = null;
     itemForm.reset();
+    itemForm.field_type = 'text';
+    itemForm.width = 'full';
+    itemForm.is_required = false;
     itemForm.order = 0;
     itemForm.is_active = true;
     itemPreviewUrl.value = '';
@@ -254,6 +314,14 @@ const openEditItem = (item: any) => {
     itemForm.emergency_contact = item.emergency_contact || '';
     itemForm.latitude = item.latitude || '';
     itemForm.longitude = item.longitude || '';
+    itemForm.field_name = item.field_name || '';
+    itemForm.field_type = item.field_type || 'text';
+    itemForm.placeholder = item.placeholder || '';
+    itemForm.is_required = item.is_required !== null && item.is_required !== undefined ? !!item.is_required : false;
+    itemForm.width = item.width || 'full';
+    itemForm.help_text = item.help_text || '';
+    itemForm.default_value = item.default_value || '';
+    itemForm.options = item.options || '';
     itemForm.order = item.order;
     itemForm.is_active = item.is_active;
     itemForm.image_media_file = null;
@@ -284,6 +352,7 @@ const saveItem = () => {
             ...data,
             _method: 'PUT',
             is_active: data.is_active ? '1' : '0',
+            is_required: data.is_required ? '1' : '0',
             delete_image_media: data.delete_image_media ? '1' : '0',
         })).post(updateSectionItemRoute(editingItem.value.id).url, {
             preserveScroll: true,
@@ -295,6 +364,7 @@ const saveItem = () => {
         itemForm.transform((data) => ({
             ...data,
             is_active: data.is_active ? '1' : '0',
+            is_required: data.is_required ? '1' : '0',
         })).post(storeSectionItemRoute(addingItemToSectionId.value).url, {
             preserveScroll: true,
             onSuccess: () => {
@@ -545,11 +615,6 @@ const moveSectionDown = (section: any) => {
                             <span v-if="sectionErrors[section.id]?.body" class="text-xs text-red-500 mt-1 block">{{ sectionErrors[section.id].body }}</span>
                         </div>
                         <div>
-                            <label class="label-premium">Order</label>
-                            <input v-model="sectionForms[section.id].order" type="number" class="input-premium" required />
-                            <span v-if="sectionErrors[section.id]?.order" class="text-xs text-red-500 mt-1 block">{{ sectionErrors[section.id].order }}</span>
-                        </div>
-                        <div>
                             <label class="label-premium">Status</label>
                             <select v-model="sectionForms[section.id].is_active" class="input-premium">
                                 <option :value="true">Active</option>
@@ -557,6 +622,26 @@ const moveSectionDown = (section: any) => {
                             </select>
                             <span v-if="sectionErrors[section.id]?.is_active" class="text-xs text-red-500 mt-1 block">{{ sectionErrors[section.id].is_active }}</span>
                         </div>
+
+                        <!-- Dynamic Specific Section fields: Hero Banner / Hero Carousel -->
+                        <template v-if="section.type === 'hero_banner' || section.type === 'hero_carousel'">
+                            <div class="md:col-span-2 border-t border-base-200 pt-4 mt-2">
+                                <h4 class="font-display font-semibold text-sm mb-3" style="color: #0B2540;">Hero Banner Image Settings</h4>
+                            </div>
+                            <div class="md:col-span-2 space-y-2">
+                                <label class="label-premium">Hero Image (Uploaded image displays on frontend hero banner)</label>
+                                <div class="flex items-center gap-4">
+                                    <div v-if="sectionPreviews[section.id]?.hero" class="h-24 w-44 rounded overflow-hidden border border-base-200 bg-base-50 flex items-center justify-center p-1">
+                                        <img :src="sectionPreviews[section.id].hero" alt="Hero Image Preview" class="w-full h-full object-cover rounded" />
+                                    </div>
+                                    <div class="flex-1">
+                                        <input type="file" @change="handleSectionFileChange($event, section.id, 'hero_media_file')" class="file-input file-input-bordered w-full max-w-xs text-xs" accept="image/*" />
+                                        <button v-if="sectionPreviews[section.id]?.hero" type="button" @click="removeSectionImage(section.id, 'hero')" class="text-xs text-red-600 block mt-1 hover:underline">Remove Image</button>
+                                    </div>
+                                </div>
+                                <span v-if="sectionErrors[section.id]?.hero_media_file" class="text-xs text-red-500 mt-1 block">{{ sectionErrors[section.id].hero_media_file }}</span>
+                            </div>
+                        </template>
 
                         <!-- Dynamic Specific Section fields: CEO Message -->
                         <template v-if="section.type === 'ceo_message'">
@@ -680,6 +765,38 @@ const moveSectionDown = (section: any) => {
                             </div>
                         </template>
 
+                        <!-- Dynamic Specific Section fields: Contact Form -->
+                        <template v-if="section.type === 'contact_form'">
+                            <div class="md:col-span-2 border-t border-base-200 pt-4 mt-2">
+                                <h4 class="font-display font-semibold text-sm mb-3" style="color: #0B2540;">Contact Form Section Settings</h4>
+                            </div>
+                            <div>
+                                <label class="label-premium">Form Card Title</label>
+                                <input v-model="sectionForms[section.id].form_card_title" type="text" class="input-premium" placeholder="Send a Message" />
+                                <span v-if="sectionErrors[section.id]?.form_card_title" class="text-xs text-red-500 mt-1 block">{{ sectionErrors[section.id].form_card_title }}</span>
+                            </div>
+                            <div>
+                                <label class="label-premium">Form Description</label>
+                                <input v-model="sectionForms[section.id].form_description" type="text" class="input-premium" placeholder="Our coordinators will review..." />
+                                <span v-if="sectionErrors[section.id]?.form_description" class="text-xs text-red-500 mt-1 block">{{ sectionErrors[section.id].form_description }}</span>
+                            </div>
+                            <div>
+                                <label class="label-premium">Button Text</label>
+                                <input v-model="sectionForms[section.id].button_text" type="text" class="input-premium" placeholder="Send Message" />
+                                <span v-if="sectionErrors[section.id]?.button_text" class="text-xs text-red-500 mt-1 block">{{ sectionErrors[section.id].button_text }}</span>
+                            </div>
+                            <div>
+                                <label class="label-premium">Required Indicator</label>
+                                <input v-model="sectionForms[section.id].required_field_text" type="text" class="input-premium" placeholder="*" />
+                                <span v-if="sectionErrors[section.id]?.required_field_text" class="text-xs text-red-500 mt-1 block">{{ sectionErrors[section.id].required_field_text }}</span>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="label-premium">Success Message</label>
+                                <input v-model="sectionForms[section.id].success_message" type="text" class="input-premium" placeholder="Thank you! Your message has been received." />
+                                <span v-if="sectionErrors[section.id]?.success_message" class="text-xs text-red-500 mt-1 block">{{ sectionErrors[section.id].success_message }}</span>
+                            </div>
+                        </template>
+
                         <div class="md:col-span-2 flex justify-end">
                             <button type="submit" class="btn-primary">
                                 <Save class="size-4" />
@@ -729,7 +846,15 @@ const moveSectionDown = (section: any) => {
                                         </span>
                                     </div>
                                     <p class="text-xs text-muted font-body line-clamp-2 mb-3">{{ item.description || 'No Description' }}</p>
-                                    <div v-if="section.type === 'office_locations'" class="text-[11px] font-mono space-y-1 text-secondary-txt">
+                                    <div v-if="section.type === 'contact_form'" class="text-[11px] font-mono space-y-1 text-secondary-txt">
+                                        <div><span class="text-muted">Type:</span> <span class="capitalize font-semibold text-amber-700">{{ item.field_type || 'text' }}</span></div>
+                                        <div><span class="text-muted">Key:</span> {{ item.field_name || item.title.toLowerCase().replace(/[^a-z0-9]+/g, '_') }}</div>
+                                        <div><span class="text-muted">Width:</span> {{ item.width || 'full' }}</div>
+                                        <div><span class="text-muted">Required:</span> {{ item.is_required ? 'Yes' : 'No' }}</div>
+                                        <div v-if="item.placeholder"><span class="text-muted">Placeholder:</span> {{ item.placeholder }}</div>
+                                        <div><span class="text-muted">Order:</span> {{ item.order }}</div>
+                                    </div>
+                                    <div v-else-if="section.type === 'office_locations'" class="text-[11px] font-mono space-y-1 text-secondary-txt">
                                         <div v-if="item.subtitle"><span class="text-muted">Badge:</span> {{ item.subtitle }}</div>
                                         <div v-if="item.address"><span class="text-muted">Address:</span> {{ item.address }}</div>
                                         <div v-if="item.phone"><span class="text-muted">Phone:</span> {{ item.phone }}</div>
@@ -846,6 +971,69 @@ const moveSectionDown = (section: any) => {
                                     <input v-model="itemForm.longitude" type="text" class="input-premium" placeholder="e.g. 90.4026" />
                                     <span v-if="itemForm.errors.longitude" class="text-xs text-red-500 mt-1 block">{{ itemForm.errors.longitude }}</span>
                                 </div>
+                            </div>
+                        </template>
+
+                        <!-- Form Builder Item Fields for Contact Form -->
+                        <template v-if="sectionType === 'contact_form'">
+                            <div class="sm:col-span-2">
+                                <label class="label-premium">Field Label *</label>
+                                <input v-model="itemForm.title" type="text" class="input-premium" placeholder="e.g. Full Name, Email Address" required />
+                                <span v-if="itemForm.errors.title" class="text-xs text-red-500 mt-1 block">{{ itemForm.errors.title }}</span>
+                            </div>
+                            <div>
+                                <label class="label-premium">Field Name (Input Key)</label>
+                                <input v-model="itemForm.field_name" type="text" class="input-premium" placeholder="e.g. name, email, phone" />
+                                <span v-if="itemForm.errors.field_name" class="text-xs text-red-500 mt-1 block">{{ itemForm.errors.field_name }}</span>
+                            </div>
+                            <div>
+                                <label class="label-premium">Field Type</label>
+                                <select v-model="itemForm.field_type" class="input-premium">
+                                    <option value="text">Single Line Text</option>
+                                    <option value="email">Email</option>
+                                    <option value="phone">Phone</option>
+                                    <option value="number">Number</option>
+                                    <option value="textarea">Textarea</option>
+                                    <option value="dropdown">Dropdown</option>
+                                    <option value="radio">Radio Options</option>
+                                    <option value="checkbox">Checkboxes</option>
+                                    <option value="date">Date</option>
+                                    <option value="time">Time</option>
+                                    <option value="file">File Upload</option>
+                                    <option value="hidden">Hidden Input</option>
+                                </select>
+                                <span v-if="itemForm.errors.field_type" class="text-xs text-red-500 mt-1 block">{{ itemForm.errors.field_type }}</span>
+                            </div>
+                            <div>
+                                <label class="label-premium">Placeholder</label>
+                                <input v-model="itemForm.placeholder" type="text" class="input-premium" placeholder="e.g. Enter your name..." />
+                                <span v-if="itemForm.errors.placeholder" class="text-xs text-red-500 mt-1 block">{{ itemForm.errors.placeholder }}</span>
+                            </div>
+                            <div>
+                                <label class="label-premium">Width</label>
+                                <select v-model="itemForm.width" class="input-premium">
+                                    <option value="full">Full Width (100%)</option>
+                                    <option value="half">Half Width (50%)</option>
+                                </select>
+                                <span v-if="itemForm.errors.width" class="text-xs text-red-500 mt-1 block">{{ itemForm.errors.width }}</span>
+                            </div>
+                            <div>
+                                <label class="label-premium">Required</label>
+                                <select v-model="itemForm.is_required" class="input-premium">
+                                    <option :value="true">Required (ON)</option>
+                                    <option :value="false">Optional (OFF)</option>
+                                </select>
+                                <span v-if="itemForm.errors.is_required" class="text-xs text-red-500 mt-1 block">{{ itemForm.errors.is_required }}</span>
+                            </div>
+                            <div class="sm:col-span-2" v-if="['dropdown', 'radio', 'checkbox'].includes(itemForm.field_type)">
+                                <label class="label-premium">Options (Comma separated)</label>
+                                <input v-model="itemForm.options" type="text" class="input-premium" placeholder="e.g. Option 1, Option 2, Option 3" />
+                                <span v-if="itemForm.errors.options" class="text-xs text-red-500 mt-1 block">{{ itemForm.errors.options }}</span>
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label class="label-premium">Help Text / Instruction</label>
+                                <input v-model="itemForm.help_text" type="text" class="input-premium" placeholder="e.g. Include country code for phone" />
+                                <span v-if="itemForm.errors.help_text" class="text-xs text-red-500 mt-1 block">{{ itemForm.errors.help_text }}</span>
                             </div>
                         </template>
 

@@ -802,6 +802,85 @@ class PageSeeder extends Seeder
             'is_active' => true,
         ]);
 
+        $formSec = Section::create([
+            'page_id' => $contact->id,
+            'type' => 'contact_form',
+            'heading' => 'Send Us a Message',
+            'subheading' => 'MESSAGE DESK',
+            'body' => 'Our coordinators will review your cargo requirements immediately.',
+            'form_card_title' => 'Send a Message',
+            'form_description' => 'Our coordinators will review your cargo requirements immediately.',
+            'button_text' => 'Send Message',
+            'button_icon' => 'Send',
+            'success_message' => 'Thank you! Your message has been received.',
+            'error_message' => 'Failed to submit form. Please check input fields.',
+            'required_field_text' => '*',
+            'placeholder_text' => '',
+            'order' => 4,
+            'is_active' => true,
+        ]);
+
+        SectionItem::create([
+            'section_id' => $formSec->id,
+            'title' => 'Full Name',
+            'field_name' => 'name',
+            'field_type' => 'text',
+            'placeholder' => 'John Doe',
+            'is_required' => true,
+            'width' => 'full',
+            'order' => 1,
+            'is_active' => true,
+        ]);
+
+        SectionItem::create([
+            'section_id' => $formSec->id,
+            'title' => 'Email Address',
+            'field_name' => 'email',
+            'field_type' => 'email',
+            'placeholder' => 'john@example.com',
+            'is_required' => true,
+            'width' => 'full',
+            'order' => 2,
+            'is_active' => true,
+        ]);
+
+        SectionItem::create([
+            'section_id' => $formSec->id,
+            'title' => 'Phone Number',
+            'field_name' => 'phone',
+            'field_type' => 'phone',
+            'placeholder' => '+880 17...',
+            'is_required' => false,
+            'width' => 'half',
+            'order' => 3,
+            'is_active' => true,
+        ]);
+
+        SectionItem::create([
+            'section_id' => $formSec->id,
+            'title' => 'Subject',
+            'field_name' => 'subject',
+            'field_type' => 'text',
+            'placeholder' => 'Inquiry or Quote',
+            'is_required' => false,
+            'width' => 'half',
+            'order' => 4,
+            'is_active' => true,
+        ]);
+
+        SectionItem::create([
+            'section_id' => $formSec->id,
+            'title' => 'Message',
+            'field_name' => 'message',
+            'field_type' => 'textarea',
+            'placeholder' => 'Describe shipping requirements...',
+            'is_required' => true,
+            'width' => 'full',
+            'order' => 5,
+            'is_active' => true,
+        ]);
+
     }
 }
+
 

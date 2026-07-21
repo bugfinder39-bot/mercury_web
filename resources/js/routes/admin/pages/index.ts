@@ -181,7 +181,7 @@ edit.head = (args: { page: number | { id: number } } | [page: number | { id: num
     edit.form = editForm
 /**
 * @see \App\Http\Controllers\Admin\PageController::update
- * @see app/Http/Controllers/Admin/PageController.php:60
+ * @see app/Http/Controllers/Admin/PageController.php:61
  * @route '/admin/pages/{page}'
  */
 export const update = (args: { page: number | { id: number } } | [page: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -196,7 +196,7 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\PageController::update
- * @see app/Http/Controllers/Admin/PageController.php:60
+ * @see app/Http/Controllers/Admin/PageController.php:61
  * @route '/admin/pages/{page}'
  */
 update.url = (args: { page: number | { id: number } } | [page: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -229,7 +229,7 @@ update.url = (args: { page: number | { id: number } } | [page: number | { id: nu
 
 /**
 * @see \App\Http\Controllers\Admin\PageController::update
- * @see app/Http/Controllers/Admin/PageController.php:60
+ * @see app/Http/Controllers/Admin/PageController.php:61
  * @route '/admin/pages/{page}'
  */
 update.put = (args: { page: number | { id: number } } | [page: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -239,7 +239,7 @@ update.put = (args: { page: number | { id: number } } | [page: number | { id: nu
 
     /**
 * @see \App\Http\Controllers\Admin\PageController::update
- * @see app/Http/Controllers/Admin/PageController.php:60
+ * @see app/Http/Controllers/Admin/PageController.php:61
  * @route '/admin/pages/{page}'
  */
     const updateForm = (args: { page: number | { id: number } } | [page: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -254,7 +254,7 @@ update.put = (args: { page: number | { id: number } } | [page: number | { id: nu
 
             /**
 * @see \App\Http\Controllers\Admin\PageController::update
- * @see app/Http/Controllers/Admin/PageController.php:60
+ * @see app/Http/Controllers/Admin/PageController.php:61
  * @route '/admin/pages/{page}'
  */
         updateForm.put = (args: { page: number | { id: number } } | [page: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

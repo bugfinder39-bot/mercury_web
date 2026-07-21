@@ -24,6 +24,7 @@ class CmsService
                     $query->where('is_active', true)->orderBy('order');
                 },
                 'items.imageMedia',
+                'heroMedia',
                 'portraitMedia',
                 'signatureMedia',
                 'ctaBackgroundMedia'

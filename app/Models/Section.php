@@ -36,6 +36,17 @@ class Section extends Model
         'cta_primary_btn_url',
         'cta_secondary_btn_text',
         'cta_secondary_btn_url',
+        // Contact Form fields
+        'form_card_title',
+        'form_description',
+        'button_text',
+        'button_icon',
+        'success_message',
+        'error_message',
+        'required_field_text',
+        'placeholder_text',
+        // Hero Media field
+        'hero_media_id',
     ];
 
     protected $casts = [
@@ -52,6 +63,11 @@ class Section extends Model
     public function items(): HasMany
     {
         return $this->hasMany(SectionItem::class)->orderBy('order');
+    }
+
+    public function heroMedia(): BelongsTo
+    {
+        return $this->belongsTo(Media::class, 'hero_media_id');
     }
 
     public function portraitMedia(): BelongsTo

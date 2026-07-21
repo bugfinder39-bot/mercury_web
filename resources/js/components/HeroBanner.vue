@@ -7,21 +7,31 @@ const props = defineProps<{
         heading?: string;
         subheading?: string;
         body?: string;
+        hero_media?: {
+            file_path: string;
+        };
         items?: Array<{
             id: number;
             title: string;
             description?: string;
             value?: string;
+            image_media?: {
+                file_path: string;
+            };
         }>;
     };
 }>();
 
 const backgroundImage = computed(() => {
+    if (props.section?.hero_media?.file_path) {
+        return props.section.hero_media.file_path;
+    }
+
     if (props.section?.items && props.section.items.length > 0) {
-        const itemWithImage = props.section.items.find(item => item.value);
+        const itemWithImage = props.section.items.find(item => item.image_media?.file_path || item.value);
 
         if (itemWithImage) {
-            return itemWithImage.value;
+            return itemWithImage.image_media?.file_path || itemWithImage.value;
         }
     }
 

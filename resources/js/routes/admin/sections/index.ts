@@ -2,7 +2,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 import items from './items'
 /**
 * @see \App\Http\Controllers\Admin\PageController::update
- * @see app/Http/Controllers/Admin/PageController.php:77
+ * @see app/Http/Controllers/Admin/PageController.php:78
  * @route '/admin/sections/{section}'
  */
 export const update = (args: { section: number | { id: number } } | [section: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -17,7 +17,7 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\PageController::update
- * @see app/Http/Controllers/Admin/PageController.php:77
+ * @see app/Http/Controllers/Admin/PageController.php:78
  * @route '/admin/sections/{section}'
  */
 update.url = (args: { section: number | { id: number } } | [section: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -50,7 +50,7 @@ update.url = (args: { section: number | { id: number } } | [section: number | { 
 
 /**
 * @see \App\Http\Controllers\Admin\PageController::update
- * @see app/Http/Controllers/Admin/PageController.php:77
+ * @see app/Http/Controllers/Admin/PageController.php:78
  * @route '/admin/sections/{section}'
  */
 update.put = (args: { section: number | { id: number } } | [section: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -60,7 +60,7 @@ update.put = (args: { section: number | { id: number } } | [section: number | { 
 
     /**
 * @see \App\Http\Controllers\Admin\PageController::update
- * @see app/Http/Controllers/Admin/PageController.php:77
+ * @see app/Http/Controllers/Admin/PageController.php:78
  * @route '/admin/sections/{section}'
  */
     const updateForm = (args: { section: number | { id: number } } | [section: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -75,7 +75,7 @@ update.put = (args: { section: number | { id: number } } | [section: number | { 
 
             /**
 * @see \App\Http\Controllers\Admin\PageController::update
- * @see app/Http/Controllers/Admin/PageController.php:77
+ * @see app/Http/Controllers/Admin/PageController.php:78
  * @route '/admin/sections/{section}'
  */
         updateForm.put = (args: { section: number | { id: number } } | [section: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

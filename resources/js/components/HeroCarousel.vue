@@ -9,6 +9,9 @@ const props = defineProps<{
         heading?: string;
         subheading?: string;
         body?: string;
+        hero_media?: {
+            file_path: string;
+        };
         items?: Array<{
             id: number;
             title: string;
@@ -17,6 +20,9 @@ const props = defineProps<{
             value?: string; // Image path
             link?: string;
             order: number;
+            image_media?: {
+                file_path: string;
+            };
         }>;
     };
 }>();
@@ -152,7 +158,7 @@ onUnmounted(() => {
                 <div
                     class="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-[7000ms] ease-out"
                     :style="{ 
-                        backgroundImage: `url(${slide.image_media?.file_path || slide.value})`,
+                        backgroundImage: `url(${slide.image_media?.file_path || slide.value || section?.hero_media?.file_path || '/images/hero-sea.jpg'})`,
                         transform: index === currentIndex ? 'scale(1.08) translate(5px, 2px)' : 'scale(1.0)'
                     }"
                 ></div>

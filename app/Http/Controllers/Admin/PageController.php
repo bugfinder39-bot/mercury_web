@@ -41,6 +41,7 @@ class PageController extends Controller
                     $query->orderBy('order');
                 },
                 'items.imageMedia',
+                'heroMedia',
                 'portraitMedia',
                 'signatureMedia',
                 'ctaBackgroundMedia'
@@ -82,6 +83,7 @@ class PageController extends Controller
             'body' => 'nullable|string',
             'is_active' => 'required|boolean',
             'order' => 'required|integer',
+            'hero_media_id' => 'nullable|integer',
             // CEO message fields
             'ceo_rich_text' => 'nullable|string',
             'ceo_name' => 'nullable|string|max:255',
@@ -99,89 +101,145 @@ class PageController extends Controller
             'cta_primary_btn_url' => 'nullable|string|max:255',
             'cta_secondary_btn_text' => 'nullable|string|max:255',
             'cta_secondary_btn_url' => 'nullable|string|max:255',
+            // Contact Form fields
+            'form_card_title' => 'nullable|string|max:255',
+            'form_description' => 'nullable|string',
+            'button_text' => 'nullable|string|max:255',
+            'button_icon' => 'nullable|string|max:255',
+            'success_message' => 'nullable|string|max:255',
+            'error_message' => 'nullable|string|max:255',
+            'required_field_text' => 'nullable|string|max:255',
+            'placeholder_text' => 'nullable|string|max:255',
             // Uploads
-            'portrait_media_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
-            'signature_media_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
-            'cta_background_media_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+            'hero_media_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:10240',
+            'portrait_media_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:10240',
+            'signature_media_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:10240',
+            'cta_background_media_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:10240',
         ]);
 
-        if ($request->hasFile('portrait_media_file')) {
-            if ($section->portrait_media_id) {
-                $this->deleteMediaById($section->portrait_media_id);
+        try {
+            if ($request->hasFile('hero_media_file')) {
+                if ($section->hero_media_id) {
+                    $this->deleteMediaById($section->hero_media_id);
+                }
+                $file = $request->file('hero_media_file');
+                $size = $file->getSize();
+                $mime = $file->getClientMimeType();
+                $extension = $file->getClientOriginalExtension() ?: 'jpg';
+                $fileName = 'hero_' . time() . '_' . uniqid() . '.' . $extension;
+                if (!file_exists(public_path('uploads/media'))) {
+                    mkdir(public_path('uploads/media'), 0755, true);
+                }
+                $file->move(public_path('uploads/media'), $fileName);
+                $media = \App\Models\Media::create([
+                    'file_path' => '/uploads/media/' . $fileName,
+                    'filename' => $fileName,
+                    'mime_type' => $mime,
+                    'size' => $size,
+                ]);
+                $validated['hero_media_id'] = $media->id;
+            } elseif ($request->boolean('delete_hero_media')) {
+                if ($section->hero_media_id) {
+                    $this->deleteMediaById($section->hero_media_id);
+                }
+                $validated['hero_media_id'] = null;
             }
-            $file = $request->file('portrait_media_file');
-            $size = $file->getSize();
-            $mime = $file->getClientMimeType();
-            $fileName = 'portrait_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-            if (!file_exists(public_path('uploads/media'))) {
-                mkdir(public_path('uploads/media'), 0755, true);
+
+            if ($request->hasFile('portrait_media_file')) {
+                if ($section->portrait_media_id) {
+                    $this->deleteMediaById($section->portrait_media_id);
+                }
+                $file = $request->file('portrait_media_file');
+                $size = $file->getSize();
+                $mime = $file->getClientMimeType();
+                $extension = $file->getClientOriginalExtension() ?: 'jpg';
+                $fileName = 'portrait_' . time() . '_' . uniqid() . '.' . $extension;
+                if (!file_exists(public_path('uploads/media'))) {
+                    mkdir(public_path('uploads/media'), 0755, true);
+                }
+                $file->move(public_path('uploads/media'), $fileName);
+                $media = \App\Models\Media::create([
+                    'file_path' => '/uploads/media/' . $fileName,
+                    'filename' => $fileName,
+                    'mime_type' => $mime,
+                    'size' => $size,
+                ]);
+                $validated['portrait_media_id'] = $media->id;
+            } elseif ($request->boolean('delete_portrait_media')) {
+                if ($section->portrait_media_id) {
+                    $this->deleteMediaById($section->portrait_media_id);
+                }
+                $validated['portrait_media_id'] = null;
             }
-            $file->move(public_path('uploads/media'), $fileName);
-            $media = \App\Models\Media::create([
-                'file_path' => '/uploads/media/' . $fileName,
-                'filename' => $fileName,
-                'mime_type' => $mime,
-                'size' => $size,
-            ]);
-            $validated['portrait_media_id'] = $media->id;
-        } elseif ($request->input('delete_portrait_media')) {
-            if ($section->portrait_media_id) {
-                $this->deleteMediaById($section->portrait_media_id);
+
+            if ($request->hasFile('signature_media_file')) {
+                if ($section->signature_media_id) {
+                    $this->deleteMediaById($section->signature_media_id);
+                }
+                $file = $request->file('signature_media_file');
+                $size = $file->getSize();
+                $mime = $file->getClientMimeType();
+                $extension = $file->getClientOriginalExtension() ?: 'jpg';
+                $fileName = 'signature_' . time() . '_' . uniqid() . '.' . $extension;
+                if (!file_exists(public_path('uploads/media'))) {
+                    mkdir(public_path('uploads/media'), 0755, true);
+                }
+                $file->move(public_path('uploads/media'), $fileName);
+                $media = \App\Models\Media::create([
+                    'file_path' => '/uploads/media/' . $fileName,
+                    'filename' => $fileName,
+                    'mime_type' => $mime,
+                    'size' => $size,
+                ]);
+                $validated['signature_media_id'] = $media->id;
+            } elseif ($request->boolean('delete_signature_media')) {
+                if ($section->signature_media_id) {
+                    $this->deleteMediaById($section->signature_media_id);
+                }
+                $validated['signature_media_id'] = null;
             }
-            $validated['portrait_media_id'] = null;
+
+            if ($request->hasFile('cta_background_media_file')) {
+                if ($section->cta_background_media_id) {
+                    $this->deleteMediaById($section->cta_background_media_id);
+                }
+                $file = $request->file('cta_background_media_file');
+                $size = $file->getSize();
+                $mime = $file->getClientMimeType();
+                $extension = $file->getClientOriginalExtension() ?: 'jpg';
+                $fileName = 'cta_bg_' . time() . '_' . uniqid() . '.' . $extension;
+                if (!file_exists(public_path('uploads/media'))) {
+                    mkdir(public_path('uploads/media'), 0755, true);
+                }
+                $file->move(public_path('uploads/media'), $fileName);
+                $media = \App\Models\Media::create([
+                    'file_path' => '/uploads/media/' . $fileName,
+                    'filename' => $fileName,
+                    'mime_type' => $mime,
+                    'size' => $size,
+                ]);
+                $validated['cta_background_media_id'] = $media->id;
+            } elseif ($request->boolean('delete_cta_background_media')) {
+                if ($section->cta_background_media_id) {
+                    $this->deleteMediaById($section->cta_background_media_id);
+                }
+                $validated['cta_background_media_id'] = null;
+            }
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Section media upload failed: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
+            throw $e;
         }
 
-        if ($request->hasFile('signature_media_file')) {
-            if ($section->signature_media_id) {
-                $this->deleteMediaById($section->signature_media_id);
-            }
-            $file = $request->file('signature_media_file');
-            $size = $file->getSize();
-            $mime = $file->getClientMimeType();
-            $fileName = 'signature_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-            if (!file_exists(public_path('uploads/media'))) {
-                mkdir(public_path('uploads/media'), 0755, true);
-            }
-            $file->move(public_path('uploads/media'), $fileName);
-            $media = \App\Models\Media::create([
-                'file_path' => '/uploads/media/' . $fileName,
-                'filename' => $fileName,
-                'mime_type' => $mime,
-                'size' => $size,
-            ]);
-            $validated['signature_media_id'] = $media->id;
-        } elseif ($request->input('delete_signature_media')) {
-            if ($section->signature_media_id) {
-                $this->deleteMediaById($section->signature_media_id);
-            }
-            $validated['signature_media_id'] = null;
-        }
-
-        if ($request->hasFile('cta_background_media_file')) {
-            if ($section->cta_background_media_id) {
-                $this->deleteMediaById($section->cta_background_media_id);
-            }
-            $file = $request->file('cta_background_media_file');
-            $size = $file->getSize();
-            $mime = $file->getClientMimeType();
-            $fileName = 'cta_bg_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-            if (!file_exists(public_path('uploads/media'))) {
-                mkdir(public_path('uploads/media'), 0755, true);
-            }
-            $file->move(public_path('uploads/media'), $fileName);
-            $media = \App\Models\Media::create([
-                'file_path' => '/uploads/media/' . $fileName,
-                'filename' => $fileName,
-                'mime_type' => $mime,
-                'size' => $size,
-            ]);
-            $validated['cta_background_media_id'] = $media->id;
-        } elseif ($request->input('delete_cta_background_media')) {
-            if ($section->cta_background_media_id) {
-                $this->deleteMediaById($section->cta_background_media_id);
-            }
-            $validated['cta_background_media_id'] = null;
-        }
+        unset(
+            $validated['hero_media_file'],
+            $validated['portrait_media_file'],
+            $validated['signature_media_file'],
+            $validated['cta_background_media_file'],
+            $validated['delete_hero_media'],
+            $validated['delete_portrait_media'],
+            $validated['delete_signature_media'],
+            $validated['delete_cta_background_media']
+        );
 
         $this->cmsService->updateSection($section, $validated);
 
@@ -218,10 +276,18 @@ class PageController extends Controller
             'extension' => 'nullable|string|max:255',
             'linkedin_url' => 'nullable|string|url|max:255',
             'facebook_url' => 'nullable|string|url|max:255',
+            'field_name' => 'nullable|string|max:255',
+            'field_type' => 'nullable|string|max:255',
+            'placeholder' => 'nullable|string|max:255',
+            'is_required' => 'nullable|boolean',
+            'width' => 'nullable|string|max:255',
+            'help_text' => 'nullable|string',
+            'default_value' => 'nullable|string|max:255',
+            'options' => 'nullable|string',
         ];
 
         if ($section->type !== 'office_team') {
-            $rules['image_media_file'] = 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048';
+            $rules['image_media_file'] = 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:10240';
         }
 
         $validated = $request->validate($rules);
@@ -230,7 +296,8 @@ class PageController extends Controller
             $file = $request->file('image_media_file');
             $size = $file->getSize();
             $mime = $file->getClientMimeType();
-            $fileName = 'item_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $extension = $file->getClientOriginalExtension() ?: 'jpg';
+            $fileName = 'item_' . time() . '_' . uniqid() . '.' . $extension;
             if (!file_exists(public_path('uploads/media'))) {
                 mkdir(public_path('uploads/media'), 0755, true);
             }
@@ -243,6 +310,8 @@ class PageController extends Controller
             ]);
             $validated['image_media_id'] = $media->id;
         }
+
+        unset($validated['image_media_file']);
 
         $this->cmsService->storeSectionItem($section, $validated);
 
@@ -279,12 +348,20 @@ class PageController extends Controller
             'extension' => 'nullable|string|max:255',
             'linkedin_url' => 'nullable|string|url|max:255',
             'facebook_url' => 'nullable|string|url|max:255',
+            'field_name' => 'nullable|string|max:255',
+            'field_type' => 'nullable|string|max:255',
+            'placeholder' => 'nullable|string|max:255',
+            'is_required' => 'nullable|boolean',
+            'width' => 'nullable|string|max:255',
+            'help_text' => 'nullable|string',
+            'default_value' => 'nullable|string|max:255',
+            'options' => 'nullable|string',
         ];
 
         $isOfficeTeam = $item->section && $item->section->type === 'office_team';
 
         if (!$isOfficeTeam) {
-            $rules['image_media_file'] = 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048';
+            $rules['image_media_file'] = 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:10240';
             $rules['delete_image_media'] = 'nullable|boolean';
         }
 
@@ -298,7 +375,8 @@ class PageController extends Controller
                 $file = $request->file('image_media_file');
                 $size = $file->getSize();
                 $mime = $file->getClientMimeType();
-                $fileName = 'item_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $extension = $file->getClientOriginalExtension() ?: 'jpg';
+                $fileName = 'item_' . time() . '_' . uniqid() . '.' . $extension;
                 if (!file_exists(public_path('uploads/media'))) {
                     mkdir(public_path('uploads/media'), 0755, true);
                 }
@@ -310,13 +388,15 @@ class PageController extends Controller
                     'size' => $size,
                 ]);
                 $validated['image_media_id'] = $media->id;
-            } elseif ($request->input('delete_image_media')) {
+            } elseif ($request->boolean('delete_image_media')) {
                 if ($item->image_media_id) {
                     $this->deleteMediaById($item->image_media_id);
                 }
                 $validated['image_media_id'] = null;
             }
         }
+
+        unset($validated['image_media_file'], $validated['delete_image_media']);
 
         $this->cmsService->updateSectionItem($item, $validated);
 
@@ -347,7 +427,8 @@ class PageController extends Controller
 
         $media = \App\Models\Media::find($mediaId);
         if ($media) {
-            $filePath = public_path($media->file_path);
+            $relativePath = ltrim($media->file_path, '/\\');
+            $filePath = public_path($relativePath);
             if (file_exists($filePath) && is_file($filePath)) {
                 @unlink($filePath);
             }

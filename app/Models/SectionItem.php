@@ -41,10 +41,20 @@ class SectionItem extends Model
         'extension',
         'linkedin_url',
         'facebook_url',
+        // Form field configuration
+        'field_name',
+        'field_type',
+        'placeholder',
+        'is_required',
+        'width',
+        'help_text',
+        'default_value',
+        'options',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'is_required' => 'boolean',
         'order' => 'integer',
     ];
 
