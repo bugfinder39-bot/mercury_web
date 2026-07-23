@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Service;
 use App\Models\Partner;
+use App\Models\NetworkLocation;
+use App\Models\Certification;
+use App\Models\ExchangeRate;
+use App\Models\Section;
 use App\Services\CmsService;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -25,12 +29,32 @@ class PublicController extends Controller
         $page = $this->cmsService->getPageWithSections('home');
         $services = Service::where('is_active', true)->orderBy('order')->get();
         $partners = Partner::where('is_active', true)->orderBy('order')->get();
+        $networkLocations = NetworkLocation::where('is_active', true)->orderBy('order')->get();
+        $certifications = Certification::where('is_active', true)->orderBy('order')->get();
+        $exchangeRates = ExchangeRate::where('is_active', true)->orderBy('order')->get();
 
         return Inertia::render('Home', [
             'page' => $page,
             'sections' => $page->sections,
             'services' => $services,
             'partners' => $partners,
+            'networkLocations' => $networkLocations,
+            'certifications' => $certifications,
+            'exchangeRates' => $exchangeRates,
+        ]);
+    }
+
+    /**
+     * Render Dedicated Exchange Rates Page.
+     */
+    public function exchangeRates(): Response
+    {
+        $exchangeRates = ExchangeRate::where('is_active', true)->orderBy('order')->get();
+        $section = Section::where('type', 'exchange_rates')->first();
+
+        return Inertia::render('ExchangeRates', [
+            'exchangeRates' => $exchangeRates,
+            'section' => $section,
         ]);
     }
 

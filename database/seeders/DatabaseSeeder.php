@@ -14,19 +14,23 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Seed default admin users
-        User::create([
-            'name' => 'Super Admin',
-            'email' => 'admin@mercury.com',
-            'password' => 'password',
-            'role' => 'super_admin',
-        ]);
+        User::firstOrCreate(
+            ['email' => 'admin@mercury.com'],
+            [
+                'name' => 'Super Admin',
+                'password' => 'password',
+                'role' => 'super_admin',
+            ]
+        );
 
-        User::create([
-            'name' => 'Content Editor',
-            'email' => 'editor@mercury.com',
-            'password' => 'password',
-            'role' => 'content_editor',
-        ]);
+        User::firstOrCreate(
+            ['email' => 'editor@mercury.com'],
+            [
+                'name' => 'Content Editor',
+                'password' => 'password',
+                'role' => 'content_editor',
+            ]
+        );
 
         // Run component and content seeders
         $this->call([
@@ -34,6 +38,7 @@ class DatabaseSeeder extends Seeder
             ServiceSeeder::class,
             PartnerSeeder::class,
             SettingSeeder::class,
+            DashboardWidgetSeeder::class,
         ]);
     }
 }

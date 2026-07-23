@@ -11,6 +11,13 @@ class PageSeeder extends Seeder
 {
     public function run(): void
     {
+        // Truncate existing page & section records for clean re-seeding
+        \Illuminate\Support\Facades\DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        Page::truncate();
+        Section::truncate();
+        SectionItem::truncate();
+        \Illuminate\Support\Facades\DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
         // 1. Home Page
         $home = Page::create([
             'name' => 'Home',
@@ -509,14 +516,47 @@ class PageSeeder extends Seeder
             'order' => 17,
         ]);
 
-        // Home Section 18: Logistics Image Banner
+        // Home Section 18: Global Network Map
+        Section::create([
+            'page_id' => $home->id,
+            'type' => 'global_network',
+            'heading' => 'Global Logistics Network',
+            'subheading' => 'GLOBAL REACH · STRATEGIC HUBS',
+            'body' => 'Discover Mercury Bangladesh’s extensive worldwide logistics coverage spanning major ocean sea ports, air cargo terminals, warehousing hubs, and strategic trade partners across continents.',
+            'order' => 18,
+            'is_active' => true,
+        ]);
+
+        // Home Section 19: Certifications & Memberships
+        Section::create([
+            'page_id' => $home->id,
+            'type' => 'certifications',
+            'heading' => 'Certifications & Accreditations',
+            'subheading' => 'TRUST & COMPLIANCE · GLOBAL STANDARDS',
+            'body' => 'Mercury Bangladesh operates under globally recognized quality standards, international shipping licenses, and freight forwarding memberships to ensure complete regulatory compliance.',
+            'order' => 19,
+            'is_active' => true,
+        ]);
+
+        // Home Section 20: Live Exchange Rates
+        Section::create([
+            'page_id' => $home->id,
+            'type' => 'exchange_rates',
+            'heading' => 'Live Global Exchange Rates',
+            'subheading' => 'REAL-TIME CURRENCY MARKET DATA',
+            'body' => 'Stay informed with live currency exchange rates updated directly from international financial market APIs, featuring custom market overrides and instant currency conversion calculations.',
+            'order' => 20,
+            'is_active' => true,
+        ]);
+
+        // Home Section 21: Logistics Image Banner
         $logisticsBanner = Section::create([
             'page_id' => $home->id,
             'type' => 'logistics_image_banner',
             'heading' => 'Reliable Global Shipping and Customs Expertise',
             'subheading' => 'MERCURY BANGLADESH',
             'body' => 'We manage logistics complexities so you can focus on growing your business globally.',
-            'order' => 18,
+            'order' => 21,
         ]);
 
         SectionItem::create([
@@ -533,6 +573,7 @@ class PageSeeder extends Seeder
             'link' => '/contact',
             'order' => 2,
         ]);
+
 
 
         // 2. About Page

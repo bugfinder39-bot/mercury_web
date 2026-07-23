@@ -18,6 +18,9 @@ import TileGrid from '@/components/TileGrid.vue';
 import WhyBusinessesTrust from '@/components/WhyBusinessesTrust.vue';
 import WhyChooseUs from '@/components/WhyChooseUs.vue';
 import WorkingProcess from '@/components/WorkingProcess.vue';
+import GlobalNetworkSection from '@/components/GlobalNetworkSection.vue';
+import CertificationsSection from '@/components/CertificationsSection.vue';
+import ExchangeRatesSection from '@/components/ExchangeRatesSection.vue';
 import PublicLayout from '@/layouts/PublicLayout.vue';
 
 // New premium sections
@@ -59,11 +62,15 @@ defineProps<{
     }>;
     services: Array<any>;
     partners: Array<any>;
+    networkLocations?: Array<any>;
+    certifications?: Array<any>;
+    exchangeRates?: Array<any>;
 }>();
 
 defineOptions({
     layout: PublicLayout,
 });
+
 
 // Map backend DB fields of Section to keys expected by CEOMessageSection.vue component
 const mapCeoSection = (section: any) => {
@@ -204,6 +211,24 @@ const mapCtaBannerSection = (section: any) => {
             <FullWidthCTABanner
                 v-else-if="section.type === 'cta_banner'"
                 v-bind="mapCtaBannerSection(section)"
+            />
+
+            <GlobalNetworkSection
+                v-else-if="section.type === 'global_network'"
+                :section="section"
+                :locations="networkLocations ?? []"
+            />
+
+            <CertificationsSection
+                v-else-if="section.type === 'certifications'"
+                :section="section"
+                :certifications="certifications ?? []"
+            />
+
+            <ExchangeRatesSection
+                v-else-if="section.type === 'exchange_rates'"
+                :section="section"
+                :exchangeRates="exchangeRates ?? []"
             />
 
             <LogisticsImageBanner

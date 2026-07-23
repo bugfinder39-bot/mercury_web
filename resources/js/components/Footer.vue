@@ -387,6 +387,10 @@ const footerClasses = computed(() => {
     return classes.join(' ');
 });
 
+const footerExchangeRates = computed(() => (page.props.exchangeRates as any[]) || []);
+const showExchangeRatesTicker = computed(() => {
+    return settings.value.exchange_rates_footer_visibility !== 'false' && footerExchangeRates.value.length > 0;
+});
 </script>
 
 <template>
@@ -413,6 +417,29 @@ const footerClasses = computed(() => {
         </div>
 
         <div class="max-w-7xl mx-auto px-6 relative z-10">
+
+            <!-- Footer Compact Exchange Rates Ticker Bar -->
+            <div v-if="showExchangeRatesTicker" class="mb-10 p-3.5 rounded-2xl flex flex-wrap items-center justify-between gap-4" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);">
+                <div class="flex items-center gap-2">
+                    <span class="size-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <Link href="/exchange-rates" class="font-mono text-xs font-bold uppercase tracking-wider text-amber-500 hover:underline">
+                        Live Market Rates
+                    </Link>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-4 text-xs font-mono">
+                    <span v-for="rate in footerExchangeRates.slice(0, 6)" :key="'footer-' + rate.id" class="inline-flex items-center gap-1.5 text-slate-300">
+                        <span>{{ rate.flag }}</span>
+                        <span class="font-bold text-white">{{ rate.currency_code }}:</span>
+                        <span class="text-amber-400 font-semibold">{{ rate.symbol }}1 = {{ Number(rate.exchange_rate).toFixed(2) }} BDT</span>
+                    </span>
+                </div>
+
+                <Link href="/exchange-rates" class="text-[11px] font-mono text-slate-400 hover:text-amber-400 transition-colors">
+                    More Rates →
+                </Link>
+            </div>
+
             <!-- Main Grid: 4-columns layout -->
             <div 
                 class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 transition-all duration-500" 

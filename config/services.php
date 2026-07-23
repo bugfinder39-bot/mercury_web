@@ -35,4 +35,22 @@ return [
         ],
     ],
 
+    'exchange_rates' => [
+        'provider' => env('EXCHANGE_RATE_PROVIDER', 'frankfurter'),
+        'timeout' => (int) env('EXCHANGE_RATE_TIMEOUT', 10),
+        'ssl_verify' => filter_var(env('EXCHANGE_RATE_SSL_VERIFY', false), FILTER_VALIDATE_BOOLEAN),
+        'base_currency' => env('EXCHANGE_RATE_BASE_CURRENCY', 'USD'),
+        'providers' => [
+            'frankfurter' => [
+                'name' => 'Frankfurter API',
+                'api_url' => env('FRANKFURTER_API_URL', 'https://api.frankfurter.dev/v1/latest'),
+                'fallback_api_url' => env('FRANKFURTER_FALLBACK_API_URL', 'https://api.frankfurter.app/latest'),
+            ],
+            'fawaz_ahmed' => [
+                'name' => 'Fawaz Ahmed Currency API',
+                'api_url' => env('FAWAZ_AHMED_API_URL', 'https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json'),
+                'fallback_api_url' => env('FAWAZ_AHMED_FALLBACK_API_URL', 'https://latest.currency-api.pages.dev/v1/currencies/usd.json'),
+            ],
+        ],
+    ],
 ];

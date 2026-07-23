@@ -2,7 +2,7 @@
 import { Head, Link, useForm, router } from '@inertiajs/vue3';
 import {
     Save, ArrowLeft, Layers, Settings, Eye, EyeOff,
-    Plus, Trash2, Edit, ChevronDown, ChevronUp
+    Plus, Trash2, Edit, ChevronDown, ChevronUp, Globe, Award, DollarSign
 } from '@lucide/vue';
 import { ref, computed, watch, nextTick } from 'vue';
 import AdminLayout from '@/layouts/AdminLayout.vue';
@@ -828,6 +828,61 @@ const moveSectionDown = (section: any) => {
                                 <label class="label-premium">Success Message</label>
                                 <input v-model="sectionForms[section.id].success_message" type="text" class="input-premium" placeholder="Thank you! Your message has been received." />
                                 <span v-if="sectionErrors[section.id]?.success_message" class="text-xs text-red-500 mt-1 block">{{ sectionErrors[section.id].success_message }}</span>
+                            </div>
+                        </template>
+                        <template v-if="section.type === 'global_network'">
+                            <div class="md:col-span-2 border-t border-base-200 pt-4 mt-2">
+                                <div class="p-4 rounded-xl border border-sky-200 bg-sky-50/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                    <div class="space-y-1">
+                                        <h4 class="font-display font-bold text-sm text-sky-950 flex items-center gap-2">
+                                            <Globe class="size-4 text-sky-600" />
+                                            <span>Global Network Map Module</span>
+                                        </h4>
+                                        <p class="text-xs text-sky-800">Manage interactive map locations, sea ports, air terminals, and regional logistics hubs.</p>
+                                    </div>
+                                    <Link href="/admin/global-network" class="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold text-white bg-sky-600 hover:bg-sky-700 transition-colors shadow-sm shrink-0">
+                                        <Globe class="size-3.5" />
+                                        <span>Manage Network Locations</span>
+                                    </Link>
+                                </div>
+                            </div>
+                        </template>
+
+                        <!-- Dynamic Specific Section fields: Certifications & Memberships -->
+                        <template v-if="section.type === 'certifications'">
+                            <div class="md:col-span-2 border-t border-base-200 pt-4 mt-2">
+                                <div class="p-4 rounded-xl border border-indigo-200 bg-indigo-50/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                    <div class="space-y-1">
+                                        <h4 class="font-display font-bold text-sm text-indigo-950 flex items-center gap-2">
+                                            <Award class="size-4 text-indigo-600" />
+                                            <span>Certifications & Accreditations Module</span>
+                                        </h4>
+                                        <p class="text-xs text-indigo-800">Manage ISO certificates, IATA accreditations, BAFFA licenses, and FIATA memberships.</p>
+                                    </div>
+                                    <Link href="/admin/certifications" class="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors shadow-sm shrink-0">
+                                        <Award class="size-3.5" />
+                                        <span>Manage Certifications</span>
+                                    </Link>
+                                </div>
+                            </div>
+                        </template>
+
+                        <!-- Dynamic Specific Section fields: Live Exchange Rates -->
+                        <template v-if="section.type === 'exchange_rates'">
+                            <div class="md:col-span-2 border-t border-base-200 pt-4 mt-2">
+                                <div class="p-4 rounded-xl border border-emerald-200 bg-emerald-50/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                    <div class="space-y-1">
+                                        <h4 class="font-display font-bold text-sm text-emerald-950 flex items-center gap-2">
+                                            <DollarSign class="size-4 text-emerald-600" />
+                                            <span>Live Global Exchange Rates Module</span>
+                                        </h4>
+                                        <p class="text-xs text-emerald-800">Manage live currency market rates, manual overrides, provider configurations, and auto-refresh intervals.</p>
+                                    </div>
+                                    <Link href="/admin/exchange-rates" class="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 transition-colors shadow-sm shrink-0">
+                                        <DollarSign class="size-3.5" />
+                                        <span>Manage Exchange Rates</span>
+                                    </Link>
+                                </div>
                             </div>
                         </template>
 

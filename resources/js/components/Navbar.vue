@@ -126,7 +126,7 @@ const headerStyle = computed(() => {
         '--navbar-cta-text-color': formatColor(settings.value.navbar_cta_text_color, '#FFFFFF'),
         '--navbar-cta-hover-bg': formatColor(settings.value.navbar_cta_hover_bg, '#CC6608'),
         '--navbar-cta-hover-text-color': formatColor(settings.value.navbar_cta_hover_text, '#FFFFFF'),
-        'position': isSticky ? 'fixed' : 'relative',
+        'position': 'relative',
     };
 
     if (isScrolled.value) {
@@ -150,8 +150,8 @@ const headerStyle = computed(() => {
 </script>
 
 <template>
-    <header
-        class="top-0 left-0 w-full z-50 transition-all duration-300 border-b flex items-center"
+    <nav
+        class="w-full transition-all duration-300 border-b flex items-center relative"
         :style="headerStyle"
     >
         <div class="w-full max-w-7xl mx-auto px-4 lg:px-6 flex items-center justify-between" :style="{ height: settings.navbar_height || '72px' }">
@@ -350,5 +350,5 @@ const headerStyle = computed(() => {
                 </div>
             </div>
         </div>
-    </header>
+    </nav>
 </template>

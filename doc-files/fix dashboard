@@ -1,0 +1,212 @@
+Follow the project requirements exactly as described in:
+
+- mercury-bangladesh-requirements.md
+- mercury-bangladesh-design-guideline.md
+
+Continue from the current project state.
+
+==========================================================
+CRITICAL REGRESSION - FIX FIRST
+==========================================================
+
+The previous implementation introduced a critical regression.
+
+The Admin Dashboard no longer loads.
+
+This MUST be fixed before implementing or continuing any Visitor Analytics functionality.
+
+Do NOT ignore this issue.
+
+Do NOT work around it.
+
+Find the exact root cause and fix it properly.
+
+==========================================================
+CURRENT ERROR
+==========================================================
+
+The Dashboard is throwing a Laravel QueryException.
+
+The code is trying to query:
+
+service_interest
+
+from the:
+
+contact_messages
+
+table.
+
+However, this column does NOT exist in the current database.
+
+This means the previous implementation assumed a database schema instead of auditing the existing project.
+
+==========================================================
+YOUR TASK
+==========================================================
+
+Perform a complete audit before making any changes.
+
+Do NOT assume any database columns exist.
+
+Audit the project first.
+
+Verify every table, column, relationship, model, controller, migration, validation rule, and query before using them.
+
+==========================================================
+DATABASE AUDIT
+==========================================================
+
+Audit:
+
+contact_messages table
+
+Existing migrations
+
+Existing models
+
+Existing relationships
+
+Existing columns
+
+Current schema
+
+Determine the actual structure of the database.
+
+Do NOT generate code based on assumptions.
+
+==========================================================
+DASHBOARD AUDIT
+==========================================================
+
+Audit:
+
+DashboardController
+
+Dashboard services
+
+Dashboard widgets
+
+Analytics widgets
+
+Recent Messages widget
+
+Recent Contact Messages query
+
+Every query added during the previous implementation.
+
+Identify every query that references non-existent columns.
+
+==========================================================
+FIX THE ROOT CAUSE
+==========================================================
+
+If the Dashboard should use existing data,
+
+update the query to use the actual database schema.
+
+If a new column is genuinely required for an existing feature,
+
+create a proper migration.
+
+Do NOT add unnecessary database fields.
+
+Do NOT modify the schema unless it is actually required.
+
+==========================================================
+VISITOR ANALYTICS
+==========================================================
+
+After the Dashboard is fully working again,
+
+continue implementing Visitor Analytics.
+
+However,
+
+before creating ANY query,
+
+verify that every referenced table and column actually exists.
+
+Never assume database structures.
+
+==========================================================
+BACKWARD COMPATIBILITY
+==========================================================
+
+Preserve all existing functionality.
+
+Do not break:
+
+Homepage
+
+CMS
+
+Messages
+
+Contact Forms
+
+Dashboard
+
+Users
+
+Roles
+
+Permissions
+
+Media
+
+Everything currently working must continue working.
+
+==========================================================
+TESTING
+==========================================================
+
+Verify:
+
+✓ Dashboard loads successfully.
+
+✓ No SQL errors.
+
+✓ No QueryException.
+
+✓ No missing columns.
+
+✓ Recent Messages widget works correctly.
+
+✓ Contact Messages display correctly.
+
+✓ Visitor Analytics functions correctly.
+
+✓ No console errors.
+
+✓ No Laravel errors.
+
+✓ Existing CMS modules continue working.
+
+==========================================================
+FINAL REQUIREMENT
+==========================================================
+
+Do not simply remove the failing code.
+
+Identify the exact root cause.
+
+Audit the existing database schema.
+
+Correct every invalid query.
+
+Update the implementation to match the actual database.
+
+Only create database migrations if they are genuinely required.
+
+Modify only the necessary files.
+
+Preserve backward compatibility.
+
+At the end, provide:
+
+1. The exact root cause.
+2. Why it happened.
+3. Every file modified.
+4. Any database changes made.
+5. Confirmation that the Dashboard and Visitor Analytics are both fully functional and production-ready without introducing regressions.

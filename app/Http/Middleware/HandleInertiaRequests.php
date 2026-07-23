@@ -35,6 +35,20 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $announcements = [];
+        $exchangeRates = [];
+        try {
+            if (\Illuminate\Support\Facades\Schema::hasTable('announcements')) {
+                $announcements = \App\Models\Announcement::getPublicAnnouncements();
+            }
+            if (\Illuminate\Support\Facades\Schema::hasTable('exchange_rates')) {
+                $exchangeRates = \App\Models\ExchangeRate::where('is_active', true)->orderBy('order')->get();
+            }
+        } catch (\Throwable $e) {
+            $announcements = [];
+            $exchangeRates = [];
+        }
+
         return [
             ...parent::share($request),
             'name' => config('app.name'),
@@ -43,6 +57,8 @@ class HandleInertiaRequests extends Middleware
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
             'settings' => \App\Models\Setting::pluck('value', 'key')->toArray(),
+            'announcements' => $announcements,
+            'exchangeRates' => $exchangeRates,
             'flash' => [
                 'success' => $request->session()->get('success'),
                 'error' => $request->session()->get('error'),

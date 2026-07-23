@@ -26,35 +26,40 @@ createInertiaApp({
     },
 });
 
-// This will set light / dark mode on page load...
-initializeTheme();
+if (typeof document !== 'undefined') {
+    // This will set light / dark mode on page load...
+    initializeTheme();
 
-// This will listen for flash toast data from the server...
-initializeFlashToast();
+    // This will listen for flash toast data from the server...
+    initializeFlashToast();
 
-// Setup global scroll reveal observer for premium entry animations
-const setupScrollReveal = () => {
-    const observer = new IntersectionObserver(
-        (entries) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('is-visible');
-                    observer.unobserve(entry.target);
-                }
-            });
-        },
-        { threshold: 0.05, rootMargin: '0px 0px -40px 0px' },
-    );
+    // Setup global scroll reveal observer for premium entry animations
+    const setupScrollReveal = () => {
+        if (typeof IntersectionObserver === 'undefined') return;
 
-    const elements = document.querySelectorAll(
-        '.reveal-fade-up, .reveal-slide-left, .reveal-slide-right, .reveal-scale-in',
-    );
-    elements.forEach((el) => observer.observe(el));
-};
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            },
+            { threshold: 0.05, rootMargin: '0px 0px -40px 0px' },
+        );
 
-document.addEventListener('inertia:success', () => {
-    setTimeout(setupScrollReveal, 100);
-});
-document.addEventListener('DOMContentLoaded', setupScrollReveal);
-// Run initial setup in case DOMContentLoaded has already fired
-setTimeout(setupScrollReveal, 200);
+        const elements = document.querySelectorAll(
+            '.reveal-fade-up, .reveal-slide-left, .reveal-slide-right, .reveal-scale-in',
+        );
+        elements.forEach((el) => observer.observe(el));
+    };
+
+    document.addEventListener('inertia:success', () => {
+        setTimeout(setupScrollReveal, 100);
+    });
+    document.addEventListener('DOMContentLoaded', setupScrollReveal);
+    // Run initial setup in case DOMContentLoaded has already fired
+    setTimeout(setupScrollReveal, 200);
+}
+

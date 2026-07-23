@@ -16,6 +16,10 @@ import {
     CheckCircle,
     AlertTriangle,
     Palette,
+    Award,
+    Sliders,
+    Megaphone,
+    DollarSign,
 } from '@lucide/vue';
 import { ref, computed, watch } from 'vue';
 
@@ -31,7 +35,12 @@ const userDropdownOpen = ref(false);
 const navigationItems = computed(() => {
     const items = [
         { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutGrid },
+        { name: 'Dashboard Widgets', href: '/admin/dashboard-widgets', icon: Sliders },
         { name: 'Page Management', href: '/admin/pages', icon: BookOpen },
+        { name: 'Announcements', href: '/admin/announcements', icon: Megaphone },
+        { name: 'Exchange Rates', href: '/admin/exchange-rates', icon: DollarSign },
+        { name: 'Global Network', href: '/admin/global-network', icon: Globe },
+        { name: 'Certifications', href: '/admin/certifications', icon: Award },
         { name: 'Services CRUD', href: '/admin/services', icon: Folder },
         { name: 'Partners CRUD', href: '/admin/partners', icon: Layers },
         { name: 'Messages Inbox', href: '/admin/messages', icon: Mail },
