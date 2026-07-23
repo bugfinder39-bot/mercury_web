@@ -81,6 +81,57 @@ return [];
     }
 });
 
+const parsedPhones = computed(() => {
+    try {
+        const val = settings.value.footer_phones;
+        if (val) {
+            const arr = typeof val === 'string' ? JSON.parse(val) : val;
+            if (Array.isArray(arr) && arr.length > 0) {
+                const active = arr.filter((x: any) => x.is_active && x.phone);
+                if (active.length > 0) return active;
+            }
+        }
+    } catch {}
+    if (settings.value.footer_phone) {
+        return [{ phone: settings.value.footer_phone, label: 'Call Desk', is_active: true }];
+    }
+    return [];
+});
+
+const parsedEmails = computed(() => {
+    try {
+        const val = settings.value.footer_emails;
+        if (val) {
+            const arr = typeof val === 'string' ? JSON.parse(val) : val;
+            if (Array.isArray(arr) && arr.length > 0) {
+                const active = arr.filter((x: any) => x.is_active && x.email);
+                if (active.length > 0) return active;
+            }
+        }
+    } catch {}
+    if (settings.value.footer_email) {
+        return [{ email: settings.value.footer_email, label: 'Email Inquiry', is_active: true }];
+    }
+    return [];
+});
+
+const parsedAddresses = computed(() => {
+    try {
+        const val = settings.value.footer_addresses;
+        if (val) {
+            const arr = typeof val === 'string' ? JSON.parse(val) : val;
+            if (Array.isArray(arr) && arr.length > 0) {
+                const active = arr.filter((x: any) => x.is_active && x.address);
+                if (active.length > 0) return active;
+            }
+        }
+    } catch {}
+    if (settings.value.footer_address) {
+        return [{ address: settings.value.footer_address, name: 'Office Location', is_active: true }];
+    }
+    return [];
+});
+
 // Computed variables for styles
 const footerStyles = computed(() => {
     const bgStyle = settings.value.footer_bg_style || 'navy-gradient';
@@ -519,44 +570,70 @@ const footerClasses = computed(() => {
                 </div>
             </div>
 
-            <!-- Contact/Address Horizontal Bar -->
+            <!-- Contact/Address Horizontal Bar (Dynamic Repeatable Collections) -->
             <div 
-                class="py-8 flex flex-col lg:flex-row gap-6 justify-between items-start lg:items-center text-sm"
+                v-if="parsedAddresses.length > 0 || parsedPhones.length > 0 || parsedEmails.length > 0"
+                class="py-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-sm"
                 :style="contactBarDividerStyles"
             >
-                <div class="flex items-center gap-3 group">
+                <!-- Office Locations -->
+                <div v-if="parsedAddresses.length > 0" class="flex items-center gap-3 group">
                     <div :class="iconContainerClasses" :style="iconContainerStyles" class="footer-info-icon p-2.5">
                         <MapPin class="size-4" />
                     </div>
-                    <div>
-                        <p class="text-[10px] font-mono uppercase tracking-wider" :style="{ color: footerStyles['--footer-secondary-color'], opacity: 0.7 }">Office Location</p>
-                        <p class="font-semibold" :style="{ color: footerStyles['--footer-heading-color'] }">
-                            {{ settings.footer_address || 'Dhaka, Bangladesh' }}
+                    <div class="space-y-1.5 flex-1">
+                        <p class="text-[10px] font-mono uppercase tracking-wider" :style="{ color: footerStyles['--footer-secondary-color'], opacity: 0.7 }">
+                            {{ parsedAddresses.length > 1 ? 'Office Locations' : 'Office Location' }}
                         </p>
+                        <div v-for="(item, idx) in parsedAddresses" :key="idx" class="space-y-0.5">
+                            <div class="font-semibold flex flex-wrap items-center gap-1.5" :style="{ color: footerStyles['--footer-heading-color'] }">
+                                <span v-if="item.name" class="font-bold text-xs uppercase tracking-wider text-[#E8770C]">{{ item.name }}:</span>
+                                <span>{{ item.address }}</span>
+                                <a v-if="item.map_url" :href="item.map_url" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-[10px] font-mono text-[#E8770C] hover:underline ml-1">
+                                    ↗ Map
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="flex items-center gap-3 group">
+
+                <!-- Call Desks / Phone Numbers -->
+                <div v-if="parsedPhones.length > 0" class="flex items-center gap-3 group">
                     <div :class="iconContainerClasses" :style="iconContainerStyles" class="footer-info-icon p-2.5">
                         <Phone class="size-4" />
                     </div>
-                    <div>
-                        <p class="text-[10px] font-mono uppercase tracking-wider" :style="{ color: footerStyles['--footer-secondary-color'], opacity: 0.7 }">Call Desk</p>
-                        <p class="font-semibold" :style="{ color: footerStyles['--footer-heading-color'] }">
-                            {{ settings.footer_phone || '+880 2 9876543' }}
+                    <div class="space-y-1.5 flex-1">
+                        <p class="text-[10px] font-mono uppercase tracking-wider" :style="{ color: footerStyles['--footer-secondary-color'], opacity: 0.7 }">
+                            {{ parsedPhones.length > 1 ? 'Contact Numbers' : 'Call Desk' }}
                         </p>
+                        <div v-for="(item, idx) in parsedPhones" :key="idx" class="flex items-center gap-2">
+                            <a :href="`tel:${item.phone.replace(/[^0-9+]/g, '')}`" class="font-semibold transition-colors duration-200" :style="{ color: footerStyles['--footer-heading-color'] }" @mouseover="(e: any) => (e.target as HTMLElement).style.color = footerStyles['--footer-quick-links-hover-color']" @mouseleave="(e: any) => (e.target as HTMLElement).style.color = footerStyles['--footer-heading-color']">
+                                {{ item.phone }}
+                            </a>
+                            <span v-if="item.label" class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#E8770C]/10 text-[#E8770C] font-semibold">
+                                {{ item.label }}
+                            </span>
+                        </div>
                     </div>
                 </div>
-                <div class="flex items-center gap-3 group">
+
+                <!-- Email Inquiries -->
+                <div v-if="parsedEmails.length > 0" class="flex items-center gap-3 group">
                     <div :class="iconContainerClasses" :style="iconContainerStyles" class="footer-info-icon p-2.5">
                         <Mail class="size-4" />
                     </div>
-                    <div>
-                        <p class="text-[10px] font-mono uppercase tracking-wider" :style="{ color: footerStyles['--footer-secondary-color'], opacity: 0.7 }">Email Inquiry</p>
-                        <p class="font-semibold">
-                            <a :href="`mailto:${settings.footer_email || 'ops@mercury-bd.com'}`" class="transition-colors duration-200" :style="{ color: footerStyles['--footer-heading-color'] }" @mouseover="(e: any) => (e.target as HTMLElement).style.color = footerStyles['--footer-quick-links-hover-color']" @mouseleave="(e: any) => (e.target as HTMLElement).style.color = footerStyles['--footer-heading-color']">
-                                {{ settings.footer_email || 'ops@mercury-bd.com' }}
-                            </a>
+                    <div class="space-y-1.5 flex-1">
+                        <p class="text-[10px] font-mono uppercase tracking-wider" :style="{ color: footerStyles['--footer-secondary-color'], opacity: 0.7 }">
+                            {{ parsedEmails.length > 1 ? 'Email Inquiries' : 'Email Inquiry' }}
                         </p>
+                        <div v-for="(item, idx) in parsedEmails" :key="idx" class="flex items-center gap-2">
+                            <a :href="`mailto:${item.email}`" class="font-semibold transition-colors duration-200" :style="{ color: footerStyles['--footer-heading-color'] }" @mouseover="(e: any) => (e.target as HTMLElement).style.color = footerStyles['--footer-quick-links-hover-color']" @mouseleave="(e: any) => (e.target as HTMLElement).style.color = footerStyles['--footer-heading-color']">
+                                {{ item.email }}
+                            </a>
+                            <span v-if="item.label" class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-400 font-semibold">
+                                {{ item.label }}
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>

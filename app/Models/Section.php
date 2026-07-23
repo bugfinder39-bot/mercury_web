@@ -47,6 +47,9 @@ class Section extends Model
         'placeholder_text',
         // Hero Media field
         'hero_media_id',
+        // Coming Soon fields
+        'progress_label',
+        'expected_launch_text',
     ];
 
     protected $casts = [

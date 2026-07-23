@@ -133,84 +133,6 @@ logout.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     
     logout.form = logoutForm
 /**
-* @see \Laravel\Fortify\Http\Controllers\RegisteredUserController::register
- * @see vendor/laravel/fortify/src/Http/Controllers/RegisteredUserController.php:41
- * @route '/register'
- */
-export const register = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: register.url(options),
-    method: 'get',
-})
-
-register.definition = {
-    methods: ["get","head"],
-    url: '/register',
-} satisfies RouteDefinition<["get","head"]>
-
-/**
-* @see \Laravel\Fortify\Http\Controllers\RegisteredUserController::register
- * @see vendor/laravel/fortify/src/Http/Controllers/RegisteredUserController.php:41
- * @route '/register'
- */
-register.url = (options?: RouteQueryOptions) => {
-    return register.definition.url + queryParams(options)
-}
-
-/**
-* @see \Laravel\Fortify\Http\Controllers\RegisteredUserController::register
- * @see vendor/laravel/fortify/src/Http/Controllers/RegisteredUserController.php:41
- * @route '/register'
- */
-register.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: register.url(options),
-    method: 'get',
-})
-/**
-* @see \Laravel\Fortify\Http\Controllers\RegisteredUserController::register
- * @see vendor/laravel/fortify/src/Http/Controllers/RegisteredUserController.php:41
- * @route '/register'
- */
-register.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
-    url: register.url(options),
-    method: 'head',
-})
-
-    /**
-* @see \Laravel\Fortify\Http\Controllers\RegisteredUserController::register
- * @see vendor/laravel/fortify/src/Http/Controllers/RegisteredUserController.php:41
- * @route '/register'
- */
-    const registerForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-        action: register.url(options),
-        method: 'get',
-    })
-
-            /**
-* @see \Laravel\Fortify\Http\Controllers\RegisteredUserController::register
- * @see vendor/laravel/fortify/src/Http/Controllers/RegisteredUserController.php:41
- * @route '/register'
- */
-        registerForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: register.url(options),
-            method: 'get',
-        })
-            /**
-* @see \Laravel\Fortify\Http\Controllers\RegisteredUserController::register
- * @see vendor/laravel/fortify/src/Http/Controllers/RegisteredUserController.php:41
- * @route '/register'
- */
-        registerForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: register.url({
-                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                            _method: 'HEAD',
-                            ...(options?.query ?? options?.mergeQuery ?? {}),
-                        }
-                    }),
-            method: 'get',
-        })
-    
-    register.form = registerForm
-/**
 * @see \App\Http\Controllers\PublicController::home
  * @see app/Http/Controllers/PublicController.php:23
  * @route '/'
@@ -522,6 +444,84 @@ contact.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
     
     contact.form = contactForm
+/**
+* @see \App\Http\Controllers\PublicController::comingSoon
+ * @see app/Http/Controllers/PublicController.php:87
+ * @route '/coming-soon'
+ */
+export const comingSoon = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: comingSoon.url(options),
+    method: 'get',
+})
+
+comingSoon.definition = {
+    methods: ["get","head"],
+    url: '/coming-soon',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\PublicController::comingSoon
+ * @see app/Http/Controllers/PublicController.php:87
+ * @route '/coming-soon'
+ */
+comingSoon.url = (options?: RouteQueryOptions) => {
+    return comingSoon.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\PublicController::comingSoon
+ * @see app/Http/Controllers/PublicController.php:87
+ * @route '/coming-soon'
+ */
+comingSoon.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: comingSoon.url(options),
+    method: 'get',
+})
+/**
+* @see \App\Http\Controllers\PublicController::comingSoon
+ * @see app/Http/Controllers/PublicController.php:87
+ * @route '/coming-soon'
+ */
+comingSoon.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: comingSoon.url(options),
+    method: 'head',
+})
+
+    /**
+* @see \App\Http\Controllers\PublicController::comingSoon
+ * @see app/Http/Controllers/PublicController.php:87
+ * @route '/coming-soon'
+ */
+    const comingSoonForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: comingSoon.url(options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\PublicController::comingSoon
+ * @see app/Http/Controllers/PublicController.php:87
+ * @route '/coming-soon'
+ */
+        comingSoonForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: comingSoon.url(options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\PublicController::comingSoon
+ * @see app/Http/Controllers/PublicController.php:87
+ * @route '/coming-soon'
+ */
+        comingSoonForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: comingSoon.url({
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    comingSoon.form = comingSoonForm
 /**
 * @see \App\Http\Controllers\Admin\DashboardController::dashboard
  * @see app/Http/Controllers/Admin/DashboardController.php:18

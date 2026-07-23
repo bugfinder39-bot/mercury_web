@@ -3,6 +3,9 @@ import { usePage } from '@inertiajs/vue3';
 import { MapPin, Phone, Mail, Clock } from '@lucide/vue';
 import { computed } from 'vue';
 
+const page = usePage();
+const settings = computed(() => (page.props.settings as Record<string, any>) || {});
+
 defineProps<{
     section?: {
         id: number;
@@ -12,8 +15,47 @@ defineProps<{
     };
 }>();
 
-const page = usePage();
-const settings = computed(() => (page.props.settings as Record<string, any>) || {});
+const displayAddress = computed(() => {
+    try {
+        const val = settings.value.footer_addresses;
+        if (val) {
+            const arr = typeof val === 'string' ? JSON.parse(val) : val;
+            if (Array.isArray(arr) && arr.length > 0) {
+                const active = arr.find((x: any) => x.is_active && x.address);
+                if (active) return active.address;
+            }
+        }
+    } catch {}
+    return settings.value.footer_address || settings.value.contact_address || '';
+});
+
+const displayPhone = computed(() => {
+    try {
+        const val = settings.value.footer_phones;
+        if (val) {
+            const arr = typeof val === 'string' ? JSON.parse(val) : val;
+            if (Array.isArray(arr) && arr.length > 0) {
+                const active = arr.find((x: any) => x.is_active && x.phone);
+                if (active) return active.phone;
+            }
+        }
+    } catch {}
+    return settings.value.footer_phone || settings.value.contact_phone || '';
+});
+
+const displayEmail = computed(() => {
+    try {
+        const val = settings.value.footer_emails;
+        if (val) {
+            const arr = typeof val === 'string' ? JSON.parse(val) : val;
+            if (Array.isArray(arr) && arr.length > 0) {
+                const active = arr.find((x: any) => x.is_active && x.email);
+                if (active) return active.email;
+            }
+        }
+    } catch {}
+    return settings.value.footer_email || settings.value.contact_email || '';
+});
 </script>
 
 <template>
@@ -39,39 +81,39 @@ const settings = computed(() => (page.props.settings as Record<string, any>) || 
                     <!-- Contact Info List -->
                     <div class="space-y-5 pt-4" style="border-top: 1px solid rgba(11,37,64,0.08);">
                         <!-- Address -->
-                        <div v-if="settings.contact_address" class="flex gap-4 items-start">
+                        <div v-if="displayAddress" class="flex gap-4 items-start">
                             <div class="icon-orange-wrap flex-shrink-0">
                                 <MapPin class="size-4 stroke-[1.5]" />
                             </div>
                             <div class="space-y-0.5">
                                 <h4 class="font-mono text-[10px] uppercase tracking-wider font-semibold" style="color: #64748B;">Head Office</h4>
-                                <p class="font-body text-sm md:text-base" style="color: #1E293B;">{{ settings.contact_address }}</p>
+                                <p class="font-body text-sm md:text-base" style="color: #1E293B;">{{ displayAddress }}</p>
                             </div>
                         </div>
 
                         <!-- Phone -->
-                        <div v-if="settings.contact_phone" class="flex gap-4 items-start">
+                        <div v-if="displayPhone" class="flex gap-4 items-start">
                             <div class="icon-orange-wrap flex-shrink-0">
                                 <Phone class="size-4 stroke-[1.5]" />
                             </div>
                             <div class="space-y-0.5">
                                 <h4 class="font-mono text-[10px] uppercase tracking-wider font-semibold" style="color: #64748B;">Phone Support</h4>
-                                <p class="font-body text-sm md:text-base" style="color: #1E293B;">{{ settings.contact_phone }}</p>
+                                <p class="font-body text-sm md:text-base" style="color: #1E293B;">{{ displayPhone }}</p>
                             </div>
                         </div>
 
                         <!-- Email -->
-                        <div v-if="settings.contact_email" class="flex gap-4 items-start">
+                        <div v-if="displayEmail" class="flex gap-4 items-start">
                             <div class="icon-orange-wrap flex-shrink-0">
                                 <Mail class="size-4 stroke-[1.5]" />
                             </div>
                             <div class="space-y-0.5">
                                 <h4 class="font-mono text-[10px] uppercase tracking-wider font-semibold" style="color: #64748B;">Email Operations</h4>
                                 <p class="font-body text-sm md:text-base" style="color: #1E293B;">
-                                    <a :href="`mailto:${settings.contact_email}`" class="transition-colors" style="color: #1E293B;"
+                                    <a :href="`mailto:${displayEmail}`" class="transition-colors" style="color: #1E293B;"
                                         onmouseover="this.style.color='#E8770C';"
                                         onmouseout="this.style.color='#1E293B';"
-                                    >{{ settings.contact_email }}</a>
+                                    >{{ displayEmail }}</a>
                                 </p>
                             </div>
                         </div>

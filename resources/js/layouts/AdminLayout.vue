@@ -28,16 +28,23 @@ const authUser = computed(
 const mobileSidebarOpen = ref(false);
 const userDropdownOpen = ref(false);
 
-const navigationItems = [
-    { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutGrid },
-    { name: 'Page Management', href: '/admin/pages', icon: BookOpen },
-    { name: 'Services CRUD', href: '/admin/services', icon: Folder },
-    { name: 'Partners CRUD', href: '/admin/partners', icon: Layers },
-    { name: 'Messages Inbox', href: '/admin/messages', icon: Mail },
-    { name: 'Layout Management', href: '/admin/layout', icon: Palette },
-    { name: 'Global Settings', href: '/admin/settings', icon: Settings },
-    { name: 'Manage Users', href: '/admin/users', icon: Users },
-];
+const navigationItems = computed(() => {
+    const items = [
+        { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutGrid },
+        { name: 'Page Management', href: '/admin/pages', icon: BookOpen },
+        { name: 'Services CRUD', href: '/admin/services', icon: Folder },
+        { name: 'Partners CRUD', href: '/admin/partners', icon: Layers },
+        { name: 'Messages Inbox', href: '/admin/messages', icon: Mail },
+        { name: 'Layout Management', href: '/admin/layout', icon: Palette },
+        { name: 'Global Settings', href: '/admin/settings', icon: Settings },
+    ];
+
+    if (authUser.value?.role === 'super_admin') {
+        items.push({ name: 'Manage Users', href: '/admin/users', icon: Users });
+    }
+
+    return items;
+});
 
 const isActive = (href: string) => {
     if (href === '/admin/dashboard') {

@@ -17,6 +17,7 @@ Route::get('/about', [PublicController::class, 'about'])->name('about');
 Route::get('/services', [PublicController::class, 'services'])->name('services');
 Route::get('/contact', [PublicController::class, 'contact'])->name('contact');
 Route::post('/contact', [PublicController::class, 'submitContactForm'])->name('contact.submit');
+Route::get('/coming-soon', [PublicController::class, 'comingSoon'])->name('coming-soon');
 
 
 // Authenticated Admin Dashboard & CMS Controls
@@ -54,9 +55,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/admin/layout', [LayoutController::class, 'update'])->name('admin.layout.update');
 
     // Admin Users CRUD
+    Route::patch('/admin/users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('admin.users.toggle-status');
+    Route::post('/admin/users/{user}/reset-password', [UserController::class, 'resetPassword'])->name('admin.users.reset-password');
     Route::resource('/admin/users', UserController::class)->names('admin.users');
 });
 
 require __DIR__.'/settings.php';
+
 
 

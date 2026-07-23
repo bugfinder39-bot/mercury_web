@@ -5,6 +5,7 @@ import CEOMessageSection from '@/components/CEOMessageSection.vue';
 import CompanyHighlights from '@/components/CompanyHighlights.vue';
 import FeaturedServices from '@/components/FeaturedServices.vue';
 import FullWidthCTABanner from '@/components/FullWidthCTABanner.vue';
+import HeroBanner from '@/components/HeroBanner.vue';
 import HeroCarousel from '@/components/HeroCarousel.vue';
 import ImageGallerySection from '@/components/ImageGallerySection.vue';
 import ImageTextShowcase from '@/components/ImageTextShowcase.vue';

@@ -110,6 +110,9 @@ class PageController extends Controller
             'error_message' => 'nullable|string|max:255',
             'required_field_text' => 'nullable|string|max:255',
             'placeholder_text' => 'nullable|string|max:255',
+            // Coming Soon fields
+            'progress_label' => 'nullable|string|max:255',
+            'expected_launch_text' => 'nullable|string|max:255',
             // Uploads
             'hero_media_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:10240',
             'portrait_media_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:10240',

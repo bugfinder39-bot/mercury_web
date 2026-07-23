@@ -36,5 +36,33 @@ export default defineConfig(({ command }) => {
                 formVariants: true,
             }),
         ].filter(Boolean),
+
+        build: {
+            chunkSizeWarningLimit: 1500, // Raised to 1500 kB
+            rollupOptions: {
+                onwarn(warning, defaultHandler) {
+                    // Suppress INVALID_ANNOTATION warnings coming from node_modules
+                    if (warning.code === 'INVALID_ANNOTATION') return;
+                    defaultHandler(warning);
+                },
+                output: {
+                    manualChunks(id) {
+                        // Split npm packages into smaller chunks instead of one giant vendor file
+                        if (id.includes('node_modules')) {
+                            if (id.includes('@inertiajs')) {
+                                return 'vendor-inertia';
+                            }
+                            if (id.includes('vue') || id.includes('@vue')) {
+                                return 'vendor-vue';
+                            }
+                            if (id.includes('reka-ui') || id.includes('@vueuse')) {
+                                return 'vendor-ui';
+                            }
+                            return 'vendor'; // All other packages
+                        }
+                    },
+                },
+            },
+        },
     };
 });

@@ -313,7 +313,7 @@ contact.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     contact.form = contactForm
 /**
 * @see \App\Http\Controllers\PublicController::submitContactForm
- * @see app/Http/Controllers/PublicController.php:87
+ * @see app/Http/Controllers/PublicController.php:101
  * @route '/contact'
  */
 export const submitContactForm = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -328,7 +328,7 @@ submitContactForm.definition = {
 
 /**
 * @see \App\Http\Controllers\PublicController::submitContactForm
- * @see app/Http/Controllers/PublicController.php:87
+ * @see app/Http/Controllers/PublicController.php:101
  * @route '/contact'
  */
 submitContactForm.url = (options?: RouteQueryOptions) => {
@@ -337,7 +337,7 @@ submitContactForm.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\PublicController::submitContactForm
- * @see app/Http/Controllers/PublicController.php:87
+ * @see app/Http/Controllers/PublicController.php:101
  * @route '/contact'
  */
 submitContactForm.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -347,7 +347,7 @@ submitContactForm.post = (options?: RouteQueryOptions): RouteDefinition<'post'> 
 
     /**
 * @see \App\Http\Controllers\PublicController::submitContactForm
- * @see app/Http/Controllers/PublicController.php:87
+ * @see app/Http/Controllers/PublicController.php:101
  * @route '/contact'
  */
     const submitContactFormForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -357,7 +357,7 @@ submitContactForm.post = (options?: RouteQueryOptions): RouteDefinition<'post'> 
 
             /**
 * @see \App\Http\Controllers\PublicController::submitContactForm
- * @see app/Http/Controllers/PublicController.php:87
+ * @see app/Http/Controllers/PublicController.php:101
  * @route '/contact'
  */
         submitContactFormForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -366,6 +366,84 @@ submitContactForm.post = (options?: RouteQueryOptions): RouteDefinition<'post'> 
         })
     
     submitContactForm.form = submitContactFormForm
-const PublicController = { home, about, services, contact, submitContactForm }
+/**
+* @see \App\Http\Controllers\PublicController::comingSoon
+ * @see app/Http/Controllers/PublicController.php:87
+ * @route '/coming-soon'
+ */
+export const comingSoon = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: comingSoon.url(options),
+    method: 'get',
+})
+
+comingSoon.definition = {
+    methods: ["get","head"],
+    url: '/coming-soon',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\PublicController::comingSoon
+ * @see app/Http/Controllers/PublicController.php:87
+ * @route '/coming-soon'
+ */
+comingSoon.url = (options?: RouteQueryOptions) => {
+    return comingSoon.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\PublicController::comingSoon
+ * @see app/Http/Controllers/PublicController.php:87
+ * @route '/coming-soon'
+ */
+comingSoon.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: comingSoon.url(options),
+    method: 'get',
+})
+/**
+* @see \App\Http\Controllers\PublicController::comingSoon
+ * @see app/Http/Controllers/PublicController.php:87
+ * @route '/coming-soon'
+ */
+comingSoon.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: comingSoon.url(options),
+    method: 'head',
+})
+
+    /**
+* @see \App\Http\Controllers\PublicController::comingSoon
+ * @see app/Http/Controllers/PublicController.php:87
+ * @route '/coming-soon'
+ */
+    const comingSoonForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: comingSoon.url(options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\PublicController::comingSoon
+ * @see app/Http/Controllers/PublicController.php:87
+ * @route '/coming-soon'
+ */
+        comingSoonForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: comingSoon.url(options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\PublicController::comingSoon
+ * @see app/Http/Controllers/PublicController.php:87
+ * @route '/coming-soon'
+ */
+        comingSoonForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: comingSoon.url({
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    comingSoon.form = comingSoonForm
+const PublicController = { home, about, services, contact, submitContactForm, comingSoon }
 
 export default PublicController

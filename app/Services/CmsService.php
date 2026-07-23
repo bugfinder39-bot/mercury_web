@@ -58,7 +58,7 @@ class CmsService
     public function updateSettings(array $settings): void
     {
         foreach ($settings as $key => $value) {
-            Setting::where('key', $key)->update(['value' => $value]);
+            Setting::updateOrCreate(['key' => $key], ['value' => $value]);
         }
     }
 

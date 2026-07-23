@@ -27,7 +27,7 @@ class LayoutController extends Controller
         $settings = $this->cmsService->getAllSettings();
 
         // Convert JSON strings to array for easier usage in Vue
-        $jsonKeys = ['navbar_links', 'footer_quick_links', 'footer_services', 'footer_socials'];
+        $jsonKeys = ['navbar_links', 'footer_quick_links', 'footer_services', 'footer_socials', 'footer_phones', 'footer_emails', 'footer_addresses'];
         foreach ($jsonKeys as $key) {
             if (isset($settings[$key]) && is_string($settings[$key])) {
                 $settings[$key] = json_decode($settings[$key], true);
@@ -48,6 +48,10 @@ class LayoutController extends Controller
     {
         $validated = $request->validate([
             'settings' => 'required|array',
+            'settings.show_navbar' => 'nullable|string|in:true,false',
+            'settings.show_footer' => 'nullable|string|in:true,false',
+            'settings.coming_soon_show_navbar' => 'nullable|string|in:true,false',
+            'settings.coming_soon_show_footer' => 'nullable|string|in:true,false',
             'settings.navbar_website_name' => 'required|string|max:255',
             'settings.navbar_website_tagline' => 'nullable|string|max:255',
             'settings.navbar_logo' => 'nullable|string|max:255',
@@ -87,9 +91,12 @@ class LayoutController extends Controller
             'settings.footer_newsletter_desc' => 'required|string',
             'settings.footer_newsletter_active' => 'required|string|in:true,false',
             'settings.footer_socials' => 'required|array',
-            'settings.footer_address' => 'required|string',
-            'settings.footer_phone' => 'required|string',
-            'settings.footer_email' => 'required|email|max:255',
+            'settings.footer_phones' => 'nullable|array',
+            'settings.footer_emails' => 'nullable|array',
+            'settings.footer_addresses' => 'nullable|array',
+            'settings.footer_address' => 'nullable|string',
+            'settings.footer_phone' => 'nullable|string',
+            'settings.footer_email' => 'nullable|string|max:255',
             'settings.footer_copyright' => 'required|string',
             'settings.footer_tagline' => 'required|string|max:255',
             'settings.footer_bg' => ['required', 'string', 'regex:/^(#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})|rgba?\(.*\))$/'],
@@ -156,8 +163,28 @@ class LayoutController extends Controller
 
         $settingsData = $validated['settings'];
 
+        // Sync legacy single fields for backward compatibility
+        if (isset($validated['settings']['footer_phones']) && is_array($validated['settings']['footer_phones'])) {
+            $activePhone = collect($validated['settings']['footer_phones'])->firstWhere('is_active', true);
+            if ($activePhone && isset($activePhone['phone'])) {
+                $settingsData['footer_phone'] = $activePhone['phone'];
+            }
+        }
+        if (isset($validated['settings']['footer_emails']) && is_array($validated['settings']['footer_emails'])) {
+            $activeEmail = collect($validated['settings']['footer_emails'])->firstWhere('is_active', true);
+            if ($activeEmail && isset($activeEmail['email'])) {
+                $settingsData['footer_email'] = $activeEmail['email'];
+            }
+        }
+        if (isset($validated['settings']['footer_addresses']) && is_array($validated['settings']['footer_addresses'])) {
+            $activeAddr = collect($validated['settings']['footer_addresses'])->firstWhere('is_active', true);
+            if ($activeAddr && isset($activeAddr['address'])) {
+                $settingsData['footer_address'] = $activeAddr['address'];
+            }
+        }
+
         // Encode JSON fields back to strings
-        $jsonKeys = ['navbar_links', 'footer_quick_links', 'footer_services', 'footer_socials'];
+        $jsonKeys = ['navbar_links', 'footer_quick_links', 'footer_services', 'footer_socials', 'footer_phones', 'footer_emails', 'footer_addresses'];
         foreach ($jsonKeys as $key) {
             if (isset($settingsData[$key])) {
                 $settingsData[$key] = json_encode($settingsData[$key]);

@@ -12,7 +12,7 @@ defineOptions({
     layout: AdminLayout,
 });
 
-const activeTab = ref<'general' | 'contact' | 'social' | 'map_seo'>('general');
+const activeTab = ref<'general' | 'contact' | 'social' | 'map_seo' | 'coming_soon'>('general');
 
 const form = useForm({
     _method: 'PUT',
@@ -30,6 +30,12 @@ const form = useForm({
         google_maps_embed: props.settings.google_maps_embed || '',
         default_seo_title: props.settings.default_seo_title || '',
         default_seo_description: props.settings.default_seo_description || '',
+        coming_soon_enabled: String(props.settings.coming_soon_enabled ?? 'false'),
+        coming_soon_target: props.settings.coming_soon_target || 'entire_website',
+        show_navbar: String(props.settings.show_navbar ?? props.settings.coming_soon_show_navbar ?? 'false'),
+        show_footer: String(props.settings.show_footer ?? props.settings.coming_soon_show_footer ?? 'false'),
+        coming_soon_show_navbar: String(props.settings.coming_soon_show_navbar ?? props.settings.show_navbar ?? 'false'),
+        coming_soon_show_footer: String(props.settings.coming_soon_show_footer ?? props.settings.show_footer ?? 'false'),
     },
     company_logo_file: null as File | null,
     company_favicon_file: null as File | null,
@@ -124,6 +130,14 @@ const submit = () => {
                 >
                     Map & SEO
                 </button>
+                <button
+                    type="button"
+                    @click="activeTab = 'coming_soon'"
+                    class="px-6 py-3.5 text-xs font-semibold uppercase tracking-wider font-mono border-b-2 transition-colors duration-150"
+                    :class="activeTab === 'coming_soon' ? 'border-amber text-amber bg-white' : 'border-transparent text-slate hover:text-navy hover:bg-slate-100/50'"
+                >
+                    Coming Soon Mode
+                </button>
             </div>
 
             <!-- Form Content -->
@@ -216,42 +230,21 @@ const submit = () => {
                 </div>
 
                 <!-- Contact Info Tab -->
-                <div v-show="activeTab === 'contact'" class="space-y-4">
+                <div v-show="activeTab === 'contact'" class="space-y-6">
+                    <div class="p-4 rounded-xl border border-amber/20 bg-amber/5 flex items-start gap-3">
+                        <div class="p-2 rounded-lg bg-amber text-white font-bold text-xs uppercase font-mono shrink-0">CMS</div>
+                        <div class="space-y-1">
+                            <h4 class="font-display font-bold text-navy text-sm">Footer Contact Information Consolidation</h4>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                To prevent duplicate entries and configuration conflicts, all telephone numbers, email addresses, and office location details are now managed exclusively in
+                                <a href="/admin/layout" class="font-bold text-amber hover:underline">Layout Management → Footer</a>.
+                            </p>
+                        </div>
+                    </div>
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <div class="form-control">
-                            <label class="label font-semibold text-slate text-xs uppercase tracking-wider font-mono">Contact Email</label>
-                            <input
-                                v-model="form.settings.contact_email"
-                                type="email"
-                                class="input input-bordered focus:border-amber focus:ring-2 focus:ring-amber/20 w-full rounded-lg"
-                                placeholder="e.g. ops@mercury-bd.com"
-                            />
-                            <span v-if="form.errors['settings.contact_email']" class="text-xs text-error mt-1">{{ form.errors['settings.contact_email'] }}</span>
-                        </div>
-
-                        <div class="form-control">
-                            <label class="label font-semibold text-slate text-xs uppercase tracking-wider font-mono">Contact Phone</label>
-                            <input
-                                v-model="form.settings.contact_phone"
-                                type="text"
-                                class="input input-bordered focus:border-amber focus:ring-2 focus:ring-amber/20 w-full rounded-lg"
-                                placeholder="e.g. +880 2 9876543"
-                            />
-                            <span v-if="form.errors['settings.contact_phone']" class="text-xs text-error mt-1">{{ form.errors['settings.contact_phone'] }}</span>
-                        </div>
-
                         <div class="form-control md:col-span-2">
-                            <label class="label font-semibold text-slate text-xs uppercase tracking-wider font-mono">Head Office Address</label>
-                            <textarea
-                                v-model="form.settings.contact_address"
-                                class="textarea textarea-bordered focus:border-amber focus:ring-2 focus:ring-amber/20 w-full h-24 rounded-lg"
-                                placeholder="House 45, Road 11, Banani, Dhaka-1213, Bangladesh"
-                            ></textarea>
-                            <span v-if="form.errors['settings.contact_address']" class="text-xs text-error mt-1">{{ form.errors['settings.contact_address'] }}</span>
-                        </div>
-
-                        <div class="form-control md:col-span-2">
-                            <label class="label font-semibold text-slate text-xs uppercase tracking-wider font-mono">Office Hours</label>
+                            <label class="label font-semibold text-slate text-xs uppercase tracking-wider font-mono">General Office Hours</label>
                             <input
                                 v-model="form.settings.office_hours"
                                 type="text"
@@ -323,6 +316,74 @@ const submit = () => {
                                 placeholder="Enter default meta description"
                             ></textarea>
                             <span v-if="form.errors['settings.default_seo_description']" class="text-xs text-error mt-1">{{ form.errors['settings.default_seo_description'] }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Coming Soon Mode Tab -->
+                <div v-show="activeTab === 'coming_soon'" class="space-y-6">
+                    <div class="p-4 rounded-xl border border-amber/20 bg-amber/5 flex items-start gap-3">
+                        <div class="p-2 rounded-lg bg-amber text-white font-bold text-xs uppercase font-mono">CMS</div>
+                        <div>
+                            <h4 class="font-display font-bold text-navy text-sm">Website Maintenance & Coming Soon Mode</h4>
+                            <p class="text-xs text-slate-600 mt-0.5">Control public access behavior when launching new features or undergoing updates. Administrators and login routes always remain accessible.</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="form-control">
+                            <label class="label font-semibold text-slate text-xs uppercase tracking-wider font-mono">Enable Coming Soon Mode</label>
+                            <select
+                                v-model="form.settings.coming_soon_enabled"
+                                class="select select-bordered focus:border-amber focus:ring-2 focus:ring-amber/20 w-full rounded-lg font-mono text-sm"
+                            >
+                                <option value="false">OFF — Website Operates Normally</option>
+                                <option value="true">ON — Redirect Visitors to Coming Soon Page</option>
+                            </select>
+                            <span class="text-xs text-slate-500 mt-1">Default: OFF. When enabled, public visitors are redirected to /coming-soon.</span>
+                            <span v-if="form.errors['settings.coming_soon_enabled']" class="text-xs text-error mt-1">{{ form.errors['settings.coming_soon_enabled'] }}</span>
+                        </div>
+
+                        <div class="form-control">
+                            <label class="label font-semibold text-slate text-xs uppercase tracking-wider font-mono">Coming Soon Target</label>
+                            <select
+                                v-model="form.settings.coming_soon_target"
+                                class="select select-bordered focus:border-amber focus:ring-2 focus:ring-amber/20 w-full rounded-lg font-mono text-sm"
+                            >
+                                <option value="entire_website">Entire Website (All Public Pages)</option>
+                                <option value="home_only">Home Page Only (/)</option>
+                                <option value="services_only">Services Page (/services)</option>
+                                <option value="about_only">About Page (/about)</option>
+                                <option value="contact_only">Contact Page (/contact)</option>
+                            </select>
+                            <span class="text-xs text-slate-500 mt-1">Select which public pages should trigger the Coming Soon redirect.</span>
+                            <span v-if="form.errors['settings.coming_soon_target']" class="text-xs text-error mt-1">{{ form.errors['settings.coming_soon_target'] }}</span>
+                        </div>
+
+                        <div class="form-control">
+                            <label class="label font-semibold text-slate text-xs uppercase tracking-wider font-mono">Show Navbar (Coming Soon Page)</label>
+                            <select
+                                v-model="form.settings.show_navbar"
+                                @change="form.settings.coming_soon_show_navbar = form.settings.show_navbar"
+                                class="select select-bordered focus:border-amber focus:ring-2 focus:ring-amber/20 w-full rounded-lg font-mono text-sm"
+                            >
+                                <option value="false">OFF — Hide Header Navigation Bar</option>
+                                <option value="true">ON — Display Existing Navigation Bar</option>
+                            </select>
+                            <span class="text-xs text-slate-500 mt-1">Default: OFF. Toggle whether the global Navbar appears on the Coming Soon page.</span>
+                        </div>
+
+                        <div class="form-control">
+                            <label class="label font-semibold text-slate text-xs uppercase tracking-wider font-mono">Show Footer (Coming Soon Page)</label>
+                            <select
+                                v-model="form.settings.show_footer"
+                                @change="form.settings.coming_soon_show_footer = form.settings.show_footer"
+                                class="select select-bordered focus:border-amber focus:ring-2 focus:ring-amber/20 w-full rounded-lg font-mono text-sm"
+                            >
+                                <option value="false">OFF — Hide Footer Section</option>
+                                <option value="true">ON — Display Existing Footer Section</option>
+                            </select>
+                            <span class="text-xs text-slate-500 mt-1">Default: OFF. Toggle whether the global Footer appears on the Coming Soon page.</span>
                         </div>
                     </div>
                 </div>

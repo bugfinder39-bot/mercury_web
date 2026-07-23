@@ -90,5 +90,19 @@ class SettingSeeder extends Seeder
             'value' => 'Mercury Bangladesh offers premium sea freight, air freight, warehousing, and customs clearance services to simplify global supply chain challenges.',
             'group' => 'seo',
         ]);
+
+        // Coming Soon mode
+        Setting::create([
+            'key' => 'coming_soon_enabled',
+            'value' => 'false',
+            'group' => 'general',
+        ]);
+
+        Setting::create([
+            'key' => 'coming_soon_target',
+            'value' => 'entire_website',
+            'group' => 'general',
+        ]);
     }
 }
+

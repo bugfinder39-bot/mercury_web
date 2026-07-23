@@ -82,6 +82,20 @@ class PublicController extends Controller
     }
 
     /**
+     * Render the Coming Soon Page.
+     */
+    public function comingSoon(): Response
+    {
+        $page = $this->cmsService->getPageWithSections('coming-soon');
+
+        return Inertia::render('ComingSoon', [
+            'page' => $page,
+            'sections' => $page->sections,
+        ]);
+    }
+
+
+    /**
      * Process contact form submission.
      */
     public function submitContactForm(\Illuminate\Http\Request $request): \Illuminate\Http\RedirectResponse

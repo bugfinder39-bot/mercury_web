@@ -109,6 +109,9 @@ watch(() => props.sections, (newSections) => {
             error_message: sec.error_message || '',
             required_field_text: sec.required_field_text || '',
             placeholder_text: sec.placeholder_text || '',
+            // Coming soon fields
+            progress_label: sec.progress_label || '',
+            expected_launch_text: sec.expected_launch_text || '',
             // File Uploads
             hero_media_file: existingForm.hero_media_file || null,
             portrait_media_file: existingForm.portrait_media_file || null,
@@ -624,12 +627,12 @@ const moveSectionDown = (section: any) => {
                         </div>
 
                         <!-- Dynamic Specific Section fields: Hero Banner / Hero Carousel -->
-                        <template v-if="section.type === 'hero_banner' || section.type === 'hero_carousel'">
+                        <template v-if="section.type === 'hero_banner' || section.type === 'hero_carousel' || section.type.startsWith('coming_soon')">
                             <div class="md:col-span-2 border-t border-base-200 pt-4 mt-2">
-                                <h4 class="font-display font-semibold text-sm mb-3" style="color: #0B2540;">Hero Banner Image Settings</h4>
+                                <h4 class="font-display font-semibold text-sm mb-3" style="color: #0B2540;">Media & Illustration Settings</h4>
                             </div>
                             <div class="md:col-span-2 space-y-2">
-                                <label class="label-premium">Hero Image (Uploaded image displays on frontend hero banner)</label>
+                                <label class="label-premium">Hero / Background Image</label>
                                 <div class="flex items-center gap-4">
                                     <div v-if="sectionPreviews[section.id]?.hero" class="h-24 w-44 rounded overflow-hidden border border-base-200 bg-base-50 flex items-center justify-center p-1">
                                         <img :src="sectionPreviews[section.id].hero" alt="Hero Image Preview" class="w-full h-full object-cover rounded" />
@@ -640,6 +643,37 @@ const moveSectionDown = (section: any) => {
                                     </div>
                                 </div>
                                 <span v-if="sectionErrors[section.id]?.hero_media_file" class="text-xs text-red-500 mt-1 block">{{ sectionErrors[section.id].hero_media_file }}</span>
+                            </div>
+                        </template>
+
+                        <!-- Dynamic Specific Section fields: Coming Soon Custom Fields -->
+                        <template v-if="section.type.startsWith('coming_soon')">
+                            <div class="md:col-span-2 border-t border-base-200 pt-4 mt-2">
+                                <h4 class="font-display font-semibold text-sm mb-3" style="color: #0B2540;">Coming Soon Section Settings</h4>
+                            </div>
+                            <div>
+                                <label class="label-premium">Primary CTA Button Text</label>
+                                <input v-model="sectionForms[section.id].cta_primary_btn_text" type="text" class="input-premium" placeholder="e.g. Contact Operations" />
+                            </div>
+                            <div>
+                                <label class="label-premium">Primary CTA Button URL</label>
+                                <input v-model="sectionForms[section.id].cta_primary_btn_url" type="text" class="input-premium" placeholder="e.g. /contact" />
+                            </div>
+                            <div>
+                                <label class="label-premium">Return Home / Secondary Button Text</label>
+                                <input v-model="sectionForms[section.id].cta_secondary_btn_text" type="text" class="input-premium" placeholder="e.g. Return to Main Site" />
+                            </div>
+                            <div>
+                                <label class="label-premium">Return Home / Secondary Button URL</label>
+                                <input v-model="sectionForms[section.id].cta_secondary_btn_url" type="text" class="input-premium" placeholder="e.g. /" />
+                            </div>
+                            <div v-if="section.type === 'coming_soon_wip'">
+                                <label class="label-premium">Progress Label</label>
+                                <input v-model="sectionForms[section.id].progress_label" type="text" class="input-premium" placeholder="e.g. 85% Completed — Final Integration" />
+                            </div>
+                            <div v-if="section.type === 'coming_soon_wip'">
+                                <label class="label-premium">Expected Launch Text</label>
+                                <input v-model="sectionForms[section.id].expected_launch_text" type="text" class="input-premium" placeholder="e.g. Estimated Launch: Q4 2026" />
                             </div>
                         </template>
 

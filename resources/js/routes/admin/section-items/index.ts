@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Admin\PageController::update
- * @see app/Http/Controllers/Admin/PageController.php:324
+ * @see app/Http/Controllers/Admin/PageController.php:327
  * @route '/admin/section-items/{item}'
  */
 export const update = (args: { item: number | { id: number } } | [item: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -16,7 +16,7 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\PageController::update
- * @see app/Http/Controllers/Admin/PageController.php:324
+ * @see app/Http/Controllers/Admin/PageController.php:327
  * @route '/admin/section-items/{item}'
  */
 update.url = (args: { item: number | { id: number } } | [item: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -49,7 +49,7 @@ update.url = (args: { item: number | { id: number } } | [item: number | { id: nu
 
 /**
 * @see \App\Http\Controllers\Admin\PageController::update
- * @see app/Http/Controllers/Admin/PageController.php:324
+ * @see app/Http/Controllers/Admin/PageController.php:327
  * @route '/admin/section-items/{item}'
  */
 update.put = (args: { item: number | { id: number } } | [item: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -59,7 +59,7 @@ update.put = (args: { item: number | { id: number } } | [item: number | { id: nu
 
     /**
 * @see \App\Http\Controllers\Admin\PageController::update
- * @see app/Http/Controllers/Admin/PageController.php:324
+ * @see app/Http/Controllers/Admin/PageController.php:327
  * @route '/admin/section-items/{item}'
  */
     const updateForm = (args: { item: number | { id: number } } | [item: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -74,7 +74,7 @@ update.put = (args: { item: number | { id: number } } | [item: number | { id: nu
 
             /**
 * @see \App\Http\Controllers\Admin\PageController::update
- * @see app/Http/Controllers/Admin/PageController.php:324
+ * @see app/Http/Controllers/Admin/PageController.php:327
  * @route '/admin/section-items/{item}'
  */
         updateForm.put = (args: { item: number | { id: number } } | [item: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -90,7 +90,7 @@ update.put = (args: { item: number | { id: number } } | [item: number | { id: nu
     update.form = updateForm
 /**
 * @see \App\Http\Controllers\Admin\PageController::destroy
- * @see app/Http/Controllers/Admin/PageController.php:409
+ * @see app/Http/Controllers/Admin/PageController.php:412
  * @route '/admin/section-items/{item}'
  */
 export const destroy = (args: { item: number | { id: number } } | [item: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -105,7 +105,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\PageController::destroy
- * @see app/Http/Controllers/Admin/PageController.php:409
+ * @see app/Http/Controllers/Admin/PageController.php:412
  * @route '/admin/section-items/{item}'
  */
 destroy.url = (args: { item: number | { id: number } } | [item: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -138,7 +138,7 @@ destroy.url = (args: { item: number | { id: number } } | [item: number | { id: n
 
 /**
 * @see \App\Http\Controllers\Admin\PageController::destroy
- * @see app/Http/Controllers/Admin/PageController.php:409
+ * @see app/Http/Controllers/Admin/PageController.php:412
  * @route '/admin/section-items/{item}'
  */
 destroy.delete = (args: { item: number | { id: number } } | [item: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -148,7 +148,7 @@ destroy.delete = (args: { item: number | { id: number } } | [item: number | { id
 
     /**
 * @see \App\Http\Controllers\Admin\PageController::destroy
- * @see app/Http/Controllers/Admin/PageController.php:409
+ * @see app/Http/Controllers/Admin/PageController.php:412
  * @route '/admin/section-items/{item}'
  */
     const destroyForm = (args: { item: number | { id: number } } | [item: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -163,7 +163,7 @@ destroy.delete = (args: { item: number | { id: number } } | [item: number | { id
 
             /**
 * @see \App\Http\Controllers\Admin\PageController::destroy
- * @see app/Http/Controllers/Admin/PageController.php:409
+ * @see app/Http/Controllers/Admin/PageController.php:412
  * @route '/admin/section-items/{item}'
  */
         destroyForm.delete = (args: { item: number | { id: number } } | [item: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

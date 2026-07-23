@@ -31,6 +31,7 @@ const activeTab = ref<
     | 'footer_content'
     | 'footer_design'
     | 'global_design'
+    | 'coming_soon'
 >('navbar_content');
 const previewMode = ref<boolean>(true);
 
@@ -38,6 +39,10 @@ const previewMode = ref<boolean>(true);
 const form = useForm({
     _method: 'POST',
     settings: {
+        show_navbar: String(props.settings.show_navbar ?? props.settings.coming_soon_show_navbar ?? 'false'),
+        show_footer: String(props.settings.show_footer ?? props.settings.coming_soon_show_footer ?? 'false'),
+        coming_soon_show_navbar: String(props.settings.coming_soon_show_navbar ?? props.settings.show_navbar ?? 'false'),
+        coming_soon_show_footer: String(props.settings.coming_soon_show_footer ?? props.settings.show_footer ?? 'false'),
         navbar_website_name: props.settings.navbar_website_name || '',
         navbar_website_tagline: props.settings.navbar_website_tagline || '',
         navbar_logo: props.settings.navbar_logo || '',
@@ -94,6 +99,15 @@ const form = useForm({
         ),
         footer_socials: Array.isArray(props.settings.footer_socials)
             ? props.settings.footer_socials
+            : [],
+        footer_phones: Array.isArray(props.settings.footer_phones)
+            ? props.settings.footer_phones
+            : [],
+        footer_emails: Array.isArray(props.settings.footer_emails)
+            ? props.settings.footer_emails
+            : [],
+        footer_addresses: Array.isArray(props.settings.footer_addresses)
+            ? props.settings.footer_addresses
             : [],
         footer_address: props.settings.footer_address || '',
         footer_phone: props.settings.footer_phone || '',
@@ -378,6 +392,121 @@ form.settings.footer_socials[index].is_active =
 }
 };
 
+// Contact repeatable items helper state & functions
+const contactModalType = ref<'phone' | 'email' | 'address' | null>(null);
+const currentContactIndex = ref<number | null>(null);
+const contactForm = ref({
+    phone: '',
+    email: '',
+    name: '',
+    address: '',
+    label: '',
+    map_url: '',
+    is_active: true,
+});
+
+const openContactModal = (
+    type: 'phone' | 'email' | 'address',
+    index: number | null = null,
+) => {
+    contactModalType.value = type;
+    currentContactIndex.value = index;
+
+    if (index !== null) {
+        let item: any;
+        if (type === 'phone') {
+            item = form.settings.footer_phones[index];
+        } else if (type === 'email') {
+            item = form.settings.footer_emails[index];
+        } else {
+            item = form.settings.footer_addresses[index];
+        }
+
+        contactForm.value = {
+            phone: item.phone || '',
+            email: item.email || '',
+            name: item.name || '',
+            address: item.address || '',
+            label: item.label || '',
+            map_url: item.map_url || '',
+            is_active: item.is_active !== false,
+        };
+    } else {
+        contactForm.value = {
+            phone: '',
+            email: '',
+            name: '',
+            address: '',
+            label: '',
+            map_url: '',
+            is_active: true,
+        };
+    }
+};
+
+const saveContactItem = () => {
+    const type = contactModalType.value;
+    if (!type) return;
+
+    let targetArray: any[] = [];
+    if (type === 'phone') targetArray = form.settings.footer_phones;
+    else if (type === 'email') targetArray = form.settings.footer_emails;
+    else if (type === 'address') targetArray = form.settings.footer_addresses;
+
+    const record: any = { is_active: contactForm.value.is_active };
+
+    if (type === 'phone') {
+        if (!contactForm.value.phone) { alert('Phone number is required'); return; }
+        record.phone = contactForm.value.phone;
+        record.label = contactForm.value.label;
+    } else if (type === 'email') {
+        if (!contactForm.value.email) { alert('Email address is required'); return; }
+        record.email = contactForm.value.email;
+        record.label = contactForm.value.label;
+    } else if (type === 'address') {
+        if (!contactForm.value.address) { alert('Address is required'); return; }
+        record.address = contactForm.value.address;
+        record.name = contactForm.value.name;
+        record.map_url = contactForm.value.map_url;
+    }
+
+    if (currentContactIndex.value !== null) {
+        targetArray[currentContactIndex.value] = record;
+    } else {
+        targetArray.push(record);
+    }
+
+    contactModalType.value = null;
+    currentContactIndex.value = null;
+};
+
+const deleteContactItem = (type: 'phone' | 'email' | 'address', index: number) => {
+    if (!confirm('Are you sure you want to delete this contact item?')) return;
+    if (type === 'phone') form.settings.footer_phones.splice(index, 1);
+    else if (type === 'email') form.settings.footer_emails.splice(index, 1);
+    else if (type === 'address') form.settings.footer_addresses.splice(index, 1);
+};
+
+const moveContactItem = (type: 'phone' | 'email' | 'address', index: number, direction: 'up' | 'down') => {
+    let arr: any[] = [];
+    if (type === 'phone') arr = form.settings.footer_phones;
+    else if (type === 'email') arr = form.settings.footer_emails;
+    else if (type === 'address') arr = form.settings.footer_addresses;
+
+    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= arr.length) return;
+
+    const temp = arr[index];
+    arr[index] = arr[targetIndex];
+    arr[targetIndex] = temp;
+};
+
+const toggleContactActive = (type: 'phone' | 'email' | 'address', index: number) => {
+    if (type === 'phone') form.settings.footer_phones[index].is_active = !form.settings.footer_phones[index].is_active;
+    else if (type === 'email') form.settings.footer_emails[index].is_active = !form.settings.footer_emails[index].is_active;
+    else if (type === 'address') form.settings.footer_addresses[index].is_active = !form.settings.footer_addresses[index].is_active;
+};
+
 const deleteLogo = (type: 'navbar' | 'footer') => {
     if (confirm(`Remove the ${type} logo?`)) {
         if (type === 'navbar') {
@@ -546,6 +675,7 @@ const previewFooterStyles = computed(() => {
                             { id: 'footer_content', label: 'Footer Content' },
                             { id: 'footer_design', label: 'Footer Design' },
                             { id: 'global_design', label: 'Typography' },
+                            { id: 'coming_soon', label: 'Coming Soon' },
                         ]"
                         :key="tab.id"
                         type="button"
@@ -1296,44 +1426,6 @@ const previewFooterStyles = computed(() => {
                             </div>
                         </div>
 
-                        <!-- Contacts -->
-                        <div
-                            class="grid grid-cols-1 gap-4 border-t pt-4 md:grid-cols-3"
-                        >
-                            <div class="form-control">
-                                <label
-                                    class="label font-mono text-xs text-slate-500"
-                                    >Address</label
-                                >
-                                <input
-                                    v-model="form.settings.footer_address"
-                                    type="text"
-                                    class="input-bordered input w-full rounded-lg input-sm"
-                                />
-                            </div>
-                            <div class="form-control">
-                                <label
-                                    class="label font-mono text-xs text-slate-500"
-                                    >Phone</label
-                                >
-                                <input
-                                    v-model="form.settings.footer_phone"
-                                    type="text"
-                                    class="input-bordered input w-full rounded-lg input-sm"
-                                />
-                            </div>
-                            <div class="form-control">
-                                <label
-                                    class="label font-mono text-xs text-slate-500"
-                                    >Email</label
-                                >
-                                <input
-                                    v-model="form.settings.footer_email"
-                                    type="email"
-                                    class="input-bordered input w-full rounded-lg input-sm"
-                                />
-                            </div>
-                        </div>
 
                         <div
                             class="grid grid-cols-1 gap-4 border-t pt-4 md:grid-cols-2"
@@ -1739,6 +1831,169 @@ const previewFooterStyles = computed(() => {
                                             "
                                             class="btn rounded btn-ghost text-rose-500 btn-xs"
                                         >
+                                            <Trash2 class="size-3" />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Repeatable Phone Numbers collection -->
+                        <div class="space-y-3 border-t pt-4">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <label class="label font-mono text-xs font-semibold tracking-wider text-slate-500 uppercase">Phone Numbers (Repeatable)</label>
+                                    <p class="text-xs text-slate-400">Add multiple telephone or hotline numbers for the Footer.</p>
+                                </div>
+                                <button
+                                    type="button"
+                                    @click="openContactModal('phone')"
+                                    class="bg-amber hover:bg-amber-dark btn flex items-center gap-1 border-none text-white btn-xs"
+                                >
+                                    <Plus class="size-3" />
+                                    <span>Add Phone</span>
+                                </button>
+                            </div>
+
+                            <div class="divide-y overflow-hidden rounded-lg border bg-slate-50 text-sm">
+                                <div v-if="!form.settings.footer_phones || form.settings.footer_phones.length === 0" class="p-4 text-center text-slate-400 text-xs">
+                                    No repeatable phone numbers added yet. (Will fall back to single Phone field)
+                                </div>
+                                <div
+                                    v-for="(item, idx) in form.settings.footer_phones"
+                                    :key="idx"
+                                    class="flex items-center justify-between bg-white p-3"
+                                    :class="!item.is_active ? 'opacity-50' : ''"
+                                >
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <span class="font-semibold text-slate-800">{{ item.phone }}</span>
+                                            <span v-if="item.label" class="rounded bg-amber/10 text-amber px-1.5 py-0.5 font-mono text-[10px] font-bold uppercase">{{ item.label }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-1">
+                                        <button type="button" @click="toggleContactActive('phone', idx)" class="btn rounded btn-xs" :class="item.is_active ? 'text-white btn-success' : 'btn-ghost text-slate-400'">
+                                            <Check class="size-3" />
+                                        </button>
+                                        <button type="button" @click="openContactModal('phone', idx)" class="btn rounded btn-ghost text-slate-600 btn-xs">
+                                            <Edit2 class="size-3" />
+                                        </button>
+                                        <button type="button" @click="moveContactItem('phone', idx, 'up')" :disabled="idx === 0" class="btn rounded btn-ghost text-slate-600 btn-xs disabled:opacity-30">
+                                            <ArrowUp class="size-3" />
+                                        </button>
+                                        <button type="button" @click="moveContactItem('phone', idx, 'down')" :disabled="idx === form.settings.footer_phones.length - 1" class="btn rounded btn-ghost text-slate-600 btn-xs disabled:opacity-30">
+                                            <ArrowDown class="size-3" />
+                                        </button>
+                                        <button type="button" @click="deleteContactItem('phone', idx)" class="btn rounded btn-ghost text-rose-500 btn-xs">
+                                            <Trash2 class="size-3" />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Repeatable Email Addresses collection -->
+                        <div class="space-y-3 border-t pt-4">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <label class="label font-mono text-xs font-semibold tracking-wider text-slate-500 uppercase">Email Addresses (Repeatable)</label>
+                                    <p class="text-xs text-slate-400">Add multiple email addresses for operations, sales, support, etc.</p>
+                                </div>
+                                <button
+                                    type="button"
+                                    @click="openContactModal('email')"
+                                    class="bg-amber hover:bg-amber-dark btn flex items-center gap-1 border-none text-white btn-xs"
+                                >
+                                    <Plus class="size-3" />
+                                    <span>Add Email</span>
+                                </button>
+                            </div>
+
+                            <div class="divide-y overflow-hidden rounded-lg border bg-slate-50 text-sm">
+                                <div v-if="!form.settings.footer_emails || form.settings.footer_emails.length === 0" class="p-4 text-center text-slate-400 text-xs">
+                                    No repeatable emails added yet. (Will fall back to single Email field)
+                                </div>
+                                <div
+                                    v-for="(item, idx) in form.settings.footer_emails"
+                                    :key="idx"
+                                    class="flex items-center justify-between bg-white p-3"
+                                    :class="!item.is_active ? 'opacity-50' : ''"
+                                >
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <span class="font-semibold text-slate-800">{{ item.email }}</span>
+                                            <span v-if="item.label" class="rounded bg-sky-100 text-sky-700 px-1.5 py-0.5 font-mono text-[10px] font-bold uppercase">{{ item.label }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-1">
+                                        <button type="button" @click="toggleContactActive('email', idx)" class="btn rounded btn-xs" :class="item.is_active ? 'text-white btn-success' : 'btn-ghost text-slate-400'">
+                                            <Check class="size-3" />
+                                        </button>
+                                        <button type="button" @click="openContactModal('email', idx)" class="btn rounded btn-ghost text-slate-600 btn-xs">
+                                            <Edit2 class="size-3" />
+                                        </button>
+                                        <button type="button" @click="moveContactItem('email', idx, 'up')" :disabled="idx === 0" class="btn rounded btn-ghost text-slate-600 btn-xs disabled:opacity-30">
+                                            <ArrowUp class="size-3" />
+                                        </button>
+                                        <button type="button" @click="moveContactItem('email', idx, 'down')" :disabled="idx === form.settings.footer_emails.length - 1" class="btn rounded btn-ghost text-slate-600 btn-xs disabled:opacity-30">
+                                            <ArrowDown class="size-3" />
+                                        </button>
+                                        <button type="button" @click="deleteContactItem('email', idx)" class="btn rounded btn-ghost text-rose-500 btn-xs">
+                                            <Trash2 class="size-3" />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Repeatable Office Addresses collection -->
+                        <div class="space-y-3 border-t pt-4">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <label class="label font-mono text-xs font-semibold tracking-wider text-slate-500 uppercase">Office Addresses (Repeatable)</label>
+                                    <p class="text-xs text-slate-400">Add multiple office locations (Head Office, Port Desks, Regional Offices).</p>
+                                </div>
+                                <button
+                                    type="button"
+                                    @click="openContactModal('address')"
+                                    class="bg-amber hover:bg-amber-dark btn flex items-center gap-1 border-none text-white btn-xs"
+                                >
+                                    <Plus class="size-3" />
+                                    <span>Add Address</span>
+                                </button>
+                            </div>
+
+                            <div class="divide-y overflow-hidden rounded-lg border bg-slate-50 text-sm">
+                                <div v-if="!form.settings.footer_addresses || form.settings.footer_addresses.length === 0" class="p-4 text-center text-slate-400 text-xs">
+                                    No repeatable addresses added yet. (Will fall back to single Address field)
+                                </div>
+                                <div
+                                    v-for="(item, idx) in form.settings.footer_addresses"
+                                    :key="idx"
+                                    class="flex items-center justify-between bg-white p-3"
+                                    :class="!item.is_active ? 'opacity-50' : ''"
+                                >
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <span v-if="item.name" class="font-semibold text-slate-800">{{ item.name }}: </span>
+                                            <span class="text-slate-700">{{ item.address }}</span>
+                                        </div>
+                                        <div v-if="item.map_url" class="text-[10px] font-mono text-amber mt-0.5">Google Maps Link attached</div>
+                                    </div>
+                                    <div class="flex items-center gap-1">
+                                        <button type="button" @click="toggleContactActive('address', idx)" class="btn rounded btn-xs" :class="item.is_active ? 'text-white btn-success' : 'btn-ghost text-slate-400'">
+                                            <Check class="size-3" />
+                                        </button>
+                                        <button type="button" @click="openContactModal('address', idx)" class="btn rounded btn-ghost text-slate-600 btn-xs">
+                                            <Edit2 class="size-3" />
+                                        </button>
+                                        <button type="button" @click="moveContactItem('address', idx, 'up')" :disabled="idx === 0" class="btn rounded btn-ghost text-slate-600 btn-xs disabled:opacity-30">
+                                            <ArrowUp class="size-3" />
+                                        </button>
+                                        <button type="button" @click="moveContactItem('address', idx, 'down')" :disabled="idx === form.settings.footer_addresses.length - 1" class="btn rounded btn-ghost text-slate-600 btn-xs disabled:opacity-30">
+                                            <ArrowDown class="size-3" />
+                                        </button>
+                                        <button type="button" @click="deleteContactItem('address', idx)" class="btn rounded btn-ghost text-rose-500 btn-xs">
                                             <Trash2 class="size-3" />
                                         </button>
                                     </div>
@@ -2254,6 +2509,54 @@ const previewFooterStyles = computed(() => {
                             </div>
                         </div>
                     </div>
+
+                    <!-- TAB 6: Coming Soon Settings -->
+                    <div
+                        v-show="activeTab === 'coming_soon'"
+                        class="space-y-6"
+                    >
+                        <h3
+                            class="border-b pb-2 font-mono text-sm font-bold tracking-wider text-[#0B2540] uppercase"
+                        >
+                            Coming Soon Page Layout Controls
+                        </h3>
+
+                        <div class="p-4 rounded-xl border border-amber/20 bg-amber/5 flex items-start gap-3">
+                            <div class="p-2 rounded-lg bg-amber text-white font-bold text-xs uppercase font-mono">CMS</div>
+                            <div>
+                                <h4 class="font-display font-bold text-navy text-sm">Independent Navbar & Footer Controls</h4>
+                                <p class="text-xs text-slate-600 mt-0.5">Independently show or hide the global Navbar and Footer on the Coming Soon page. When turned OFF, the page automatically adapts its layout without empty gaps.</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="form-control">
+                                <label class="label font-semibold text-slate text-xs uppercase tracking-wider font-mono">Show Navbar</label>
+                                <select
+                                    v-model="form.settings.show_navbar"
+                                    @change="form.settings.coming_soon_show_navbar = form.settings.show_navbar"
+                                    class="select select-bordered focus:border-amber focus:ring-2 focus:ring-amber/20 w-full rounded-lg font-mono text-sm"
+                                >
+                                    <option value="false">OFF — Hide Header Navigation Bar (Default)</option>
+                                    <option value="true">ON — Display Existing Navigation Bar</option>
+                                </select>
+                                <span class="text-xs text-slate-500 mt-1">Controls visibility of the Header Navbar on /coming-soon.</span>
+                            </div>
+
+                            <div class="form-control">
+                                <label class="label font-semibold text-slate text-xs uppercase tracking-wider font-mono">Show Footer</label>
+                                <select
+                                    v-model="form.settings.show_footer"
+                                    @change="form.settings.coming_soon_show_footer = form.settings.show_footer"
+                                    class="select select-bordered focus:border-amber focus:ring-2 focus:ring-amber/20 w-full rounded-lg font-mono text-sm"
+                                >
+                                    <option value="false">OFF — Hide Footer Section (Default)</option>
+                                    <option value="true">ON — Display Existing Footer Section</option>
+                                </select>
+                                <span class="text-xs text-slate-500 mt-1">Controls visibility of the Footer on /coming-soon.</span>
+                            </div>
+                        </div>
+                    </div>
                 </form>
             </div>
 
@@ -2709,6 +3012,73 @@ const previewFooterStyles = computed(() => {
                 >
                     Save
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Item Editing Modal -->
+    <div v-if="contactModalType" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" @click="contactModalType = null"></div>
+        <div class="relative w-full max-w-md rounded-2xl bg-white shadow-2xl overflow-hidden z-10 animate-in fade-in zoom-in duration-200">
+            <div class="flex items-center justify-between border-b border-slate-100 bg-slate-50 px-5 py-4">
+                <h3 class="font-display font-bold text-slate-800 text-sm capitalize">
+                    {{ currentContactIndex !== null ? 'Edit' : 'Add' }} {{ contactModalType }}
+                </h3>
+                <button type="button" @click="contactModalType = null" class="btn btn-ghost btn-circle btn-xs text-slate-400">
+                    <X class="size-4" />
+                </button>
+            </div>
+
+            <div class="p-5 space-y-4 text-sm">
+                <!-- Phone input -->
+                <div v-if="contactModalType === 'phone'" class="space-y-4">
+                    <div class="form-control">
+                        <label class="label text-xs font-semibold text-slate-700">Phone Number *</label>
+                        <input v-model="contactForm.phone" type="text" class="input input-bordered input-sm rounded-lg" placeholder="e.g. +880 2 9876543" />
+                    </div>
+                    <div class="form-control">
+                        <label class="label text-xs font-semibold text-slate-700">Label (Optional)</label>
+                        <input v-model="contactForm.label" type="text" class="input input-bordered input-sm rounded-lg" placeholder="e.g. Hotline, Office, Sales, WhatsApp" />
+                    </div>
+                </div>
+
+                <!-- Email input -->
+                <div v-if="contactModalType === 'email'" class="space-y-4">
+                    <div class="form-control">
+                        <label class="label text-xs font-semibold text-slate-700">Email Address *</label>
+                        <input v-model="contactForm.email" type="email" class="input input-bordered input-sm rounded-lg" placeholder="e.g. ops@mercury-bd.com" />
+                    </div>
+                    <div class="form-control">
+                        <label class="label text-xs font-semibold text-slate-700">Label (Optional)</label>
+                        <input v-model="contactForm.label" type="text" class="input input-bordered input-sm rounded-lg" placeholder="e.g. General Inquiry, Sales Desk" />
+                    </div>
+                </div>
+
+                <!-- Address input -->
+                <div v-if="contactModalType === 'address'" class="space-y-4">
+                    <div class="form-control">
+                        <label class="label text-xs font-semibold text-slate-700">Office Name / Title (Optional)</label>
+                        <input v-model="contactForm.name" type="text" class="input input-bordered input-sm rounded-lg" placeholder="e.g. Corporate Head Office, Chittagong Port Desk" />
+                    </div>
+                    <div class="form-control">
+                        <label class="label text-xs font-semibold text-slate-700">Office Address *</label>
+                        <textarea v-model="contactForm.address" class="textarea textarea-bordered rounded-lg h-20 text-xs" placeholder="Full address string"></textarea>
+                    </div>
+                    <div class="form-control">
+                        <label class="label text-xs font-semibold text-slate-700">Google Maps URL (Optional)</label>
+                        <input v-model="contactForm.map_url" type="url" class="input input-bordered input-sm rounded-lg" placeholder="https://maps.google.com/..." />
+                    </div>
+                </div>
+
+                <div class="form-control flex flex-row items-center gap-2 pt-2">
+                    <input type="checkbox" v-model="contactForm.is_active" id="contact_is_active" class="checkbox rounded checkbox-sm checkbox-primary" />
+                    <label for="contact_is_active" class="cursor-pointer text-xs text-slate-600">Enabled / Display on Footer</label>
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-2 border-t border-slate-100 bg-slate-50 px-5 py-3">
+                <button type="button" @click="contactModalType = null" class="btn rounded-lg btn-ghost btn-sm">Cancel</button>
+                <button type="button" @click="saveContactItem" class="bg-amber hover:bg-amber-dark btn rounded-lg border-none px-4 text-white btn-sm">Save</button>
             </div>
         </div>
     </div>
